@@ -1,0 +1,44 @@
+// Copyright (c) 2024. Alexandr Moroz
+
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:get_it/get_it.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
+import '../../../L1_domain/usecases/local_settings_uc.dart';
+import '../../../L2_data/repositories/db_repo.dart';
+import '../../../L2_data/services/db.dart';
+import '../../l10n/generated/l10n.dart';
+import '../main/controllers/main_controller.dart';
+import 'app_controller.dart';
+import 'local_settings_controller.dart';
+
+S get loc => S.current;
+
+final getIt = GetIt.I;
+
+LocalSettingsController get localSettingsController => getIt<LocalSettingsController>();
+
+AppController get appController => getIt<AppController>();
+MainController get mainController => getIt<MainController>();
+
+LocalSettingsUC get localSettingsUC => getIt<LocalSettingsUC>();
+
+void setup() {
+  /// device
+  getIt.registerSingletonAsync<BaseDeviceInfo>(() async => await DeviceInfoPlugin().deviceInfo);
+  getIt.registerSingletonAsync<PackageInfo>(() async => await PackageInfo.fromPlatform());
+
+  /// repo / adapters
+  getIt.registerSingletonAsync<HiveStorage>(() async => await HiveStorage().init());
+
+  /// use cases
+
+  getIt.registerSingleton<LocalSettingsUC>(LocalSettingsUC(LocalSettingsRepo()));
+
+  /// global state controllers
+  // первые контроллеры
+  getIt.registerSingletonAsync<LocalSettingsController>(() async => LocalSettingsController().init(), dependsOn: [HiveStorage, PackageInfo]);
+
+  getIt.registerSingleton<AppController>(AppController());
+  getIt.registerSingleton<MainController>(MainController());
+}

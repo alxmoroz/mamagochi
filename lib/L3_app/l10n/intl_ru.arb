@@ -1,0 +1,54 @@
+{
+  "@@locale": "ru",
+
+  "about_service_title": "О сервисе",
+
+  "action_apply_title": "Применить",
+  "action_back_title": "Назад",
+  "action_email_support_title": "Сообщить о проблеме",
+  "action_email_us_title": "Написать на почту",
+  "action_save_title": "Сохранить",
+  "action_skip_title": "Пропустить",
+  "action_yes_title": "Да",
+
+  "app_about_title": "О приложении",
+  "app_feedback_action_title": "Оценить приложение",
+  "app_legal_docs_title": "Документация",
+  "app_legal_privacy_policy_title": "Политика конфиденциальности",
+  "app_legal_rules_title": "Пользовательское соглашение",
+  "app_release_notes_title": "История обновлений",
+  "app_title": "Мамагочи",
+
+  "contact_us_mail_subject": "Мамагочи - обратная связь",
+
+  "days_count": "{count, plural, one{{count} день} few{{count} дня} other{{count} дней}}",
+
+  "lets_go_action_title": "Поехали!",
+
+  "loader_refreshing_title": "Обновляем...",
+  "loader_saving_title": "Сохраняем...",
+
+  "months_count": "{count, plural, one{{count} месяц} few{{count} месяца} other{{count} месяцев}}",
+
+  "next_action_title": "Продолжить",
+  "new_title": "Новый",
+
+  "onboarding_where_we_go_step_title": "С чего начнём?",
+  "onboarding_step_1_title": "onboarding_step_1_title",
+
+  "ok": "Понятно",
+
+  "refresh_action_title": "Обновить данные",
+
+  "report_bug_action_title": "Сообщить о проблеме",
+
+  "today_title": "Сегодня",
+  "tomorrow_title": "Завтра",
+
+  "validation_empty_text": "Нужно заполнить",
+
+  "weeks_count_accusative": "{count, plural, one{{count} неделю} few{{count} недели} other{{count} недель}}",
+
+  "years_count": "{count, plural, one{{count} год} few{{count} года} other{{count} лет}}",
+  "yesterday_date_title": "вчера"
+}

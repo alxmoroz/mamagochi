@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1039142486698-e0obup6endeh0cgl171g8p9rg1knf39a.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1039142486698-e0obup6endeh0cgl171g8p9rg1knf39a</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1039142486698-60a5ncpnpv1og7590ebn8hh2r64rtspb.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCLtgDe0Vlrljnjpc9anOWJ21L_gpfo7UY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1039142486698</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>team.moroz.mamagochi.app</string>
+	<key>PROJECT_ID</key>
+	<string>gercules</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gercules.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1039142486698:ios:8c476fe613086b786086d3</string>
+</dict>
+</plist>

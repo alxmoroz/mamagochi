@@ -1,0 +1,44 @@
+// Copyright (c) 2021. Alexandr Moroz
+
+import 'package:flutter/material.dart';
+
+import 'colors.dart';
+import 'constants.dart';
+
+class MTCard extends StatelessWidget {
+  const MTCard({
+    super.key,
+    required this.child,
+    this.margin,
+    this.elevation,
+    this.radius,
+    this.padding,
+    this.borderSide,
+    this.color,
+  });
+
+  final Widget child;
+  final EdgeInsets? margin;
+  final EdgeInsets? padding;
+  final double? elevation;
+  final double? radius;
+  final BorderSide? borderSide;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final cardColor = (color ?? b3Color).resolve(context);
+    final borderRadius = radius ?? DEF_BORDER_RADIUS;
+    final shadowColor = b1Color.resolve(context);
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      margin: margin ?? EdgeInsets.zero,
+      elevation: elevation ?? cardElevation,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius), side: borderSide ?? BorderSide.none),
+      surfaceTintColor: cardColor,
+      color: cardColor,
+      shadowColor: shadowColor,
+      child: Padding(padding: padding ?? EdgeInsets.zero, child: child),
+    );
+  }
+}

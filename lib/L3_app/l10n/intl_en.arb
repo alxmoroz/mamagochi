@@ -1,0 +1,55 @@
+{
+  "@@locale": "en",
+
+  "about_service_title": "About service",
+
+  "action_apply_title": "Apply",
+  "action_back_title": "Back",
+  "action_email_support_title": "Report a problem",
+  "action_email_us_title": "Email us",
+  "action_save_title": "Save",
+  "action_skip_title": "Skip",
+  "action_yes_title": "Yes",
+
+  "app_about_title": "About the App",
+  "app_feedback_action_title": "Feedback",
+  "app_legal_docs_title": "Legal Docs",
+  "app_legal_privacy_policy_title": "Privacy Policy",
+  "app_legal_rules_title": "License Agreement",
+  "app_release_notes_title": "Release Notes",
+  "app_title": "Mamagochi",
+
+  "contact_us_mail_subject": "Mamagochi - feedback",
+
+  "days_count": "{count, plural, one{{count} day} other{{count} days}}",
+
+  "lets_go_action_title": "Let's go!",
+
+  "loader_refreshing_title": "Refreshing...",
+  "loader_saving_title": "Saving...",
+
+  "months_count": "{count, plural, one{{count} month} other{{count} months}}",
+
+  "next_action_title": "Next",
+  "new_title": "New",
+
+  "onboarding_where_we_go_step_title": "Where do we start?",
+  "onboarding_step_1_title": "onboarding_step_1_title",
+  "onboarding_step_1_text": "onboarding_step_1_text",
+
+  "ok": "Ok",
+
+  "refresh_action_title": "Refresh data",
+
+  "report_bug_action_title": "Report a bug",
+
+  "today_title": "Today",
+  "tomorrow_title": "Tomorrow",
+
+  "validation_empty_text": "Should not be empty",
+
+  "weeks_count_accusative": "{count, plural, one{{count} week} other{{count} weeks}}",
+
+  "years_count": "{count, plural, one{{count} year} other{{count} years}}",
+  "yesterday_date_title": "yesterday"
+}
