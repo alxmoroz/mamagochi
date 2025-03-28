@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../components/button.dart';
-import '../../components/images.dart';
 import '../../navigation/router.dart';
 import '../app/services.dart';
 
@@ -31,8 +30,8 @@ mixin Loadable {
         actionWidget: actionWidget,
       );
 
-  void setLoaderScreenLoading() => _l.set(titleText: loc.loader_refreshing_title, imageName: ImageName.loading.name);
-  void setLoaderScreenSaving() => _l.set(titleText: loc.loader_saving_title, imageName: ImageName.save.name);
+  void setLoaderScreenLoading() => _l.set(titleText: loc.loader_refreshing_title, imageName: 'loading');
+  void setLoaderScreenSaving() => _l.set(titleText: loc.loader_saving_title, imageName: 'save');
 
   void startLoading() => _l.start();
   void stopLoading() => _l.stop();

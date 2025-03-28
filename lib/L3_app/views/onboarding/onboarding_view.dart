@@ -7,10 +7,10 @@ import 'package:intl/intl.dart';
 import '../../components/constants.dart';
 import '../../components/images.dart';
 import '../../components/page.dart';
+import '../../components/quiz/quiz_header.dart';
+import '../../components/quiz/quiz_next_button.dart';
 import '../../components/text.dart';
 import '../../navigation/route.dart';
-import '../quiz/quiz_header.dart';
-import '../quiz/quiz_next_button.dart';
 import 'onboarding_controller.dart';
 import 'where_we_go_step.dart';
 
@@ -48,7 +48,7 @@ class _OnboardingViewState extends State<_OnboardingView> {
             shrinkWrap: true,
             children: [
               if (_controller.stepIndex < 3) ...[
-                MTImage(ImageName.no_info.name),
+                const MTImage('no_info'),
                 H2(
                   Intl.message('onboarding_step_${_controller.stepIndex + 1}_title'),
                   align: TextAlign.center,

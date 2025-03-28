@@ -1,7 +1,5 @@
 // Copyright (c) 2024. Alexandr Moroz
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../L1_domain/entities/app_local_settings.dart';
@@ -13,7 +11,7 @@ part 'local_settings_controller.g.dart';
 
 class LocalSettingsController extends _LocalSettingsControllerBase with _$LocalSettingsController {
   Future<LocalSettingsController> init() async {
-    await dotenv.load(fileName: kReleaseMode ? 'assets/.env' : 'assets/.debug.env');
+    // await dotenv.load(fileName: kReleaseMode ? 'assets/.env' : 'assets/.debug.env');
 
     settings = await localSettingsUC.settings();
     oldVersion = settings.version;

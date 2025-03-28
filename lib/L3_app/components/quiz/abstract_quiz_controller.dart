@@ -4,7 +4,7 @@ import 'package:mobx/mobx.dart';
 
 import '../../components/button.dart';
 import '../../navigation/router.dart';
-import '../app/services.dart';
+import '../../views/app/services.dart';
 
 part 'abstract_quiz_controller.g.dart';
 

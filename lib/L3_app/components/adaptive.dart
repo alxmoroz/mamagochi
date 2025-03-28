@@ -7,15 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'constants.dart';
 
 Size screenSize(BuildContext context) => MediaQuery.sizeOf(context);
-bool _smallLandscape(BuildContext context) =>
-    screenSize(context).height < SCR_XS_HEIGHT && MediaQuery.orientationOf(context) == Orientation.landscape;
 
 bool isBigScreen(BuildContext context) {
   final size = screenSize(context);
   return size.height > SCR_S_HEIGHT && size.width > SCR_M_WIDTH;
 }
-
-bool canShowVerticalBars(BuildContext context) => isBigScreen(context) || _smallLandscape(context);
 
 enum AdaptiveSize { xxs, xs, s, m, l }
 

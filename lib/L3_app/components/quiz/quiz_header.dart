@@ -9,7 +9,7 @@ import '../../components/colors.dart';
 import '../../components/constants.dart';
 import '../../components/text.dart';
 import '../../components/toolbar.dart';
-import '../app/services.dart';
+import '../../views/app/services.dart';
 import 'abstract_quiz_controller.dart';
 
 class QuizHeader extends StatelessWidget implements PreferredSizeWidget {

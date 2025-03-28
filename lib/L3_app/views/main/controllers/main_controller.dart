@@ -22,12 +22,6 @@ class MainController extends _Base with _$MainController {
 
   Future reload() async => await load(_reloadData);
 
-  @override
-  startLoading() {
-    setLoaderScreenLoading();
-    super.startLoading();
-  }
-
   // static const _updatePeriod = Duration(hours: 1);
 
   Future startup() async {
@@ -35,9 +29,6 @@ class MainController extends _Base with _$MainController {
 
     // await authController.checkLocalAuth();
     // if (authController.authorized) {
-
-    // удаляем инфу о переходе по рекламе (передали в хедере)
-    if (localSettingsController.hasUTM) await localSettingsController.deleteUTM();
 
     // обновление данных
     final isTimeToUpdate = _updatedDate == null; // || _updatedDate!.add(_updatePeriod).isBefore(now);

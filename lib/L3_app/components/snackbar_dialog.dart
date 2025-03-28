@@ -23,13 +23,13 @@ class _MTSnackbarDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Timer(const Duration(milliseconds: 1000), () {
+    Timer(const Duration(milliseconds: 3000), () {
       if (context.mounted) Navigator.of(context).pop();
     });
 
     return MTDialog(
       topBar: null,
-      bgColor: f1Color,
+      bgColor: f3Color,
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(DEF_BORDER_RADIUS),
         topRight: Radius.circular(DEF_BORDER_RADIUS),

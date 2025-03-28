@@ -2,8 +2,8 @@
 
 import 'package:mobx/mobx.dart';
 
+import '../../components/quiz/abstract_quiz_controller.dart';
 import '../../navigation/router.dart';
-import '../quiz/abstract_quiz_controller.dart';
 
 part 'onboarding_controller.g.dart';
 

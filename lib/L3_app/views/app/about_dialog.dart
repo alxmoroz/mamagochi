@@ -73,16 +73,16 @@ class _AboutDialog extends StatelessWidget {
 
           /// контакты
           const SizedBox(height: P6),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MTButton.icon(MTImage(ImageName.telegram_icon.name, width: _contactIconSize, height: _contactIconSize), onTap: go2Telegram),
-              const SizedBox(width: P3),
-              MTButton.icon(MTImage(ImageName.mail_icon.name, width: _contactIconSize, height: _contactIconSize), onTap: mailUs),
-              const SizedBox(width: P3),
-              MTButton.icon(MTImage(ImageName.vk_icon.name, width: _contactIconSize, height: _contactIconSize), onTap: go2VK),
-              const SizedBox(width: P3),
-              MTButton.icon(MTImage(ImageName.web_icon.name, width: _contactIconSize, height: _contactIconSize), onTap: go2Homepage),
+              MTButton.icon(MTImage('telegram_icon', width: _contactIconSize, height: _contactIconSize), onTap: go2Telegram),
+              SizedBox(width: P3),
+              MTButton.icon(MTImage('mail_icon', width: _contactIconSize, height: _contactIconSize), onTap: mailUs),
+              SizedBox(width: P3),
+              MTButton.icon(MTImage('vk_icon', width: _contactIconSize, height: _contactIconSize), onTap: go2VK),
+              SizedBox(width: P3),
+              MTButton.icon(MTImage('web_icon', width: _contactIconSize, height: _contactIconSize), onTap: go2Homepage),
             ],
           ),
           const SizedBox(height: P),

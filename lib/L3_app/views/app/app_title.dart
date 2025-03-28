@@ -19,7 +19,7 @@ class AppTitle extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          MTImage(ImageName.app_icon.name, height: P6, width: P6),
+          const MTImage('app_icon', height: P6, width: P6),
           if (!compact) DecorAppTitle(loc.app_title.substring(1), color: f2Color, padding: const EdgeInsets.only(top: 12, left: 1)),
         ],
       ),

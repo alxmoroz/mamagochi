@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../navigation/router.dart';
 import '../colors.dart';
 import '../text.dart';
 import 'element.dart';
@@ -30,11 +29,7 @@ class MTLinkify extends StatelessWidget {
   final Function()? onTap;
 
   Future _openLink(Uri uri) async {
-    if (uri.isInner == true) {
-      await router.goInner(uri);
-    } else {
-      await launchUrl(uri);
-    }
+    await launchUrl(uri);
   }
 
   @override
