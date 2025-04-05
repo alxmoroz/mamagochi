@@ -1,12 +1,14 @@
 // Copyright (c) 2024. Alexandr Moroz
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mamagochi/L3_app/components/button.dart';
 import 'package:mamagochi/L3_app/components/colors.dart';
 import 'package:mamagochi/L3_app/components/images.dart';
 import 'package:mamagochi/L3_app/components/snackbar_dialog.dart';
-
-import '../../../components/constants.dart';
-import '../../../components/list_tile.dart';
+import 'package:mamagochi/L3_app/components/text.dart';
+import 'package:mamagochi/L3_app/presenters/date.dart';
+import 'package:mamagochi/L3_app/views/app/services.dart';
 
 class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
   const BottomMenu({super.key});
@@ -14,43 +16,37 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(250);
 
-  static const _btnPadding = EdgeInsets.only(top: P2);
-  static const _btnMargin = EdgeInsets.all(P2);
-
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Flexible(
-          child: MTListTile(
-            minHeight: 200,
-            middle: const MTImage('web_icon_dark'),
-            margin: _btnMargin,
-            padding: _btnPadding,
-            bottomDivider: false,
-            decoration: const BoxDecoration(
-              color: b3Color,
-              shape: BoxShape.circle,
+    return Observer(
+      builder: (_) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          MTButton(
+            minSize: Size(180, 180),
+            constrained: false,
+            color: b3Color,
+            type: MTButtonType.main,
+            middle: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const MTImage('bed', height: 100),
+                if (historyController.hasSleepEntries) SmallText(historyController.lastSleepEntry!.end.strTimeAgo),
+              ],
             ),
-            onTap: () => showMTSnackbar('Поспал'),
+            onTap: historyController.addSleep,
           ),
-        ),
-        Flexible(
-          child: MTListTile(
-            minHeight: 200,
-            middle: const MTImage('web_icon'),
-            margin: _btnMargin,
-            padding: _btnPadding,
-            bottomDivider: false,
-            decoration: const BoxDecoration(
-              color: b3Color,
-              shape: BoxShape.circle,
-              //image: DecorationImage(image: ),
-            ),
+          // Spacer(),
+          MTButton(
+            minSize: Size(180, 180),
+            constrained: false,
+            color: b3Color,
+            type: MTButtonType.main,
+            middle: const MTImage('babybottle', height: 100),
             onTap: () => showMTSnackbar('Покушал'),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

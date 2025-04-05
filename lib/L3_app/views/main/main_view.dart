@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamagochi/L3_app/components/button.dart';
+import 'package:mamagochi/L3_app/components/constants.dart';
 import 'package:mamagochi/L3_app/navigation/router.dart';
 import 'package:mamagochi/L3_app/views/history/history_view.dart';
 
 import '../../../L2_data/services/platform.dart';
-import '../../components/icons.dart';
+import '../../components/colors.dart';
 import '../../components/images.dart';
 import '../../components/page.dart';
 import '../../navigation/route.dart';
@@ -70,15 +71,32 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
   Widget _page(BuildContext context) {
     return MTPage(
       key: widget.key,
-      body: ListView(children: [
-        MTButton.icon(const MenuIcon(), onTap: router.goHistory),
-        const MTImage(
-          'no_info',
-          height: 300,
-          width: 300,
-        ),
-      ]),
-      bottomBar: const BottomMenu(),
+      body: SafeArea(
+        child: Stack(children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: MTButton(
+                minSize: Size(90, 90),
+                constrained: false,
+                color: b3Color,
+                margin: const EdgeInsets.symmetric(horizontal: P2),
+                type: MTButtonType.main,
+                middle: const MTImage('menu', height: 60),
+                onTap: router.goHistory),
+          ),
+          Align(
+            child: MTImage(
+              'baby',
+              height: 300,
+              width: 300,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: const BottomMenu(),
+          )
+        ]),
+      ),
     );
   }
 
