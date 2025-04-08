@@ -76,7 +76,7 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
           Align(
             alignment: Alignment.topLeft,
             child: MTButton(
-                minSize: Size(90, 90),
+                minSize: const Size(90, 90),
                 constrained: false,
                 color: b3Color,
                 margin: const EdgeInsets.symmetric(horizontal: P2),
@@ -84,16 +84,16 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
                 middle: const MTImage('menu', height: 60),
                 onTap: router.goHistory),
           ),
-          Align(
+          const Align(
             child: MTImage(
               'baby',
               height: 300,
               width: 300,
             ),
           ),
-          Align(
+          const Align(
             alignment: Alignment.bottomCenter,
-            child: const BottomMenu(),
+            child: BottomMenu(),
           )
         ]),
       ),

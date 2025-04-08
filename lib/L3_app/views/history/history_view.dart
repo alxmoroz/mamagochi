@@ -33,16 +33,17 @@ class HistoryView extends StatelessWidget {
     return Observer(
       builder: (_) => MTPage(
         navBar: const MTNavBar(),
-        body: historyController.hasSleepEntries
+        body: historyController.hasEntries
             ? ListView.builder(
                 itemBuilder: (_, index) {
-                  final sleep = historyController.sortedSleepEntries.elementAt(index);
+                  final entry = historyController.sortedEntries.elementAt(index);
                   return MTListTile(
-                    titleText: '${sleep.end.strMedium} ${sleep.end.strTime}',
-                    trailing: BaseText(sleep.end.strTimeAgo),
+                    leading: BaseText('$entry'),
+                    titleText: '${entry.end.strMedium} ${entry.end.strTime}',
+                    trailing: BaseText(entry.end.strTimeAgo),
                   );
                 },
-                itemCount: historyController.sleepEntries.length,
+                itemCount: historyController.sortedEntries.length,
               )
             : const Center(
                 child: Column(

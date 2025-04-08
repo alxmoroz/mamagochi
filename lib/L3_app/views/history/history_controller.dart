@@ -1,8 +1,11 @@
 // Copyright (c) 2025. Xenia Moroz
 
+import 'package:collection/collection.dart';
+import 'package:mamagochi/L1_domain/entities/abstract_entry.dart';
 import 'package:mamagochi/L1_domain/entities/sleep.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../../L1_domain/entities/feed.dart';
 import '../../components/snackbar_dialog.dart';
 import '../_base/loadable.dart';
 
@@ -30,4 +33,34 @@ abstract class _Base with Store, Loadable {
 
   @computed
   Iterable<Sleep> get sortedSleepEntries => sleepEntries.reversed;
+
+  /// записи о кормлении
+  @observable
+  ObservableList<Feed> feedEntries = ObservableList();
+
+  @action
+  void addFeed() {
+    final feed = Feed(end: DateTime.now());
+    feedEntries.add(feed);
+    showMTSnackbar('Покушал');
+  }
+
+  @computed
+  bool get hasFeedEntries => feedEntries.isNotEmpty;
+
+  @computed
+  Feed? get lastFeedEntry => feedEntries.lastOrNull;
+
+  @computed
+  Iterable<Feed> get sortedFeedEntries => feedEntries.reversed;
+
+  /// общие
+  @computed
+  Iterable<AbstractEntry> get _entries => [...feedEntries, ...sleepEntries];
+
+  @computed
+  Iterable<AbstractEntry> get sortedEntries => _entries.sortedBy<DateTime>((e) => e.end).reversed;
+
+  @computed
+  bool get hasEntries => _entries.isNotEmpty;
 }

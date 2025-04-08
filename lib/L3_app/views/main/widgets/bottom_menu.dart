@@ -5,7 +5,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mamagochi/L3_app/components/button.dart';
 import 'package:mamagochi/L3_app/components/colors.dart';
 import 'package:mamagochi/L3_app/components/images.dart';
-import 'package:mamagochi/L3_app/components/snackbar_dialog.dart';
 import 'package:mamagochi/L3_app/components/text.dart';
 import 'package:mamagochi/L3_app/presenters/date.dart';
 import 'package:mamagochi/L3_app/views/app/services.dart';
@@ -23,7 +22,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           MTButton(
-            minSize: Size(180, 180),
+            minSize: const Size(180, 180),
             constrained: false,
             color: b3Color,
             type: MTButtonType.main,
@@ -38,12 +37,18 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
           ),
           // Spacer(),
           MTButton(
-            minSize: Size(180, 180),
+            minSize: const Size(180, 180),
             constrained: false,
             color: b3Color,
             type: MTButtonType.main,
-            middle: const MTImage('babybottle', height: 100),
-            onTap: () => showMTSnackbar('Покушал'),
+            middle: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const MTImage('babybottle', height: 100),
+                if (historyController.hasFeedEntries) SmallText(historyController.lastFeedEntry!.end.strTimeAgo),
+              ],
+            ),
+            onTap: historyController.addFeed,
           ),
         ],
       ),
