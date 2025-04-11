@@ -7,6 +7,8 @@ import 'package:mamagochi/L3_app/components/toolbar.dart';
 import 'package:mamagochi/L3_app/presenters/date.dart';
 import 'package:mamagochi/L3_app/views/app/services.dart';
 
+import '../../../L1_domain/entities/abstract_entry.dart';
+import '../../components/constants.dart';
 import '../../components/page.dart';
 import '../../navigation/route.dart';
 
@@ -28,36 +30,55 @@ class HistoryRoute extends MTRoute {
 class HistoryView extends StatelessWidget {
   const HistoryView({super.key});
 
+  Widget _dayEntries(DateTime date, Iterable<AbstractEntry> group) {
+    return ListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        MTListGroupTitle(titleText: date.strMedium),
+        ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: group.length,
+            itemBuilder: (_, index) {
+              final entry = group.elementAt(index);
+              return MTListTile(
+                leading: MTImage(
+                  '$entry',
+                  height: P10,
+                ),
+                trailing: BaseText(entry.end.strTimeAgo),
+              );
+            })
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => MTPage(
-        navBar: const MTNavBar(),
+        navBar: const MTNavBar(
+          pageTitle: 'История',
+        ),
         body: historyController.hasEntries
             ? ListView.builder(
+                itemCount: historyController.groupedEntries.keys.length,
                 itemBuilder: (_, index) {
-                  final entry = historyController.sortedEntries.elementAt(index);
-                  return MTListTile(
-                    leading: BaseText('$entry'),
-                    titleText: '${entry.end.strMedium} ${entry.end.strTime}',
-                    trailing: BaseText(entry.end.strTimeAgo),
-                  );
-                },
-                itemCount: historyController.sortedEntries.length,
-              )
+                  final date = historyController.groupedEntries.keys.elementAt(index);
+                  final group = historyController.groupedEntries[date];
+                  return group != null ? _dayEntries(date, group) : const SizedBox();
+                })
             : const Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     MTImage(
                       'no_info',
-                      height: 300,
-                      width: 300,
+                      height: P10 * 5,
+                      width: P10 * 5,
                     ),
-                    H2(
-                      'Записей пока нет',
-                      align: TextAlign.center,
-                    ),
+                    H2('Записей пока нет', align: TextAlign.center),
                   ],
                 ),
               ),

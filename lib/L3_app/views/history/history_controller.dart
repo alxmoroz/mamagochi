@@ -3,6 +3,7 @@
 import 'package:collection/collection.dart';
 import 'package:mamagochi/L1_domain/entities/abstract_entry.dart';
 import 'package:mamagochi/L1_domain/entities/sleep.dart';
+import 'package:mamagochi/L1_domain/utils/dates.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../L1_domain/entities/feed.dart';
@@ -60,6 +61,9 @@ abstract class _Base with Store, Loadable {
 
   @computed
   Iterable<AbstractEntry> get sortedEntries => _entries.sortedBy<DateTime>((e) => e.end).reversed;
+
+  @computed
+  Map<DateTime, Iterable<AbstractEntry>> get groupedEntries => sortedEntries.groupListsBy((e) => e.end.date);
 
   @computed
   bool get hasEntries => _entries.isNotEmpty;
