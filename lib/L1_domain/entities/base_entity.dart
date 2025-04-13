@@ -4,7 +4,9 @@ import 'package:collection/collection.dart';
 
 import 'errors.dart';
 
-abstract class LocalPersistable {}
+abstract class LocalPersistable {
+  const LocalPersistable();
+}
 
 abstract class RPersistable {
   RPersistable({this.id, this.createdOn, this.updatedOn});

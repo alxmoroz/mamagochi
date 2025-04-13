@@ -2,9 +2,11 @@
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mamagochi/L1_domain/usecases/sleep_uc.dart';
 import 'package:mamagochi/L3_app/views/history/history_controller.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../L1_domain/usecases/feed_uc.dart';
 import '../../../L1_domain/usecases/local_settings_uc.dart';
 import '../../../L2_data/repositories/db_repo.dart';
 import '../../../L2_data/services/db.dart';
@@ -24,6 +26,8 @@ MainController get mainController => getIt<MainController>();
 HistoryController get historyController => getIt<HistoryController>();
 
 LocalSettingsUC get localSettingsUC => getIt<LocalSettingsUC>();
+SleepUC get sleepUC => getIt<SleepUC>();
+FeedUC get feedUC => getIt<FeedUC>();
 
 void setup() {
   /// device
@@ -36,6 +40,8 @@ void setup() {
   /// use cases
 
   getIt.registerSingleton<LocalSettingsUC>(LocalSettingsUC(LocalSettingsRepo()));
+  getIt.registerSingleton<SleepUC>(SleepUC(SleepRepo()));
+  getIt.registerSingleton<FeedUC>(FeedUC(FeedRepo()));
 
   /// global state controllers
   // первые контроллеры
@@ -43,5 +49,5 @@ void setup() {
 
   getIt.registerSingleton<AppController>(AppController());
   getIt.registerSingleton<MainController>(MainController());
-  getIt.registerSingleton<HistoryController>(HistoryController());
+  getIt.registerSingletonAsync<HistoryController>(() async => HistoryController().init(), dependsOn: [HiveStorage]);
 }

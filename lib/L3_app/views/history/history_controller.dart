@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:mamagochi/L1_domain/entities/abstract_entry.dart';
 import 'package:mamagochi/L1_domain/entities/sleep.dart';
 import 'package:mamagochi/L1_domain/utils/dates.dart';
+import 'package:mamagochi/L3_app/views/app/services.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../L1_domain/entities/feed.dart';
@@ -12,7 +13,13 @@ import '../_base/loadable.dart';
 
 part 'history_controller.g.dart';
 
-class HistoryController extends _Base with _$HistoryController {}
+class HistoryController extends _Base with _$HistoryController {
+  Future<HistoryController> init() async {
+    await fetchSleepEntries();
+    await fetchFeedEntries();
+    return this;
+  }
+}
 
 abstract class _Base with Store, Loadable {
   /// записи о сне
@@ -20,9 +27,19 @@ abstract class _Base with Store, Loadable {
   ObservableList<Sleep> sleepEntries = ObservableList();
 
   @action
-  void addSleep() {
-    final sleep = Sleep(end: DateTime.now());
-    sleepEntries.add(sleep);
+  Future fetchSleepEntries() async {
+    await load(() async {
+      sleepEntries = ObservableList.of(await sleepUC.entries());
+    });
+  }
+
+  @action
+  Future addSleep() async {
+    await load(() async {
+      final sleep = Sleep(end: DateTime.now());
+      sleepEntries.add(sleep);
+      await sleepUC.addEntry(sleep);
+    });
     showMTSnackbar('Поспал');
   }
 
@@ -40,9 +57,19 @@ abstract class _Base with Store, Loadable {
   ObservableList<Feed> feedEntries = ObservableList();
 
   @action
-  void addFeed() {
-    final feed = Feed(end: DateTime.now());
-    feedEntries.add(feed);
+  Future fetchFeedEntries() async {
+    await load(() async {
+      feedEntries = ObservableList.of(await feedUC.entries());
+    });
+  }
+
+  @action
+  Future addFeed() async {
+    await load(() async {
+      final feed = Feed(end: DateTime.now());
+      feedEntries.add(feed);
+      await feedUC.addEntry(feed);
+    });
     showMTSnackbar('Покушал');
   }
 

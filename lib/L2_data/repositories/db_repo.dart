@@ -2,12 +2,16 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
+import 'package:mamagochi/L1_domain/entities/sleep.dart';
+import 'package:mamagochi/L2_data/models/sleep.dart';
 
 import '../../../L1_domain/entities/app_local_settings.dart';
 import '../../../L1_domain/entities/base_entity.dart';
 import '../../../L1_domain/repositories/abs_db_repo.dart';
+import '../../L1_domain/entities/feed.dart';
 import '../models/app_local_settings.dart';
 import '../models/base.dart';
+import '../models/feed.dart';
 
 typedef ModelCreator<T> = T Function();
 
@@ -78,4 +82,12 @@ abstract class DBRepo<M extends BaseModel, E extends LocalPersistable> extends A
 
 class LocalSettingsRepo extends DBRepo<AppLocalSettingsHO, AppLocalSettings> {
   LocalSettingsRepo() : super('LocalSettings', () => AppLocalSettingsHO());
+}
+
+class SleepRepo extends DBRepo<SleepHO, Sleep> {
+  SleepRepo() : super('Sleep', () => SleepHO());
+}
+
+class FeedRepo extends DBRepo<FeedHO, Feed> {
+  FeedRepo() : super('Feed', () => FeedHO());
 }
