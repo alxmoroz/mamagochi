@@ -48,6 +48,6 @@ void setup() {
   getIt.registerSingletonAsync<LocalSettingsController>(() async => LocalSettingsController().init(), dependsOn: [HiveStorage, PackageInfo]);
 
   getIt.registerSingleton<AppController>(AppController());
+  getIt.registerSingleton<HistoryController>(HistoryController());
   getIt.registerSingleton<MainController>(MainController());
-  getIt.registerSingletonAsync<HistoryController>(() async => HistoryController().init(), dependsOn: [HiveStorage]);
 }

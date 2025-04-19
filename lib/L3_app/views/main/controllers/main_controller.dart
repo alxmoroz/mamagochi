@@ -15,7 +15,7 @@ part 'main_controller.g.dart';
 class MainController extends _Base with _$MainController {
   Future _reloadData() async {
     setLoaderScreenLoading();
-    // await myAccountController.reload();
+    await historyController.reload();
 
     _setUpdateDate(now);
   }
@@ -23,6 +23,7 @@ class MainController extends _Base with _$MainController {
   Future reload() async => await load(_reloadData);
 
   // static const _updatePeriod = Duration(hours: 1);
+  Timer? _refreshTimer;
 
   Future startup() async {
     await appController.startup();
@@ -47,6 +48,14 @@ class MainController extends _Base with _$MainController {
     // } else {
     //   authController.signOut();
     // }
+    _refreshTimer ??= Timer.periodic(const Duration(seconds: 15), (_) => historyController.reload());
+  }
+
+  void onInactive() {
+    if (_refreshTimer?.isActive == true) {
+      _refreshTimer!.cancel();
+      _refreshTimer = null;
+    }
   }
 
   void clear() {

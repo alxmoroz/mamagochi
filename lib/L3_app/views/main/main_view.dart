@@ -57,8 +57,12 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!isWeb && state == AppLifecycleState.resumed) {
-      mainController.startup();
+    if (!isWeb) {
+      if (state == AppLifecycleState.resumed) {
+        mainController.startup();
+      } else {
+        mainController.onInactive();
+      }
     }
   }
 
@@ -94,7 +98,7 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
           const Align(
             alignment: Alignment.bottomCenter,
             child: BottomMenu(),
-          )
+          ),
         ]),
       ),
     );

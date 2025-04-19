@@ -13,34 +13,44 @@ import '../_base/loadable.dart';
 
 part 'history_controller.g.dart';
 
-class HistoryController extends _Base with _$HistoryController {
-  Future<HistoryController> init() async {
-    await fetchSleepEntries();
-    await fetchFeedEntries();
-    return this;
+class HistoryController extends _Base with Loadable, _$HistoryController {
+  Future reload() async {
+    await load(() async {
+      await _fetchSleepEntries();
+      await _fetchFeedEntries();
+    });
+  }
+
+  Future addSleep() async {
+    await load(() async {
+      await _addSleep();
+    });
+    showMTSnackbar('Поспал');
+  }
+
+  Future addFeed() async {
+    await load(() async {
+      await _addFeed();
+    });
+    showMTSnackbar('Покушал');
   }
 }
 
-abstract class _Base with Store, Loadable {
+abstract class _Base with Store {
   /// записи о сне
   @observable
   ObservableList<Sleep> sleepEntries = ObservableList();
 
   @action
-  Future fetchSleepEntries() async {
-    await load(() async {
-      sleepEntries = ObservableList.of(await sleepUC.entries());
-    });
+  Future _fetchSleepEntries() async {
+    sleepEntries = ObservableList.of(await sleepUC.entries());
   }
 
   @action
-  Future addSleep() async {
-    await load(() async {
-      final sleep = Sleep(end: DateTime.now());
-      sleepEntries.add(sleep);
-      await sleepUC.addEntry(sleep);
-    });
-    showMTSnackbar('Поспал');
+  Future _addSleep() async {
+    final sleep = Sleep(end: DateTime.now());
+    sleepEntries.add(sleep);
+    await sleepUC.addEntry(sleep);
   }
 
   @computed
@@ -57,20 +67,15 @@ abstract class _Base with Store, Loadable {
   ObservableList<Feed> feedEntries = ObservableList();
 
   @action
-  Future fetchFeedEntries() async {
-    await load(() async {
-      feedEntries = ObservableList.of(await feedUC.entries());
-    });
+  Future _fetchFeedEntries() async {
+    feedEntries = ObservableList.of(await feedUC.entries());
   }
 
   @action
-  Future addFeed() async {
-    await load(() async {
-      final feed = Feed(end: DateTime.now());
-      feedEntries.add(feed);
-      await feedUC.addEntry(feed);
-    });
-    showMTSnackbar('Покушал');
+  Future _addFeed() async {
+    final feed = Feed(end: DateTime.now());
+    feedEntries.add(feed);
+    await feedUC.addEntry(feed);
   }
 
   @computed
