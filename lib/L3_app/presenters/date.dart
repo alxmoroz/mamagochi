@@ -13,14 +13,13 @@ extension DateFormatterPresenter on DateTime {
     int hours = duration.inHours;
     int minutes = duration.inMinutes - hours * 60;
     if (minutes < 1) {
-      result = 'только что';
+      result = loc.time_just_now;
     } else if (hours < 1) {
-      result = '$minutes мин назад';
+      result = loc.time_minutes_ago(minutes);
     } else if (duration.inDays < 1) {
-      final mStr = minutes > 0 ? ' $minutes мин' : '';
-      result = '$hours ч$mStr назад';
+      result = minutes > 0 ? loc.time_hours_minutes_ago(hours, minutes) : loc.time_hours_ago(hours);
     } else {
-      result = 'давно';
+      result = strTime;
     }
     return result;
   }

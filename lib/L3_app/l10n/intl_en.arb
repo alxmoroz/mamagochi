@@ -3,6 +3,9 @@
 
   "about_service_title": "About service",
 
+  "action_add_sleep_title": "Slept",
+  "action_add_feed_title": "Fed",
+
   "action_apply_title": "Apply",
   "action_back_title": "Back",
   "action_email_support_title": "Report a problem",
@@ -23,6 +26,9 @@
 
   "days_count": "{count, plural, one{{count} day} other{{count} days}}",
 
+  "history_title": "History",
+  "history_empty_title": "There are no events yet",
+
   "lets_go_action_title": "Let's go!",
 
   "loader_refreshing_title": "Refreshing...",
@@ -42,6 +48,11 @@
   "refresh_action_title": "Refresh data",
 
   "report_bug_action_title": "Report a bug",
+
+  "time_just_now": "just now",
+  "time_hours_ago": "{count} h ago",
+  "time_hours_minutes_ago": "{hours} h {minutes} m ago",
+  "time_minutes_ago": "{count} m ago",
 
   "today_title": "Today",
   "tomorrow_title": "Tomorrow",

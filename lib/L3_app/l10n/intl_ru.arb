@@ -3,6 +3,9 @@
 
   "about_service_title": "О сервисе",
 
+  "action_add_sleep_title": "Поспал",
+  "action_add_feed_title": "Покушал",
+
   "action_apply_title": "Применить",
   "action_back_title": "Назад",
   "action_email_support_title": "Сообщить о проблеме",
@@ -23,6 +26,9 @@
 
   "days_count": "{count, plural, one{{count} день} few{{count} дня} other{{count} дней}}",
 
+  "history_title": "История",
+  "history_empty_title": "Записей пока нет",
+
   "lets_go_action_title": "Поехали!",
 
   "loader_refreshing_title": "Обновляем...",
@@ -41,6 +47,11 @@
   "refresh_action_title": "Обновить данные",
 
   "report_bug_action_title": "Сообщить о проблеме",
+
+  "time_just_now": "только что",
+  "time_hours_ago": "{count} ч назад",
+  "time_hours_minutes_ago": "{hours} ч {minutes} мин назад",
+  "time_minutes_ago": "{count} мин назад",
 
   "today_title": "Сегодня",
   "tomorrow_title": "Завтра",

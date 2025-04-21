@@ -48,6 +48,7 @@ class HistoryView extends StatelessWidget {
                   height: P10,
                 ),
                 trailing: BaseText(entry.end.strTimeAgo),
+                bottomDivider: index < group.length - 1,
               );
             })
       ],
@@ -58,8 +59,8 @@ class HistoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => MTPage(
-        navBar: const MTNavBar(
-          pageTitle: 'История',
+        navBar: MTNavBar(
+          pageTitle: loc.history_title,
         ),
         body: historyController.hasEntries
             ? ListView.builder(
@@ -69,16 +70,16 @@ class HistoryView extends StatelessWidget {
                   final group = historyController.groupedEntries[date];
                   return group != null ? _dayEntries(date, group) : const SizedBox();
                 })
-            : const Center(
+            : Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    MTImage(
+                    const MTImage(
                       'no_info',
                       height: P10 * 5,
                       width: P10 * 5,
                     ),
-                    H2('Записей пока нет', align: TextAlign.center),
+                    H2(loc.history_empty_title, align: TextAlign.center),
                   ],
                 ),
               ),

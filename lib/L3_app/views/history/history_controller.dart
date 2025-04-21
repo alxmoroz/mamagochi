@@ -25,14 +25,14 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     await load(() async {
       await _addSleep();
     });
-    showMTSnackbar('Поспал');
+    showMTSnackbar(loc.action_add_sleep_title);
   }
 
   Future addFeed() async {
     await load(() async {
       await _addFeed();
     });
-    showMTSnackbar('Покушал');
+    showMTSnackbar(loc.action_add_feed_title);
   }
 }
 
