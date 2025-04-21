@@ -219,22 +219,3 @@ class DSmallText extends DText {
   const DSmallText(super.text, {super.key, super.color, super.padding, super.maxLines, super.align, super.decoration}) : super(sizeScale: _scale);
   const DSmallText.bold(super.text, {super.key, super.color, super.padding, super.align}) : super.bold(sizeScale: _scale);
 }
-
-/// Декоративный стиль (для названия приложения)
-abstract class _BaseDecorText extends BaseText {
-  const _BaseDecorText(
-    super.text, {
-    super.key,
-    super.color,
-    super.padding,
-    FontWeight? weight,
-  }) : super(align: TextAlign.center, weight: weight ?? FontWeight.w600, maxLines: 1);
-
-  @override
-  TextStyle style(BuildContext context) => super.style(context).copyWith(fontFamily: 'ComfortaaMamagochi', fontSize: 26);
-}
-
-// название приложения
-class DecorAppTitle extends _BaseDecorText {
-  const DecorAppTitle(super.text, {super.key, super.color, super.padding});
-}

@@ -59,10 +59,6 @@ flutter:
           weight: 500
         - asset: assets/fonts/Montserrat-B.ttf
           weight: 700
-    - family: ComfortaaMamagochi
-      fonts:
-        - asset: assets/fonts/Comfortaa-SB.ttf
-          weight: 600
     - family: RobotoMamagochi
       fonts:
         - asset: assets/fonts/Roboto-L.ttf

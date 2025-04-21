@@ -13,9 +13,7 @@ import '../../components/icons.dart';
 import '../../components/images.dart';
 import '../../components/list_tile.dart';
 import '../../components/text.dart';
-import '../../components/toolbar.dart';
 import '../../usecases/communications.dart';
-import 'app_title.dart';
 import 'app_version.dart';
 import 'services.dart';
 
@@ -30,7 +28,6 @@ class _AboutDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MTDialog(
-      topBar: const MTTopBar(middle: AppTitle()),
       body: ListView(
         shrinkWrap: true,
         children: [

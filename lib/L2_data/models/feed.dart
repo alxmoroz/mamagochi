@@ -1,4 +1,4 @@
-// Copyright (c) 2022. Alexandr Moroz
+// Copyright (c) 2025. Xenia Moroz
 
 import 'package:hive/hive.dart';
 
