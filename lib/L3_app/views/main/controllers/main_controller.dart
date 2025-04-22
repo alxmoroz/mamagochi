@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:mobx/mobx.dart';
 
-import '../../../../L1_domain/utils/dates.dart';
 import '../../../navigation/route.dart';
 import '../../../navigation/router.dart';
 import '../../../views/_base/loadable.dart';
@@ -16,13 +15,11 @@ class MainController extends _Base with _$MainController {
   Future _reloadData() async {
     setLoaderScreenLoading();
     await historyController.reload();
-
-    _setUpdateDate(now);
   }
 
   Future reload() async => await load(_reloadData);
 
-  // static const _updatePeriod = Duration(hours: 1);
+  static const _updatePeriod = Duration(seconds: 15);
   Timer? _refreshTimer;
 
   Future startup() async {
@@ -32,10 +29,7 @@ class MainController extends _Base with _$MainController {
     // if (authController.authorized) {
 
     // обновление данных
-    final isTimeToUpdate = _updatedDate == null; // || _updatedDate!.add(_updatePeriod).isBefore(now);
-    if (isTimeToUpdate || router.isDeepLink) {
-      await reload();
-    }
+    await reload();
 
     // Онбординг
     // String? onbPassedStepCode;
@@ -48,7 +42,7 @@ class MainController extends _Base with _$MainController {
     // } else {
     //   authController.signOut();
     // }
-    _refreshTimer ??= Timer.periodic(const Duration(seconds: 15), (_) => historyController.reload());
+    _refreshTimer ??= Timer.periodic(_updatePeriod, (_) => historyController.reload());
   }
 
   void onInactive() {

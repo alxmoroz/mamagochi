@@ -54,7 +54,7 @@ abstract class _Base with Store {
   }
 
   @computed
-  bool get hasSleepEntries => sleepEntries.isNotEmpty;
+  bool get hasSleepEntriesToday => lastSleepEntry?.end.day == DateTime.now().day;
 
   @computed
   Sleep? get lastSleepEntry => sleepEntries.lastOrNull;
@@ -79,7 +79,7 @@ abstract class _Base with Store {
   }
 
   @computed
-  bool get hasFeedEntries => feedEntries.isNotEmpty;
+  bool get hasFeedEntriesToday => lastFeedEntry?.end.day == DateTime.now().day;
 
   @computed
   Feed? get lastFeedEntry => feedEntries.lastOrNull;
