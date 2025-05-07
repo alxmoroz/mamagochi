@@ -12,11 +12,11 @@ extension DateFormatterPresenter on DateTime {
     String result = '';
     int hours = duration.inHours;
     int minutes = duration.inMinutes - hours * 60;
-    if (minutes < 1) {
+    if (duration.inMinutes < 1) {
       result = loc.time_just_now;
     } else if (hours < 1) {
       result = loc.time_minutes_ago(minutes);
-    } else if (duration.inDays < 1) {
+    } else if (this == today) {
       result = minutes > 0 ? loc.time_hours_minutes_ago(hours, minutes) : loc.time_hours_ago(hours);
     } else {
       result = strTime;

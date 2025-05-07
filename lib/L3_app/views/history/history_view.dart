@@ -79,7 +79,7 @@ class HistoryView extends StatelessWidget {
                       height: P10 * 5,
                       width: P10 * 5,
                     ),
-                    H2(loc.history_empty_title, align: TextAlign.center),
+                    H1(loc.history_empty_title, align: TextAlign.center),
                   ],
                 ),
               ),

@@ -14,6 +14,7 @@ part 'main_controller.g.dart';
 class MainController extends _Base with _$MainController {
   Future _reloadData() async {
     setLoaderScreenLoading();
+    await babyController.reload();
     await historyController.reload();
   }
 
@@ -32,10 +33,7 @@ class MainController extends _Base with _$MainController {
     await reload();
 
     // Онбординг
-    // String? onbPassedStepCode;
-    const onboardingPassed = false;
-    if (!onboardingPassed) {
-      // onbPassedStepCode =
+    if (!babyController.allBabiesDefined) {
       await router.pushOnboarding();
     }
 

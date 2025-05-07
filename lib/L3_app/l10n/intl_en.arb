@@ -29,7 +29,7 @@
   "history_title": "History",
   "history_empty_title": "There are no events yet",
 
-  "lets_go_action_title": "Let's go!",
+  "lets_go_action_title": "Let's get started",
 
   "loader_refreshing_title": "Refreshing...",
   "loader_saving_title": "Saving...",
@@ -39,15 +39,22 @@
   "next_action_title": "Next",
   "new_title": "New",
 
-  "onboarding_where_we_go_step_title": "Where do we start?",
-  "onboarding_step_1_title": "onboarding_step_1_title",
-  "onboarding_step_1_text": "onboarding_step_1_text",
+  "onboarding_boy_or_girl_step_title": "Choose the sex of the baby",
+  "onboarding_baby_name_step_title": "Enter baby's name",
+  "onboarding_baby_name_step_field_label": "My name is",
+  "onboarding_baby_date_of_birth_step_title": "Select date of birth",
+  "onboarding_baby_date_of_birth_step_field_label_boy": "I was born on",
+  "onboarding_baby_date_of_birth_step_field_label_girl": "I was born on",
+  "onboarding_hello_step_title": "Hello, {name}",
+  "onboarding_hello_step_text": "Let's start your {day} day",
 
   "ok": "Ok",
 
   "refresh_action_title": "Refresh data",
-
   "report_bug_action_title": "Report a bug",
+
+  "sex_man": "Boy",
+  "sex_woman": "Girl",
 
   "time_just_now": "just now",
   "time_hours_ago": "{count} h ago",

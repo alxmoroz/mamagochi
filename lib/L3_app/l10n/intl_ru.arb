@@ -29,7 +29,7 @@
   "history_title": "История",
   "history_empty_title": "Записей пока нет",
 
-  "lets_go_action_title": "Поехали!",
+  "lets_go_action_title": "Начнём",
 
   "loader_refreshing_title": "Обновляем...",
   "loader_saving_title": "Сохраняем...",
@@ -39,14 +39,22 @@
   "next_action_title": "Продолжить",
   "new_title": "Новый",
 
-  "onboarding_where_we_go_step_title": "С чего начнём?",
-  "onboarding_step_1_title": "onboarding_step_1_title",
+  "onboarding_boy_or_girl_step_title": "Выбери пол малыша",
+  "onboarding_baby_name_step_title": "Укажи имя",
+  "onboarding_baby_name_step_field_label": "Меня зовут",
+  "onboarding_baby_date_of_birth_step_field_label_boy": "Я родился",
+  "onboarding_baby_date_of_birth_step_field_label_girl": "Я родилась",
+  "onboarding_baby_date_of_birth_step_title": "Выбери дату рождения",
+  "onboarding_hello_step_title": "Привет, {name}",
+  "onboarding_hello_step_text": "Начнём твой {day} день",
 
   "ok": "Понятно",
 
   "refresh_action_title": "Обновить данные",
-
   "report_bug_action_title": "Сообщить о проблеме",
+
+  "sex_man": "Мальчик",
+  "sex_woman": "Девочка",
 
   "time_just_now": "только что",
   "time_hours_ago": "{count} ч назад",

@@ -88,9 +88,9 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
                 middle: const MTImage('menu', height: 60),
                 onTap: router.goHistory),
           ),
-          const Align(
+          Align(
             child: MTImage(
-              'baby',
+              babyController.firstBaby?.isBoy == true ? 'baby' : 'baby_girl',
               height: 300,
               width: 300,
             ),

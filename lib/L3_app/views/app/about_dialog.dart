@@ -86,9 +86,9 @@ class _AboutDialog extends StatelessWidget {
 
           /// копирайт
           const MTDivider(indent: P3, endIndent: P3, verticalIndent: P3),
-          DSmallText('© ${now.date.year} Moroz Team', color: f3Color, align: TextAlign.center),
+          SmallText('© ${now.date.year} Moroz Team', color: f3Color, align: TextAlign.center),
           const SizedBox(height: P_2),
-          DSmallText('© ${now.date.year} ${loc.app_title}', color: f3Color, align: TextAlign.center),
+          SmallText('© ${now.date.year} ${loc.app_title}', color: f3Color, align: TextAlign.center),
         ],
       ),
       forceBottomPadding: true,

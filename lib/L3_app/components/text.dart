@@ -75,7 +75,7 @@ class BaseText extends StatelessWidget {
     final rColor = CupertinoDynamicColor.maybeResolve(color ?? f1Color, context);
 
     return cupertinoTS.copyWith(
-      fontFamily: 'RobotoMamagochi',
+      fontFamily: 'MontserratMamagochi',
       color: rColor,
       decorationColor: rColor,
       fontWeight: weight ?? FontWeight.w400,
@@ -105,12 +105,12 @@ class H1 extends BaseText {
   const H1(
     super.text, {
     super.key,
-    super.color,
+    super.color = f2Color,
     super.maxLines = 2,
     super.height = 1.1,
     super.align,
     super.padding,
-  }) : super(weight: FontWeight.w300, sizeScale: 28 / _baseFontSize);
+  }) : super(weight: FontWeight.w700, sizeScale: 24 / _baseFontSize);
 }
 
 class H2 extends BaseText {
@@ -122,19 +122,7 @@ class H2 extends BaseText {
     super.height = 1.1,
     super.align,
     super.padding,
-  }) : super(sizeScale: 25 / _baseFontSize);
-}
-
-class H3 extends BaseText {
-  const H3(
-    super.text, {
-    super.key,
-    super.maxLines = 5,
-    super.height = 1.2,
-    super.color,
-    super.align,
-    super.padding,
-  }) : super(sizeScale: 21 / _baseFontSize);
+  }) : super(sizeScale: 24 / _baseFontSize);
 }
 
 class SmallText extends BaseText {
@@ -160,62 +148,4 @@ class SmallText extends BaseText {
     super.align,
     super.padding,
   }) : super(sizeScale: _scale, weight: FontWeight.w500);
-}
-
-/// Цифры
-class DText extends BaseText {
-  static const _scale = 20 / _baseFontSize;
-
-  const DText(
-    super.text, {
-    super.key,
-    super.color,
-    super.sizeScale = _scale,
-    super.padding,
-    super.decoration,
-    super.maxLines = 1,
-    super.align = TextAlign.center,
-  });
-
-  const DText.medium(
-    super.text, {
-    super.key,
-    super.color,
-    super.sizeScale = _scale,
-    super.padding,
-    super.decoration,
-    super.maxLines = 1,
-    super.align = TextAlign.center,
-  }) : super(weight: FontWeight.w500);
-
-  const DText.bold(
-    super.text, {
-    super.key,
-    super.color,
-    super.sizeScale = _scale,
-    super.padding,
-    super.decoration,
-    super.maxLines = 1,
-    super.align = TextAlign.center,
-  }) : super(weight: FontWeight.w700);
-
-  @override
-  TextStyle style(BuildContext context) => super.style(context).copyWith(fontFamily: 'MontserratMamagochi');
-}
-
-class D2 extends DText {
-  static const _scale = 39 / _baseFontSize;
-  const D2(super.text, {super.key, super.color, super.padding, super.maxLines, super.align, super.decoration}) : super.medium(sizeScale: _scale);
-}
-
-class D3 extends DText {
-  static const _scale = 26 / _baseFontSize;
-  const D3(super.text, {super.key, super.color, super.padding, super.maxLines, super.align, super.decoration}) : super(sizeScale: _scale);
-  const D3.medium(super.text, {super.key, super.color, super.padding, super.align, super.decoration}) : super.medium(sizeScale: _scale);
-}
-
-class DSmallText extends DText {
-  static const _scale = 16 / _baseFontSize;
-  const DSmallText(super.text, {super.key, super.color, super.padding, super.maxLines, super.align, super.decoration}) : super(sizeScale: _scale);
-  const DSmallText.bold(super.text, {super.key, super.color, super.padding, super.align}) : super.bold(sizeScale: _scale);
 }

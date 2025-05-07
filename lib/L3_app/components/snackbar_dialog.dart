@@ -38,7 +38,7 @@ class _MTSnackbarDialog extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          H3(
+          H2(
             _text,
             color: b3Color,
             align: TextAlign.center,

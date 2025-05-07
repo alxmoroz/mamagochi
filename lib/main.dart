@@ -49,7 +49,7 @@ class App extends StatelessWidget {
                   surfaceTint: b2Color.resolve(context),
                   surface: b2Color.resolve(context),
                 ),
-                fontFamily: 'RobotoMamagochi',
+                fontFamily: 'MontserratMamagochi',
                 useMaterial3: true,
               ),
               scrollBehavior: const MaterialScrollBehavior().copyWith(dragDevices: {
