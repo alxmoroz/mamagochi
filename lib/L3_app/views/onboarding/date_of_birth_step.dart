@@ -1,22 +1,22 @@
-// Copyright (c) 2024. Alexandr Moroz
+// Copyright (c) 2025. Xenia Moroz
 
 import 'package:flutter/cupertino.dart';
 import 'package:mamagochi/L3_app/components/text_field.dart';
-import 'package:mamagochi/L3_app/navigation/router.dart';
 
 import '../../components/button.dart';
 import '../../components/constants.dart';
 import '../../components/images.dart';
 import '../../components/text.dart';
 import '../app/services.dart';
+import '../baby/baby_controller.dart';
 
 class DateOfBirthStep extends StatelessWidget {
   const DateOfBirthStep({super.key});
 
-  // Future setDateOfBirth() async {
-  //   await babyController.setDateOfBirth();
-  //   _controller.next();
-  // }
+  Future _setDateOfBirth() async {
+    //   await babyController.setDateOfBirth();
+    babyController.setStep(OnboardingStep.hello_baby);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,8 @@ class DateOfBirthStep extends StatelessWidget {
         const SizedBox(height: P3),
         MTButton.main(
           titleText: loc.next_action_title,
-          onTap: router.pop,
+          // onTap: babyController.validated ? _setDateOfBirth : null,
+          onTap: _setDateOfBirth,
         ),
       ],
     );

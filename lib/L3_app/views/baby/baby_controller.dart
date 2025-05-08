@@ -2,17 +2,17 @@
 
 import 'dart:core';
 
-import 'package:mamagochi/L3_app/components/field_data.dart';
-import 'package:mamagochi/L3_app/views/_base/edit_controller.dart';
-import 'package:mamagochi/L3_app/views/app/services.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../L1_domain/entities/baby.dart';
+import '../../components/field_data.dart';
+import '../_base/edit_controller.dart';
 import '../_base/loadable.dart';
+import '../app/services.dart';
 
 part 'baby_controller.g.dart';
 
-enum OnboardingStep { boy_or_girl, baby_name, date_of_birth }
+enum OnboardingStep { boy_or_girl, baby_name, date_of_birth, hello_baby }
 
 class BabyController extends _Base with Loadable, _$BabyController {
   BabyController() {
@@ -23,7 +23,7 @@ class BabyController extends _Base with Loadable, _$BabyController {
     await load(() async {
       await _fetchBabies();
     });
-    print(babies);
+    // print(babies);
   }
 
   Future setBoyOrGirl(bool isBoy) async {
@@ -89,4 +89,7 @@ abstract class _Base extends EditController with Store {
 
   @computed
   bool get isDateOfBirthStep => _step == OnboardingStep.date_of_birth;
+
+  @computed
+  bool get isHelloBabyStep => _step == OnboardingStep.hello_baby;
 }

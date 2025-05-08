@@ -1,12 +1,12 @@
-// Copyright (c) 2024. Alexandr Moroz
+// Copyright (c) 2025. Xenia Moroz
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mamagochi/L3_app/components/button.dart';
 import 'package:mamagochi/L3_app/components/text_field.dart';
+import 'package:mamagochi/L3_app/presenters/baby.dart';
 
 import '../../components/constants.dart';
-import '../../components/images.dart';
 import '../../components/text.dart';
 import '../app/services.dart';
 import '../baby/baby_controller.dart';
@@ -31,7 +31,7 @@ class BabyNameStep extends StatelessWidget {
             align: TextAlign.center,
             padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
           ),
-          Center(child: MTImage(babyController.firstBaby?.isBoy == true ? 'baby' : 'baby_girl')),
+          Center(child: babyController.firstBaby.image()),
           MTTextField(
             controller: babyController.teController(0),
             label: loc.onboarding_baby_name_step_field_label,

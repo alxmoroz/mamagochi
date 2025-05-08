@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mamagochi/L3_app/components/button.dart';
 import 'package:mamagochi/L3_app/components/constants.dart';
 import 'package:mamagochi/L3_app/navigation/router.dart';
+import 'package:mamagochi/L3_app/presenters/baby.dart';
 import 'package:mamagochi/L3_app/views/history/history_view.dart';
 
 import '../../../L2_data/services/platform.dart';
@@ -89,11 +90,7 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
                 onTap: router.goHistory),
           ),
           Align(
-            child: MTImage(
-              babyController.firstBaby?.isBoy == true ? 'baby' : 'baby_girl',
-              height: 300,
-              width: 300,
-            ),
+            child: babyController.firstBaby?.image(size: 300),
           ),
           const Align(
             alignment: Alignment.bottomCenter,

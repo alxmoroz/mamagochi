@@ -11,21 +11,25 @@ part 'feed.g.dart';
 @HiveType(typeId: HType.FEED)
 class FeedHO extends BaseModel<Feed> {
   @HiveField(0)
-  DateTime? start;
+  DateTime created = DateTime.now();
 
   @HiveField(1)
-  DateTime end = DateTime.now();
+  DateTime? start;
+
+  @HiveField(2)
+  DateTime? end;
 
   @override
   Feed toEntity() => Feed(
-        start: start,
-        end: end,
+        created: created,
+        startDate: start,
+        endDate: end,
       );
 
   @override
   Future<FeedHO> update(Feed entity) async {
-    start = entity.start;
-    end = entity.end;
+    start = entity.startDate;
+    end = entity.endDate;
     await save();
     return this;
   }

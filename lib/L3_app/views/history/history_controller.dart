@@ -48,13 +48,13 @@ abstract class _Base with Store {
 
   @action
   Future _addSleep() async {
-    final sleep = Sleep(end: DateTime.now());
+    final sleep = Sleep(created: now);
     sleepEntries.add(sleep);
     await sleepUC.addEntry(sleep);
   }
 
   @computed
-  bool get hasSleepEntriesToday => lastSleepEntry?.end.day == DateTime.now().day;
+  bool get hasSleepEntriesToday => lastSleepEntry?.endIsToday == true;
 
   @computed
   Sleep? get lastSleepEntry => sleepEntries.lastOrNull;
@@ -73,13 +73,13 @@ abstract class _Base with Store {
 
   @action
   Future _addFeed() async {
-    final feed = Feed(end: DateTime.now());
+    final feed = Feed(created: now);
     feedEntries.add(feed);
     await feedUC.addEntry(feed);
   }
 
   @computed
-  bool get hasFeedEntriesToday => lastFeedEntry?.end.day == DateTime.now().day;
+  bool get hasFeedEntriesToday => lastFeedEntry?.endIsToday == true;
 
   @computed
   Feed? get lastFeedEntry => feedEntries.lastOrNull;

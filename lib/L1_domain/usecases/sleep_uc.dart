@@ -11,9 +11,6 @@ class SleepUC {
   Future<Iterable<Sleep>> entries() async => await repo.getAll();
 
   Future addEntry(Sleep entry) async {
-    await repo.update(
-      (saved) => saved.end == entry.end,
-      entry,
-    );
+    await repo.update((_) => false, entry);
   }
 }

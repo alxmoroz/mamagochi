@@ -11,21 +11,25 @@ part 'sleep.g.dart';
 @HiveType(typeId: HType.SLEEP)
 class SleepHO extends BaseModel<Sleep> {
   @HiveField(0)
-  DateTime? start;
+  DateTime created = DateTime.now();
 
   @HiveField(1)
-  DateTime end = DateTime.now();
+  DateTime? start;
+
+  @HiveField(2)
+  DateTime? end;
 
   @override
   Sleep toEntity() => Sleep(
-        start: start,
-        end: end,
+        created: created,
+        startDate: start,
+        endDate: end,
       );
 
   @override
   Future<SleepHO> update(Sleep entity) async {
-    start = entity.start;
-    end = entity.end;
+    start = entity.startDate;
+    end = entity.endDate;
     await save();
     return this;
   }

@@ -11,6 +11,6 @@ class FeedUC {
   Future<Iterable<Feed>> entries() async => await repo.getAll();
 
   Future addEntry(Feed entry) async {
-    await repo.update((saved) => saved.end == entry.end, entry);
+    await repo.update((_) => false, entry);
   }
 }
