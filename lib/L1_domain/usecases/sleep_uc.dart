@@ -1,5 +1,6 @@
 // Copyright (c) 2022. Alexandr Moroz
 
+import '../entities/baby.dart';
 import '../entities/sleep.dart';
 import '../repositories/abs_db_repo.dart';
 
@@ -8,7 +9,7 @@ class SleepUC {
 
   final AbstractLocalStorageRepo<AbstractDBModel, Sleep> repo;
 
-  Future<Iterable<Sleep>> entries() async => await repo.getAll();
+  Future<Iterable<Sleep>> entries(Baby baby) async => await repo.getAll((e) => e.babyCreatedTime == baby.created);
 
   Future addEntry(Sleep entry) async {
     await repo.update((_) => false, entry);

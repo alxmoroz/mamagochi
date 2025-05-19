@@ -1,19 +1,23 @@
 // Copyright (c) 2025. Xenia Moroz
 
 import 'package:collection/collection.dart';
-import 'package:mamagochi/L1_domain/entities/abstract_entry.dart';
-import 'package:mamagochi/L1_domain/entities/sleep.dart';
-import 'package:mamagochi/L1_domain/utils/dates.dart';
-import 'package:mamagochi/L3_app/views/app/services.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../../L1_domain/entities/abstract_entry.dart';
+import '../../../L1_domain/entities/baby.dart';
 import '../../../L1_domain/entities/feed.dart';
+import '../../../L1_domain/entities/sleep.dart';
+import '../../../L1_domain/utils/dates.dart';
 import '../../components/snackbar_dialog.dart';
 import '../_base/loadable.dart';
+import '../app/services.dart';
 
 part 'history_controller.g.dart';
 
 class HistoryController extends _Base with Loadable, _$HistoryController {
+  HistoryController(Baby baby) {
+    _baby = baby;
+  }
   Future reload() async {
     await load(() async {
       await _fetchSleepEntries();
@@ -37,18 +41,20 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
 }
 
 abstract class _Base with Store {
+  late final Baby _baby;
+
   /// записи о сне
   @observable
   ObservableList<Sleep> sleepEntries = ObservableList();
 
   @action
   Future _fetchSleepEntries() async {
-    sleepEntries = ObservableList.of(await sleepUC.entries());
+    sleepEntries = ObservableList.of(await sleepUC.entries(_baby));
   }
 
   @action
   Future _addSleep() async {
-    final sleep = Sleep(created: now);
+    final sleep = Sleep(created: now, babyCreatedTime: _baby.created);
     sleepEntries.add(sleep);
     await sleepUC.addEntry(sleep);
   }
@@ -68,12 +74,12 @@ abstract class _Base with Store {
 
   @action
   Future _fetchFeedEntries() async {
-    feedEntries = ObservableList.of(await feedUC.entries());
+    feedEntries = ObservableList.of(await feedUC.entries(_baby));
   }
 
   @action
   Future _addFeed() async {
-    final feed = Feed(created: now);
+    final feed = Feed(created: now, babyCreatedTime: _baby.created);
     feedEntries.add(feed);
     await feedUC.addEntry(feed);
   }

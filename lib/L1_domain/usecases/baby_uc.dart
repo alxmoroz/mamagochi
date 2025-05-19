@@ -10,9 +10,9 @@ class BabyUC {
 
   Future<Iterable<Baby>> babies() async => await repo.getAll();
 
-  Future editBaby(Baby notEditedBaby, Baby baby) async {
+  Future editBaby(Baby baby) async {
     await repo.update(
-      (saved) => saved.isBoy == notEditedBaby.isBoy && saved.name == notEditedBaby.name && saved.dateOfBirth == notEditedBaby.dateOfBirth,
+      (saved) => saved.created == baby.created,
       baby,
     );
   }

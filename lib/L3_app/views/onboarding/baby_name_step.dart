@@ -2,21 +2,22 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mamagochi/L3_app/components/button.dart';
-import 'package:mamagochi/L3_app/components/text_field.dart';
-import 'package:mamagochi/L3_app/presenters/baby.dart';
 
+import '../../components/button.dart';
 import '../../components/constants.dart';
 import '../../components/text.dart';
+import '../../components/text_field.dart';
+import '../../presenters/baby.dart';
 import '../app/services.dart';
 import '../baby/baby_controller.dart';
 
 class BabyNameStep extends StatelessWidget {
-  const BabyNameStep({super.key});
+  const BabyNameStep(this._bc, {super.key});
+  final BabyController _bc;
 
   Future _setName() async {
-    await babyController.setName();
-    babyController.setStep(OnboardingStep.date_of_birth);
+    await _bc.setName();
+    _bc.setStep(OnboardingStep.date_of_birth);
   }
 
   @override
@@ -31,15 +32,15 @@ class BabyNameStep extends StatelessWidget {
             align: TextAlign.center,
             padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
           ),
-          Center(child: babyController.firstBaby.image()),
+          Center(child: _bc.baby.image()),
           MTTextField(
-            controller: babyController.teController(0),
+            controller: _bc.teController(0),
             label: loc.onboarding_baby_name_step_field_label,
           ),
           const SizedBox(height: P3),
           MTButton.main(
             titleText: loc.next_action_title,
-            onTap: babyController.validated ? _setName : null,
+            onTap: _bc.validated ? _setName : null,
           ),
         ],
       ),

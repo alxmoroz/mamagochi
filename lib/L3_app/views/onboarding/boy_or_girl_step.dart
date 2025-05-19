@@ -11,11 +11,12 @@ import '../app/services.dart';
 import '../baby/baby_controller.dart';
 
 class BoyOrGirlStep extends StatelessWidget {
-  const BoyOrGirlStep({super.key});
+  const BoyOrGirlStep(this._bc, {super.key});
+  final BabyController _bc;
 
   Future _setBoyOrGirl({required bool isBoy}) async {
-    await babyController.setBoyOrGirl(isBoy);
-    babyController.setStep(OnboardingStep.baby_name);
+    await _bc.setBoyOrGirl(isBoy);
+    _bc.setStep(OnboardingStep.baby_name);
   }
 
   @override
@@ -43,7 +44,7 @@ class BoyOrGirlStep extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const MTImage('baby', height: 180),
-                    SmallText(loc.sex_man),
+                    SmallText.medium(loc.sex_man),
                   ],
                 ),
                 onTap: () => _setBoyOrGirl(isBoy: true),
@@ -57,7 +58,7 @@ class BoyOrGirlStep extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const MTImage('baby_girl', height: 180),
-                    SmallText(loc.sex_woman),
+                    SmallText.medium(loc.sex_woman),
                   ],
                 ),
                 onTap: () => _setBoyOrGirl(isBoy: false),

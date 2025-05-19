@@ -17,41 +17,44 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          MTButton(
-            minSize: const Size(180, 180),
-            constrained: false,
-            color: b3Color,
-            type: MTButtonType.main,
-            middle: Column(
-              mainAxisSize: MainAxisSize.min,
+    return Observer(builder: (_) {
+      final hc = mainController.selectedBabyController?.historyController;
+      return hc != null
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const MTImage('bed', height: 100),
-                if (historyController.hasSleepEntriesToday) SmallText(historyController.lastSleepEntry!.end.strTimeAgo),
+                MTButton(
+                  minSize: const Size(180, 180),
+                  constrained: false,
+                  color: b3Color,
+                  type: MTButtonType.main,
+                  middle: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const MTImage('bed', height: 100),
+                      if (hc.hasSleepEntriesToday) SmallText(hc.lastSleepEntry!.end.strTimeAgo),
+                    ],
+                  ),
+                  onTap: hc.addSleep,
+                ),
+                // Spacer(),
+                MTButton(
+                  minSize: const Size(180, 180),
+                  constrained: false,
+                  color: b3Color,
+                  type: MTButtonType.main,
+                  middle: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const MTImage('babybottle', height: 100),
+                      if (hc.hasFeedEntriesToday) SmallText(hc.lastFeedEntry!.end.strTimeAgo),
+                    ],
+                  ),
+                  onTap: hc.addFeed,
+                ),
               ],
-            ),
-            onTap: historyController.addSleep,
-          ),
-          // Spacer(),
-          MTButton(
-            minSize: const Size(180, 180),
-            constrained: false,
-            color: b3Color,
-            type: MTButtonType.main,
-            middle: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const MTImage('babybottle', height: 100),
-                if (historyController.hasFeedEntriesToday) SmallText(historyController.lastFeedEntry!.end.strTimeAgo),
-              ],
-            ),
-            onTap: historyController.addFeed,
-          ),
-        ],
-      ),
-    );
+            )
+          : const SizedBox();
+    });
   }
 }

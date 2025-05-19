@@ -33,9 +33,7 @@ class MainRoute extends MTRoute {
         );
 
   @override
-  List<RouteBase> get routes => [
-        HistoryRoute(parent: this),
-      ];
+  List<RouteBase> get routes => [HistoryRoute(parent: this)];
 }
 
 final mainRoute = MainRoute();
@@ -87,10 +85,10 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
                 margin: const EdgeInsets.symmetric(horizontal: P2),
                 type: MTButtonType.main,
                 middle: const MTImage('menu', height: 60),
-                onTap: router.goHistory),
+                onTap: () => router.goHistory(mainController.selectedBabyController!.historyController)),
           ),
           Align(
-            child: babyController.firstBaby?.image(size: 300),
+            child: mainController.selectedBabyController?.baby.image(size: 300),
           ),
           const Align(
             alignment: Alignment.bottomCenter,

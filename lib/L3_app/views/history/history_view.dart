@@ -1,16 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mamagochi/L3_app/components/images.dart';
-import 'package:mamagochi/L3_app/components/list_tile.dart';
-import 'package:mamagochi/L3_app/components/text.dart';
-import 'package:mamagochi/L3_app/components/toolbar.dart';
-import 'package:mamagochi/L3_app/presenters/date.dart';
-import 'package:mamagochi/L3_app/views/app/services.dart';
 
 import '../../../L1_domain/entities/abstract_entry.dart';
 import '../../components/constants.dart';
+import '../../components/images.dart';
+import '../../components/list_tile.dart';
 import '../../components/page.dart';
+import '../../components/text.dart';
+import '../../components/toolbar.dart';
 import '../../navigation/route.dart';
+import '../../presenters/date.dart';
+import '../app/services.dart';
+import 'history_controller.dart';
 
 class HistoryRoute extends MTRoute {
   static const staticBaseName = 'history';
@@ -19,16 +20,13 @@ class HistoryRoute extends MTRoute {
       : super(
           path: staticBaseName,
           baseName: staticBaseName,
-          builder: (_, state) => HistoryView(key: state.pageKey),
+          builder: (_, state) => _HistoryView(state.extra as HistoryController),
         );
-
-  //это нужно только для веба
-  //@override
-  //String title(GoRouterState state) => loc.project_list_title;
 }
 
-class HistoryView extends StatelessWidget {
-  const HistoryView({super.key});
+class _HistoryView extends StatelessWidget {
+  const _HistoryView(this._hc);
+  final HistoryController _hc;
 
   Widget _dayEntries(DateTime date, Iterable<AbstractEntry> group) {
     return ListView(
@@ -43,10 +41,7 @@ class HistoryView extends StatelessWidget {
             itemBuilder: (_, index) {
               final entry = group.elementAt(index);
               return MTListTile(
-                leading: MTImage(
-                  '$entry',
-                  height: P10,
-                ),
+                leading: MTImage('$entry', height: P10),
                 trailing: BaseText(entry.end.strTimeAgo),
                 bottomDivider: index < group.length - 1,
               );
@@ -59,15 +54,13 @@ class HistoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => MTPage(
-        navBar: MTNavBar(
-          pageTitle: loc.history_title,
-        ),
-        body: historyController.hasEntries
+        navBar: MTNavBar(pageTitle: loc.history_title),
+        body: _hc.hasEntries
             ? ListView.builder(
-                itemCount: historyController.groupedEntries.keys.length,
+                itemCount: _hc.groupedEntries.keys.length,
                 itemBuilder: (_, index) {
-                  final date = historyController.groupedEntries.keys.elementAt(index);
-                  final group = historyController.groupedEntries[date];
+                  final date = _hc.groupedEntries.keys.elementAt(index);
+                  final group = _hc.groupedEntries[date];
                   return group != null ? _dayEntries(date, group) : const SizedBox();
                 })
             : Center(

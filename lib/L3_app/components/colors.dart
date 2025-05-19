@@ -140,7 +140,7 @@ const f3Color = CupertinoDynamicColor.withBrightness(
 /// Цвета элементов UI
 ///
 const mainColor = CupertinoDynamicColor.withBrightness(
-  color: Color.fromARGB(255, 90, 111, 228),
+  color: Color.fromARGB(255, 100, 170, 255),
   darkColor: Color.fromARGB(255, 100, 170, 255),
 );
 

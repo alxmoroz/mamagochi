@@ -3,8 +3,6 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mamagochi/L1_domain/usecases/sleep_uc.dart';
-import 'package:mamagochi/L3_app/views/baby/baby_controller.dart';
-import 'package:mamagochi/L3_app/views/history/history_controller.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../L1_domain/usecases/baby_uc.dart';
@@ -25,8 +23,6 @@ LocalSettingsController get localSettingsController => getIt<LocalSettingsContro
 
 AppController get appController => getIt<AppController>();
 MainController get mainController => getIt<MainController>();
-BabyController get babyController => getIt<BabyController>();
-HistoryController get historyController => getIt<HistoryController>();
 
 LocalSettingsUC get localSettingsUC => getIt<LocalSettingsUC>();
 SleepUC get sleepUC => getIt<SleepUC>();
@@ -53,7 +49,5 @@ void setup() {
   getIt.registerSingletonAsync<LocalSettingsController>(() async => LocalSettingsController().init(), dependsOn: [HiveStorage, PackageInfo]);
 
   getIt.registerSingleton<AppController>(AppController());
-  getIt.registerSingleton<HistoryController>(HistoryController());
   getIt.registerSingleton<MainController>(MainController());
-  getIt.registerSingleton<BabyController>(BabyController());
 }

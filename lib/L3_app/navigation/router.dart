@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../views/baby/baby_controller.dart';
+import '../views/history/history_controller.dart';
 import '../views/history/history_view.dart';
 import '../views/main/main_view.dart';
 import '../views/onboarding/onboarding_view.dart';
@@ -45,8 +47,8 @@ extension MTRouterHelper on GoRouter {
 
   // Главная и вход
   void goMain() => _goNamed(mainRoute.name);
-  void goHistory() => _goNamed('${mainRoute.name}/${HistoryRoute.staticBaseName}');
+  void goHistory(HistoryController hc) => _goNamed('${mainRoute.name}/${HistoryRoute.staticBaseName}', extra: hc);
 
   // главный онбординг
-  Future pushOnboarding() async => await pushNamed(onboardingRoute.name, extra: 'local');
+  Future pushOnboarding(BabyController bc) async => await pushNamed(onboardingRoute.name, extra: bc);
 }

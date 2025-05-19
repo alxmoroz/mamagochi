@@ -4,21 +4,21 @@ import 'dart:async';
 
 import 'package:mobx/mobx.dart';
 
+import '../../../../L1_domain/entities/baby.dart';
+import '../../../../L1_domain/utils/dates.dart';
 import '../../../navigation/route.dart';
 import '../../../navigation/router.dart';
 import '../../../views/_base/loadable.dart';
 import '../../app/services.dart';
+import '../../baby/baby_controller.dart';
 
 part 'main_controller.g.dart';
 
 class MainController extends _Base with _$MainController {
-  Future _reloadData() async {
-    setLoaderScreenLoading();
-    await babyController.reload();
-    await historyController.reload();
-  }
-
-  Future reload() async => await load(_reloadData);
+  Future reload() async => await load(() async {
+        setLoaderScreenLoading();
+        await _fetchBabies();
+      });
 
   static const _updatePeriod = Duration(seconds: 15);
   Timer? _refreshTimer;
@@ -26,21 +26,19 @@ class MainController extends _Base with _$MainController {
   Future startup() async {
     await appController.startup();
 
-    // await authController.checkLocalAuth();
-    // if (authController.authorized) {
-
     // обновление данных
     await reload();
 
     // Онбординг
-    if (!babyController.allBabiesDefined) {
-      await router.pushOnboarding();
+    if (babiesControllers.isEmpty) {
+      _addBaby();
+      await router.pushOnboarding(selectedBabyController!);
+    } else {
+      selectBaby(babiesControllers.first);
     }
 
-    // } else {
-    //   authController.signOut();
-    // }
-    _refreshTimer ??= Timer.periodic(_updatePeriod, (_) => historyController.reload());
+    // обновляем историю записей по выбранному сейчас ребенку
+    _refreshTimer ??= Timer.periodic(_updatePeriod, (_) => selectedBabyController?.historyController.reload());
   }
 
   void onInactive() {
@@ -51,8 +49,6 @@ class MainController extends _Base with _$MainController {
   }
 
   void clear() {
-    // myAccountController.clear();
-
     _setUpdateDate(null);
   }
 }
@@ -62,6 +58,26 @@ abstract class _Base with Store, Loadable {
   DateTime? _updatedDate;
   @action
   void _setUpdateDate(DateTime? dt) => _updatedDate = dt;
+
+  @observable
+  ObservableList<BabyController> babiesControllers = ObservableList();
+
+  @action
+  void _addBaby() {
+    selectedBabyController = BabyController(Baby(created: now));
+    babiesControllers.add(selectedBabyController!);
+  }
+
+  @action
+  Future _fetchBabies() async {
+    final babies = await babyUC.babies();
+    babiesControllers = ObservableList.of(babies.map((b) => BabyController(b)));
+  }
+
+  @observable
+  BabyController? selectedBabyController;
+  @action
+  void selectBaby(BabyController value) => selectedBabyController = value;
 
   @observable
   MTRoute? currentRoute;

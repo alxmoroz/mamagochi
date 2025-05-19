@@ -2,10 +2,11 @@ import '../utils/dates.dart';
 import 'base_entity.dart';
 
 abstract class AbstractEntry extends LocalPersistable {
-  const AbstractEntry({required this.created, this.startDate, this.endDate});
+  const AbstractEntry({required this.created, this.startDate, this.endDate, required this.babyCreatedTime});
   final DateTime created;
   final DateTime? startDate;
   final DateTime? endDate;
+  final DateTime babyCreatedTime;
 
   DateTime get end => endDate ?? created;
   DateTime get start => startDate ?? created;

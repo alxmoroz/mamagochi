@@ -1,8 +1,10 @@
 import '../../L3_app/views/app/services.dart';
+import '../utils/dates.dart';
 import 'base_entity.dart';
 
 class Baby extends LocalPersistable {
-  Baby({required this.isBoy, this.name, this.dateOfBirth});
+  Baby({required this.created, this.isBoy = true, this.name, this.dateOfBirth});
+  final DateTime created;
   final bool isBoy;
   String? name;
   DateTime? dateOfBirth;
@@ -10,16 +12,10 @@ class Baby extends LocalPersistable {
   @override
   String toString() => '$boyOrGirlStr $name $dateOfBirth';
 
-  String get boyOrGirlStr => isBoy ? loc.sex_man : loc.sex_woman;
-  int? get daysSinceBirth => (babyController.firstBaby?.dateOfBirth?.difference(DateTime.now()))?.inDays;
+  String get boyOrGirlStr => isBoy == true ? loc.sex_man : loc.sex_woman;
+  int? get daysSinceBirth => now.difference(dateOfBirth ?? now).inDays;
 
   bool get defined => named && hasDateOfBirth;
   bool get named => name?.isNotEmpty == true;
   bool get hasDateOfBirth => dateOfBirth != null;
-
-  Baby copyWith({bool? isBoy, String? name, DateTime? dateOfBirth}) => Baby(
-        isBoy: isBoy ?? this.isBoy,
-        name: name ?? this.name,
-        dateOfBirth: dateOfBirth ?? this.dateOfBirth,
-      );
 }

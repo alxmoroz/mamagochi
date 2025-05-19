@@ -10,17 +10,21 @@ part 'baby.g.dart';
 
 @HiveType(typeId: HType.BABY)
 class BabyHO extends BaseModel<Baby> {
-  @HiveField(0, defaultValue: true)
+  @HiveField(0)
+  DateTime created = DateTime.now();
+
+  @HiveField(1, defaultValue: true)
   bool isBoy = true;
 
-  @HiveField(1)
+  @HiveField(2)
   String? name;
 
-  @HiveField(2)
+  @HiveField(3)
   DateTime? dateOfBirth;
 
   @override
   Baby toEntity() => Baby(
+        created: created,
         isBoy: isBoy,
         name: name,
         dateOfBirth: dateOfBirth,
