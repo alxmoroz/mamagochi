@@ -10,7 +10,7 @@ class Baby extends LocalPersistable {
   DateTime? dateOfBirth;
 
   @override
-  String toString() => '$boyOrGirlStr $name $dateOfBirth';
+  String toString() => '$created $boyOrGirlStr $name $dateOfBirth';
 
   String get boyOrGirlStr => isBoy == true ? loc.sex_man : loc.sex_woman;
   int? get daysSinceBirth => now.difference(dateOfBirth ?? now).inDays;

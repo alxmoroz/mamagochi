@@ -12,7 +12,7 @@ class BabyUC {
 
   Future editBaby(Baby baby) async {
     await repo.update(
-      (saved) => saved.created == baby.created,
+      (saved) => saved.created.isAtSameMomentAs(baby.created),
       baby,
     );
   }

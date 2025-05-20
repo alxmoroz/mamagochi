@@ -48,17 +48,15 @@ class MainController extends _Base with _$MainController {
     }
   }
 
-  void clear() {
-    _setUpdateDate(null);
+  Future selectBaby(BabyController bc) async {
+    _selectBaby(bc);
+    await bc.historyController.reload();
   }
+
+  void clear() {}
 }
 
 abstract class _Base with Store, Loadable {
-  @observable
-  DateTime? _updatedDate;
-  @action
-  void _setUpdateDate(DateTime? dt) => _updatedDate = dt;
-
   @observable
   ObservableList<BabyController> babiesControllers = ObservableList();
 
@@ -77,7 +75,7 @@ abstract class _Base with Store, Loadable {
   @observable
   BabyController? selectedBabyController;
   @action
-  void selectBaby(BabyController value) => selectedBabyController = value;
+  void _selectBaby(BabyController value) => selectedBabyController = value;
 
   @observable
   MTRoute? currentRoute;

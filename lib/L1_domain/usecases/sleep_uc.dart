@@ -9,7 +9,7 @@ class SleepUC {
 
   final AbstractLocalStorageRepo<AbstractDBModel, Sleep> repo;
 
-  Future<Iterable<Sleep>> entries(Baby baby) async => await repo.getAll((e) => e.babyCreatedTime == baby.created);
+  Future<Iterable<Sleep>> entries(Baby baby) async => await repo.getAll((e) => e.babyCreatedTime.isAtSameMomentAs(baby.created));
 
   Future addEntry(Sleep entry) async {
     await repo.update((_) => false, entry);

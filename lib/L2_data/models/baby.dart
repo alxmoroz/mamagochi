@@ -3,6 +3,7 @@
 import 'package:hive/hive.dart';
 
 import '../../L1_domain/entities/baby.dart';
+import '../../L1_domain/utils/dates.dart';
 import '../services/db.dart';
 import 'base.dart';
 
@@ -11,7 +12,7 @@ part 'baby.g.dart';
 @HiveType(typeId: HType.BABY)
 class BabyHO extends BaseModel<Baby> {
   @HiveField(0)
-  DateTime created = DateTime.now();
+  DateTime? created;
 
   @HiveField(1, defaultValue: true)
   bool isBoy = true;
@@ -24,7 +25,7 @@ class BabyHO extends BaseModel<Baby> {
 
   @override
   Baby toEntity() => Baby(
-        created: created,
+        created: created ?? now,
         isBoy: isBoy,
         name: name,
         dateOfBirth: dateOfBirth,
@@ -32,6 +33,7 @@ class BabyHO extends BaseModel<Baby> {
 
   @override
   Future<BabyHO> update(Baby entity) async {
+    created = entity.created;
     isBoy = entity.isBoy;
     name = entity.name;
     dateOfBirth = entity.dateOfBirth;

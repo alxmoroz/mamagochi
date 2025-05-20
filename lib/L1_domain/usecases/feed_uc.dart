@@ -9,7 +9,7 @@ class FeedUC {
 
   final AbstractLocalStorageRepo<AbstractDBModel, Feed> repo;
 
-  Future<Iterable<Feed>> entries(Baby baby) async => await repo.getAll((e) => e.babyCreatedTime == baby.created);
+  Future<Iterable<Feed>> entries(Baby baby) async => await repo.getAll((e) => e.babyCreatedTime.isAtSameMomentAs(baby.created));
 
   Future addEntry(Feed entry) async {
     await repo.update((_) => false, entry);
