@@ -3,8 +3,11 @@
 
   "about_service_title": "О сервисе",
 
-  "action_add_sleep_title": "Поспал",
   "action_add_feed_title": "Покушал",
+  "action_start_sleep_title_boy": "Уснул",
+  "action_start_sleep_title_girl": "Уснула",
+  "action_finish_sleep_title_boy": "Проснулся",
+  "action_finish_sleep_title_girl": "Проснулась",
 
   "action_apply_title": "Применить",
   "action_back_title": "Назад",
@@ -28,6 +31,8 @@
 
   "history_title": "История",
   "history_empty_title": "Записей пока нет",
+  "history_feed_title": "Кормление",
+  "history_sleep_title": "Сон",
 
   "lets_go_action_title": "Начнём",
 
@@ -57,9 +62,12 @@
   "sex_woman": "Девочка",
 
   "time_just_now": "только что",
-  "time_hours_ago": "{count} ч назад",
+  "time_hours": "{hours} ч",
+  "time_hours_ago": "{hours} ч назад",
+  "time_hours_minutes": "{hours} ч {minutes} мин",
   "time_hours_minutes_ago": "{hours} ч {minutes} мин назад",
-  "time_minutes_ago": "{count} мин назад",
+  "time_minutes": "{minutes} мин",
+  "time_minutes_ago": "{minutes} мин назад",
 
   "today_title": "Сегодня",
   "tomorrow_title": "Завтра",

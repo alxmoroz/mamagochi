@@ -16,7 +16,7 @@ extension DateFormatterPresenter on DateTime {
       result = loc.time_just_now;
     } else if (hours < 1) {
       result = loc.time_minutes_ago(minutes);
-    } else if (this == today) {
+    } else if (isToday) {
       result = minutes > 0 ? loc.time_hours_minutes_ago(hours, minutes) : loc.time_hours_ago(hours);
     } else {
       result = strTime;
@@ -25,11 +25,11 @@ extension DateFormatterPresenter on DateTime {
   }
 
   String get strShort => thisYear ? DateFormat.Md().format(this) : DateFormat.yMd().format(this);
-  String get strMedium => date == yesterday
+  String get strMedium => isYesterday
       ? loc.yesterday_date_title
-      : date == today
+      : isToday
           ? loc.today_title.toLowerCase()
-          : date == tomorrow
+          : isTomorrow
               ? loc.tomorrow_title.toLowerCase()
               : thisYear
                   ? DateFormat.MMMMd().format(this)

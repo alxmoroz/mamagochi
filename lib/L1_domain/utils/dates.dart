@@ -13,4 +13,7 @@ DateTime get lastWeek => DateTime(now.year, now.month, now.day - 7);
 extension DateUtils on DateTime {
   DateTime get date => DateTime(year, month, day);
   bool get thisYear => year == now.year;
+  bool get isToday => date == today;
+  bool get isYesterday => date == yesterday;
+  bool get isTomorrow => date == tomorrow;
 }

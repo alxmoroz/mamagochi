@@ -29,7 +29,7 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     await load(() async {
       await _addSleep();
     });
-    showMTSnackbar(loc.action_add_sleep_title);
+    showMTSnackbar(_baby.isBoy ? loc.action_start_sleep_title_boy : loc.action_start_sleep_title_girl);
   }
 
   Future addFeed() async {

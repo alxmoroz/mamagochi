@@ -17,4 +17,18 @@ extension DurationPresenter on Duration {
           : _inWeeks >= 2
               ? loc.weeks_count_accusative(_inWeeks.round())
               : loc.days_count(inDays);
+
+  String get strInHoursAndMinutes {
+    String result = '';
+    int hours = inHours;
+    int minutes = inMinutes - inHours * 60;
+    if (inMinutes < 1) {
+      result = '';
+    } else if (hours < 1) {
+      result = loc.time_minutes(minutes);
+    } else {
+      result = minutes > 0 ? loc.time_hours_minutes(hours, minutes) : loc.time_hours(hours);
+    }
+    return result;
+  }
 }

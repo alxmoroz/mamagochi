@@ -3,8 +3,11 @@
 
   "about_service_title": "About service",
 
-  "action_add_sleep_title": "Slept",
   "action_add_feed_title": "Fed",
+  "action_start_sleep_title_boy": "Fell asleep",
+  "action_start_sleep_title_girl": "Fell asleep",
+  "action_finish_sleep_title_boy": "Woke up",
+  "action_finish_sleep_title_girl": "Woke up",
 
   "action_apply_title": "Apply",
   "action_back_title": "Back",
@@ -28,6 +31,7 @@
 
   "history_title": "History",
   "history_empty_title": "There are no events yet",
+  "history_sleep_title": "Sleep",
 
   "lets_go_action_title": "Let's get started",
 
@@ -57,9 +61,12 @@
   "sex_woman": "Girl",
 
   "time_just_now": "just now",
-  "time_hours_ago": "{count} h ago",
+  "time_hours": "{hours} h",
+  "time_hours_ago": "{hours} h ago",
+  "time_hours_minutes": "{hours} h {minutes} m",
   "time_hours_minutes_ago": "{hours} h {minutes} m ago",
-  "time_minutes_ago": "{count} m ago",
+  "time_minutes": "{minutes} m",
+  "time_minutes_ago": "{minutes} m ago",
 
   "today_title": "Today",
   "tomorrow_title": "Tomorrow",

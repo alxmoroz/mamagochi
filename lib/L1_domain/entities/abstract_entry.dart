@@ -12,4 +12,6 @@ abstract class AbstractEntry extends LocalPersistable {
   DateTime get start => startDate ?? created;
 
   bool get endIsToday => end.date == today;
+
+  Duration get duration => end.difference(start);
 }
