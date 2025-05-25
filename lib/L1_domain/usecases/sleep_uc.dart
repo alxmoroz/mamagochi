@@ -11,7 +11,10 @@ class SleepUC {
 
   Future<Iterable<Sleep>> entries(Baby baby) async => await repo.getAll((e) => e.babyCreatedTime.isAtSameMomentAs(baby.created));
 
-  Future addEntry(Sleep entry) async {
-    await repo.update((_) => false, entry);
+  Future edit(Sleep sleep) async {
+    await repo.update(
+      (saved) => saved.created.isAtSameMomentAs(sleep.created),
+      sleep,
+    );
   }
 }

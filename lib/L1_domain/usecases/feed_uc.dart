@@ -11,7 +11,10 @@ class FeedUC {
 
   Future<Iterable<Feed>> entries(Baby baby) async => await repo.getAll((e) => e.babyCreatedTime.isAtSameMomentAs(baby.created));
 
-  Future addEntry(Feed entry) async {
-    await repo.update((_) => false, entry);
+  Future edit(Feed feed) async {
+    await repo.update(
+      (saved) => saved.created.isAtSameMomentAs(feed.created),
+      feed,
+    );
   }
 }

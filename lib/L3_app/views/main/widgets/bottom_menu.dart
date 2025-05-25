@@ -2,18 +2,28 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mamagochi/L1_domain/utils/dates.dart';
 import 'package:mamagochi/L3_app/components/button.dart';
 import 'package:mamagochi/L3_app/components/colors.dart';
 import 'package:mamagochi/L3_app/components/images.dart';
 import 'package:mamagochi/L3_app/components/text.dart';
 import 'package:mamagochi/L3_app/presenters/date.dart';
 import 'package:mamagochi/L3_app/views/app/services.dart';
+import 'package:mamagochi/L3_app/views/history/history_controller.dart';
 
 class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
   const BottomMenu({super.key});
 
   @override
   Size get preferredSize => const Size.fromHeight(250);
+
+  Future _startSleep(HistoryController hc) async {
+    DateTime? startDate = now;
+    // вызов диалога редактирования времени
+    // if (startDate != null) {
+    hc.startSleep(startDate);
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +45,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
                       if (hc.hasSleepEntriesToday) SmallText(hc.lastSleepEntry!.end.strTimeAgo),
                     ],
                   ),
-                  onTap: hc.addSleep,
+                  onTap: () => _startSleep(hc),
                 ),
                 // Spacer(),
                 MTButton(

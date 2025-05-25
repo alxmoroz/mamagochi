@@ -25,11 +25,17 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     });
   }
 
-  Future addSleep() async {
+  Future startSleep(DateTime startDate) async {
     await load(() async {
-      await _addSleep();
+      await _startSleep(startDate);
     });
     showMTSnackbar(_baby.isBoy ? loc.action_start_sleep_title_boy : loc.action_start_sleep_title_girl);
+  }
+
+  Future stopSleep(DateTime endDate) async {
+    await load(() async {
+      await _stopSleep(endDate);
+    });
   }
 
   Future addFeed() async {
@@ -47,17 +53,36 @@ abstract class _Base with Store {
   @observable
   ObservableList<Sleep> sleepEntries = ObservableList();
 
+  @observable
+  Sleep? currentSleep;
+
   @action
   Future _fetchSleepEntries() async {
     sleepEntries = ObservableList.of(await sleepUC.entries(_baby));
   }
 
   @action
-  Future _addSleep() async {
-    final sleep = Sleep(created: now, babyCreatedTime: _baby.created);
-    sleepEntries.add(sleep);
-    await sleepUC.addEntry(sleep);
+  Future _startSleep(DateTime startDate) async {
+    currentSleep = Sleep(created: now, startDate: startDate, babyCreatedTime: _baby.created);
+    sleepEntries.add(currentSleep!);
+    await sleepUC.edit(currentSleep!);
   }
+
+  @action
+  Future _stopSleep(DateTime endDate) async {
+    final sleep = currentSleep;
+    if (sleep != null) {
+      final index = sleepEntries.indexOf(sleep);
+      if (index > -1) {
+        currentSleep = null;
+        sleepEntries[index] = sleep.copyWith(endDate: endDate);
+        await sleepUC.edit(sleep);
+      }
+    }
+  }
+
+  @computed
+  bool get babyIsSleeping => currentSleep != null;
 
   @computed
   bool get hasSleepEntriesToday => lastSleepEntry?.endIsToday == true;
@@ -81,7 +106,7 @@ abstract class _Base with Store {
   Future _addFeed() async {
     final feed = Feed(created: now, babyCreatedTime: _baby.created);
     feedEntries.add(feed);
-    await feedUC.addEntry(feed);
+    await feedUC.edit(feed);
   }
 
   @computed

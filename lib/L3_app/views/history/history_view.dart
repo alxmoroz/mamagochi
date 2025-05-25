@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mamagochi/L3_app/presenters/duration.dart';
+import 'package:mamagochi/L3_app/presenters/entry.dart';
 
 import '../../../L1_domain/entities/abstract_entry.dart';
 import '../../../L1_domain/entities/sleep.dart';
@@ -43,7 +44,7 @@ class _HistoryView extends StatelessWidget {
             itemBuilder: (_, index) {
               final entry = group.elementAt(index);
               return MTListTile(
-                leading: MTImage('$entry', height: P10),
+                leading: entry.image(size: P10),
                 titleText: entry is Sleep && entry.duration.inMinutes > 1 ? '${loc.history_sleep_title} ${entry.duration.strInHoursAndMinutes}' : '',
                 trailing: SmallText(entry.end.strTimeAgo),
                 bottomDivider: index < group.length - 1,
