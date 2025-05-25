@@ -6,8 +6,8 @@
   "action_add_feed_title": "Покушал",
   "action_start_sleep_title_boy": "Уснул",
   "action_start_sleep_title_girl": "Уснула",
-  "action_finish_sleep_title_boy": "Проснулся",
-  "action_finish_sleep_title_girl": "Проснулась",
+  "action_stop_sleep_title_boy": "Проснулся",
+  "action_stop_sleep_title_girl": "Проснулась",
 
   "action_apply_title": "Применить",
   "action_back_title": "Назад",

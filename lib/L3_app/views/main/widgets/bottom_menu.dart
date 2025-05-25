@@ -7,6 +7,7 @@ import 'package:mamagochi/L3_app/components/button.dart';
 import 'package:mamagochi/L3_app/components/colors.dart';
 import 'package:mamagochi/L3_app/components/images.dart';
 import 'package:mamagochi/L3_app/components/text.dart';
+import 'package:mamagochi/L3_app/presenters/baby.dart';
 import 'package:mamagochi/L3_app/presenters/date.dart';
 import 'package:mamagochi/L3_app/views/app/services.dart';
 import 'package:mamagochi/L3_app/views/history/history_controller.dart';
@@ -22,31 +23,54 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
     // вызов диалога редактирования времени
     // if (startDate != null) {
     hc.startSleep(startDate);
-    // }
+  }
+
+  Future _stopSleep(HistoryController hc) async {
+    DateTime? endDate = now;
+    // вызов диалога редактирования времени
+    // if (endDate != null) {
+    hc.stopSleep(endDate);
   }
 
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       final hc = mainController.selectedBabyController?.historyController;
+      final baby = mainController.selectedBabyController?.baby;
+
       return hc != null
           ? Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                MTButton(
-                  minSize: const Size(180, 180),
-                  constrained: false,
-                  color: b3Color,
-                  type: MTButtonType.main,
-                  middle: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const MTImage('bed', height: 100),
-                      if (hc.hasSleepEntriesToday) SmallText(hc.lastSleepEntry!.end.strTimeAgo),
-                    ],
-                  ),
-                  onTap: () => _startSleep(hc),
-                ),
+                hc.babyIsSleeping
+                    ? MTButton(
+                        minSize: const Size(180, 180),
+                        constrained: false,
+                        color: b3Color,
+                        type: MTButtonType.main,
+                        middle: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            baby.image(size: 100),
+                            SmallText(baby!.isBoy ? loc.action_stop_sleep_title_boy : loc.action_stop_sleep_title_girl),
+                          ],
+                        ),
+                        onTap: () => _stopSleep(hc),
+                      )
+                    : MTButton(
+                        minSize: const Size(180, 180),
+                        constrained: false,
+                        color: b3Color,
+                        type: MTButtonType.main,
+                        middle: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const MTImage('bed', height: 100),
+                            if (hc.hasSleepEntriesToday) SmallText(hc.lastSleepEntry!.end.strTimeAgo),
+                          ],
+                        ),
+                        onTap: () => _startSleep(hc),
+                      ),
                 // Spacer(),
                 MTButton(
                   minSize: const Size(180, 180),

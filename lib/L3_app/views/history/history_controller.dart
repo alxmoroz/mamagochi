@@ -72,11 +72,11 @@ abstract class _Base with Store {
   Future _stopSleep(DateTime endDate) async {
     final sleep = currentSleep;
     if (sleep != null) {
-      final index = sleepEntries.indexOf(sleep);
+      final index = sleepEntries.indexWhere((s) => s.created.isAtSameMomentAs(sleep.created));
       if (index > -1) {
         currentSleep = null;
         sleepEntries[index] = sleep.copyWith(endDate: endDate);
-        await sleepUC.edit(sleep);
+        await sleepUC.edit(sleepEntries[index]);
       }
     }
   }

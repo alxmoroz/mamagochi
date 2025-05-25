@@ -9,4 +9,10 @@ extension BabyPresenter on Baby? {
         height: size,
         width: size,
       );
+
+  Widget imageSleep({double? size}) => MTImage(
+        this?.isBoy == true ? 'baby_sleep' : 'baby_girl_sleep',
+        height: size,
+        width: size,
+      );
 }

@@ -72,6 +72,9 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
   }
 
   Widget _page(BuildContext context) {
+    final hc = mainController.selectedBabyController?.historyController;
+    final baby = mainController.selectedBabyController?.baby;
+
     return MTPage(
       key: widget.key,
       body: SafeArea(
@@ -85,10 +88,10 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
                 margin: const EdgeInsets.symmetric(horizontal: P2),
                 type: MTButtonType.main,
                 middle: const MTImage('menu', height: 60),
-                onTap: () => router.goHistory(mainController.selectedBabyController!.historyController)),
+                onTap: () => router.goHistory(hc!)),
           ),
           Align(
-            child: mainController.selectedBabyController?.baby.image(size: 300),
+            child: hc!.babyIsSleeping ? baby.imageSleep(size: 300) : baby.image(size: 300),
           ),
           const Align(
             alignment: Alignment.bottomCenter,

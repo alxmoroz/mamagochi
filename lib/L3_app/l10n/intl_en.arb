@@ -6,8 +6,8 @@
   "action_add_feed_title": "Fed",
   "action_start_sleep_title_boy": "Fell asleep",
   "action_start_sleep_title_girl": "Fell asleep",
-  "action_finish_sleep_title_boy": "Woke up",
-  "action_finish_sleep_title_girl": "Woke up",
+  "action_stop_sleep_title_boy": "Woke up",
+  "action_stop_sleep_title_girl": "Woke up",
 
   "action_apply_title": "Apply",
   "action_back_title": "Back",

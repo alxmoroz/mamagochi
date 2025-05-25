@@ -45,7 +45,7 @@ class _HistoryView extends StatelessWidget {
               final entry = group.elementAt(index);
               return MTListTile(
                 leading: entry.image(size: P10),
-                titleText: entry is Sleep && entry.duration.inMinutes > 1 ? '${loc.history_sleep_title} ${entry.duration.strInHoursAndMinutes}' : '',
+                titleText: entry is Sleep && entry.duration.inMinutes > 0 ? '${loc.history_sleep_title} ${entry.duration.strInHoursAndMinutes}' : '',
                 trailing: SmallText(entry.end.strTimeAgo),
                 bottomDivider: index < group.length - 1,
               );
