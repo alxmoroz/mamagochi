@@ -5,7 +5,7 @@ import 'base_entity.dart';
 class Baby extends LocalPersistable {
   Baby({required this.created, this.isBoy = true, this.name, this.dateOfBirth});
   final DateTime created;
-  final bool isBoy;
+  bool isBoy;
   String? name;
   DateTime? dateOfBirth;
 

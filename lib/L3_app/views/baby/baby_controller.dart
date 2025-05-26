@@ -25,6 +25,7 @@ class BabyController extends _Base with Loadable, _$BabyController {
 
   Future setBoyOrGirl(bool isBoy) async {
     await load(() async {
+      baby.isBoy = isBoy;
       await babyUC.editBaby(baby);
     });
   }

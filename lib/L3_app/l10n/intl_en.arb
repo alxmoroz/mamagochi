@@ -3,7 +3,8 @@
 
   "about_service_title": "About service",
 
-  "action_add_feed_title": "Fed",
+  "action_add_feed_title_boy": "Fed",
+  "action_add_feed_title_girl": "Fed",
   "action_start_sleep_title_boy": "Fell asleep",
   "action_start_sleep_title_girl": "Fell asleep",
   "action_stop_sleep_title_boy": "Woke up",

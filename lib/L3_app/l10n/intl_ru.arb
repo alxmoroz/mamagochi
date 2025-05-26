@@ -3,7 +3,8 @@
 
   "about_service_title": "О сервисе",
 
-  "action_add_feed_title": "Покушал",
+  "action_add_feed_title_boy": "Покушал",
+  "action_add_feed_title_girl": "Покушала",
   "action_start_sleep_title_boy": "Уснул",
   "action_start_sleep_title_girl": "Уснула",
   "action_stop_sleep_title_boy": "Проснулся",

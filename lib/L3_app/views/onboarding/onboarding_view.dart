@@ -32,19 +32,15 @@ class _OnboardingView extends StatelessWidget {
           ? LoaderScreen(_bc)
           : MTPage(
               body: MTAdaptive(
-                child: ListView(
-                  children: [
-                    if (_bc.isBoyOrGirlStep)
-                      BoyOrGirlStep(_bc)
-                    else if (_bc.isBabyNameStep)
-                      BabyNameStep(_bc)
-                    else if (_bc.isDateOfBirthStep)
-                      DateOfBirthStep(_bc)
-                    else if (_bc.isHelloBabyStep)
-                      HelloBabyStep(_bc)
-                  ],
-                ),
-              ),
+                  child: _bc.isBoyOrGirlStep
+                      ? BoyOrGirlStep(_bc)
+                      : _bc.isBabyNameStep
+                          ? BabyNameStep(_bc)
+                          : _bc.isDateOfBirthStep
+                              ? DateOfBirthStep(_bc)
+                              : _bc.isHelloBabyStep
+                                  ? HelloBabyStep(_bc)
+                                  : const SizedBox()),
             ),
     );
   }

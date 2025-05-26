@@ -23,7 +23,7 @@ class _MTSnackbarDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Timer(const Duration(milliseconds: 3000), () {
+    Timer(const Duration(milliseconds: 2000), () {
       if (context.mounted) Navigator.of(context).pop();
     });
 

@@ -16,27 +16,30 @@ class HelloBabyStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: [
-        H1(
-          loc.onboarding_hello_step_title(_bc.baby.name ?? _bc.baby.boyOrGirlStr),
-          align: TextAlign.center,
-          padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
-        ),
-        Center(child: _bc.baby.image()),
-        const SizedBox(height: P3),
-        BaseText.medium(
-          loc.onboarding_hello_step_text(_bc.baby.daysSinceBirth ?? ''),
-          align: TextAlign.center,
-        ),
-        const SizedBox(height: P3),
-        MTButton.main(
-          titleText: loc.lets_go_action_title,
-          onTap: router.pop,
-        ),
-      ],
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          H1(
+            loc.onboarding_hello_step_title(_bc.baby.name ?? _bc.baby.boyOrGirlStr),
+            align: TextAlign.center,
+            padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
+          ),
+          const SizedBox(height: P3),
+          Center(child: _bc.baby.image()),
+          const SizedBox(height: P3),
+          // BaseText.medium(
+          //   loc.onboarding_hello_step_text(_bc.baby.daysSinceBirth ?? ''),
+          //   align: TextAlign.center,
+          // ),
+          const SizedBox(height: P3),
+          MTButton.main(
+            titleText: loc.onboarding_hello_step_text(_bc.baby.daysSinceBirth ?? ''),
+            onTap: router.pop,
+          ),
+        ],
+      ),
     );
   }
 }

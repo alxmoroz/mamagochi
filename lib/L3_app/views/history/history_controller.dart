@@ -36,13 +36,14 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     await load(() async {
       await _stopSleep(endDate);
     });
+    showMTSnackbar(_baby.isBoy ? loc.action_stop_sleep_title_boy : loc.action_stop_sleep_title_girl);
   }
 
   Future addFeed() async {
     await load(() async {
       await _addFeed();
     });
-    showMTSnackbar(loc.action_add_feed_title);
+    showMTSnackbar(_baby.isBoy ? loc.action_add_feed_title_boy : loc.action_add_feed_title_girl);
   }
 }
 
@@ -53,8 +54,8 @@ abstract class _Base with Store {
   @observable
   ObservableList<Sleep> sleepEntries = ObservableList();
 
-  @observable
-  Sleep? currentSleep;
+  @computed
+  Sleep? get lastSleep => sleepEntries.lastOrNull;
 
   @action
   Future _fetchSleepEntries() async {
@@ -63,26 +64,23 @@ abstract class _Base with Store {
 
   @action
   Future _startSleep(DateTime startDate) async {
-    currentSleep = Sleep(created: now, startDate: startDate, babyCreatedTime: _baby.created);
-    sleepEntries.add(currentSleep!);
-    await sleepUC.edit(currentSleep!);
+    final sleep = Sleep(created: now, startDate: startDate, babyCreatedTime: _baby.created);
+    sleepEntries.add(sleep);
+    await sleepUC.edit(sleep);
   }
 
   @action
   Future _stopSleep(DateTime endDate) async {
-    final sleep = currentSleep;
+    final sleep = lastSleep;
     if (sleep != null) {
-      final index = sleepEntries.indexWhere((s) => s.created.isAtSameMomentAs(sleep.created));
-      if (index > -1) {
-        currentSleep = null;
-        sleepEntries[index] = sleep.copyWith(endDate: endDate);
-        await sleepUC.edit(sleepEntries[index]);
-      }
+      final index = sleepEntries.length - 1;
+      sleepEntries[index] = sleep.copyWith(endDate: endDate);
+      await sleepUC.edit(sleepEntries[index]);
     }
   }
 
   @computed
-  bool get babyIsSleeping => currentSleep != null;
+  bool get babyIsSleeping => lastSleep != null && lastSleep!.endDate == null;
 
   @computed
   bool get hasSleepEntriesToday => lastSleepEntry?.endIsToday == true;
