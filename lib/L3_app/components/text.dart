@@ -122,7 +122,7 @@ class H2 extends BaseText {
     super.height = 1.1,
     super.align,
     super.padding,
-  }) : super(sizeScale: 24 / _baseFontSize);
+  }) : super(weight: FontWeight.w500, sizeScale: 24 / _baseFontSize);
 }
 
 class SmallText extends BaseText {

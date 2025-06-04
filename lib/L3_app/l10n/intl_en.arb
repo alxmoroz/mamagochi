@@ -5,6 +5,7 @@
 
   "action_add_feed_title_boy": "Fed",
   "action_add_feed_title_girl": "Fed",
+
   "action_start_sleep_title_boy": "Fell asleep",
   "action_start_sleep_title_girl": "Fell asleep",
   "action_stop_sleep_title_boy": "Woke up",
@@ -12,6 +13,7 @@
 
   "action_apply_title": "Apply",
   "action_back_title": "Back",
+  "action_edit_title": "Change",
   "action_email_support_title": "Report a problem",
   "action_email_us_title": "Email us",
   "action_save_title": "Save",
@@ -30,9 +32,19 @@
 
   "days_count": "{count, plural, one{{count} day} other{{count} days}}",
 
+  "edit_sleep_start_date_title_boy": "What time did he fall asleep",
+  "edit_sleep_start_date_title_girl": "What time did she fall asleep",
+  "edit_sleep_end_date_title_boy": "What time did he wake up",
+  "edit_sleep_end_date_title_girl": "What time did she wake up",
+
   "history_title": "History",
   "history_empty_title": "There are no events yet",
   "history_sleep_title": "Sleep",
+
+  "how_much_sleep_boy": "Sleeps for\n{duration}",
+  "how_much_sleep_girl": "Sleeps for\n{duration}",
+  "how_much_slept_boy": "Slept for {duration}",
+  "how_much_slept_girl": "Slept for {duration}",
 
   "lets_go_action_title": "Let's get started",
 
@@ -51,7 +63,8 @@
   "onboarding_baby_date_of_birth_step_field_label_boy": "I was born on",
   "onboarding_baby_date_of_birth_step_field_label_girl": "I was born on",
   "onboarding_hello_step_title": "Hello, {name}",
-  "onboarding_hello_step_text": "Let's start your {day} day",
+  "onboarding_hello_step_text_born": "Let's start your {day} day",
+  "onboarding_hello_step_text_not_born": "Let's start your day",
 
   "ok": "Ok",
 

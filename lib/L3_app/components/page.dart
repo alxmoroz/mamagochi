@@ -24,6 +24,8 @@ class MTPage extends StatelessWidget {
     this.scrollController,
     this.scrollOffsetTop,
     this.onScrolled,
+    this.bg1Color,
+    this.bg2Color,
   });
 
   final PreferredSizeWidget? leftBar;
@@ -31,6 +33,8 @@ class MTPage extends StatelessWidget {
   final PreferredSizeWidget? navBar;
   final Widget body;
   final PreferredSizeWidget? bottomBar;
+  final Color? bg1Color;
+  final Color? bg2Color;
 
   final ScrollController? scrollController;
   final double? scrollOffsetTop;
@@ -86,6 +90,8 @@ class MTPage extends StatelessWidget {
             ),
           ),
         ),
+        bg1Color: bg1Color,
+        bg2Color: bg2Color,
       );
     }));
   }

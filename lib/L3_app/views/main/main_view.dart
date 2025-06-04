@@ -5,8 +5,11 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamagochi/L3_app/components/button.dart';
 import 'package:mamagochi/L3_app/components/constants.dart';
+import 'package:mamagochi/L3_app/components/datetime_picker.dart';
+import 'package:mamagochi/L3_app/components/text.dart';
 import 'package:mamagochi/L3_app/navigation/router.dart';
 import 'package:mamagochi/L3_app/presenters/baby.dart';
+import 'package:mamagochi/L3_app/presenters/duration.dart';
 import 'package:mamagochi/L3_app/views/history/history_view.dart';
 
 import '../../../L2_data/services/platform.dart';
@@ -16,6 +19,7 @@ import '../../components/page.dart';
 import '../../navigation/route.dart';
 import '../_base/loader_screen.dart';
 import '../app/services.dart';
+import '../history/history_controller.dart';
 import 'widgets/bottom_menu.dart';
 
 class MainRoute extends MTRoute {
@@ -71,11 +75,22 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  Future _tapEditStartSleep(HistoryController hc) async {
+    final startDate = hc.lastSleep?.startDate;
+    final baby = mainController.selectedBabyController?.baby;
+    final date = await MTDateTimePicker.show(baby!.isBoy ? loc.edit_sleep_start_date_title_boy : loc.edit_sleep_start_date_title_girl,
+            initialDate: startDate) ??
+        startDate;
+    await hc.editLastSleep(startDate: date);
+  }
+
   Widget _page(BuildContext context) {
     final hc = mainController.selectedBabyController?.historyController;
     final baby = mainController.selectedBabyController?.baby;
+    final sleepDuration = hc?.lastSleep?.durationFromStartToNow.strInHoursAndMinutes;
 
     return MTPage(
+      bg1Color: hc!.babyIsSleeping ? b1Color : b2Color,
       key: widget.key,
       body: SafeArea(
         child: Stack(children: [
@@ -88,10 +103,29 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
                 margin: const EdgeInsets.symmetric(horizontal: P2),
                 type: MTButtonType.main,
                 middle: const MTImage('menu', height: 60),
-                onTap: () => router.goHistory(hc!)),
+                onTap: () => router.goHistory(hc)),
           ),
+          hc.babyIsSleeping
+              ? Align(
+                  alignment: Alignment.topRight,
+                  child: MTButton(
+                    minSize: const Size(270, 90),
+                    constrained: false,
+                    color: b3Color,
+                    margin: const EdgeInsets.symmetric(horizontal: P2),
+                    type: MTButtonType.main,
+                    leading: const MTImage('time', height: 60),
+                    trailing: H2(
+                      baby!.isBoy ? loc.how_much_sleep_boy(sleepDuration!) : loc.how_much_sleep_girl(sleepDuration!),
+                      maxLines: 2,
+                      color: f2Color,
+                    ),
+                    onTap: () => _tapEditStartSleep(hc),
+                  ),
+                )
+              : const SizedBox(),
           Align(
-            child: hc!.babyIsSleeping ? baby.imageSleep(size: 300) : baby.image(size: 300),
+            child: hc.babyIsSleeping ? baby.imageSleep(size: 300) : baby.image(size: 300),
           ),
           const Align(
             alignment: Alignment.bottomCenter,

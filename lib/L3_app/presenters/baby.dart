@@ -4,14 +4,16 @@ import 'package:mamagochi/L1_domain/entities/baby.dart';
 import '../components/images.dart';
 
 extension BabyPresenter on Baby? {
+  String get sex => this?.isBoy == true ? 'boy' : 'girl';
+
   Widget image({double? size}) => MTImage(
-        this?.isBoy == true ? 'baby' : 'baby_girl',
+        sex,
         height: size,
         width: size,
       );
 
   Widget imageSleep({double? size}) => MTImage(
-        this?.isBoy == true ? 'baby_sleep' : 'baby_girl_sleep',
+        '${sex}_sleep',
         height: size,
         width: size,
       );

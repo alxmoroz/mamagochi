@@ -1,16 +1,18 @@
 // Copyright (c) 2024. Alexandr Moroz
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mamagochi/L1_domain/utils/dates.dart';
-import 'package:mamagochi/L3_app/components/button.dart';
-import 'package:mamagochi/L3_app/components/colors.dart';
-import 'package:mamagochi/L3_app/components/images.dart';
-import 'package:mamagochi/L3_app/components/text.dart';
-import 'package:mamagochi/L3_app/presenters/baby.dart';
-import 'package:mamagochi/L3_app/presenters/date.dart';
-import 'package:mamagochi/L3_app/views/app/services.dart';
-import 'package:mamagochi/L3_app/views/history/history_controller.dart';
+
+import '../../../../L1_domain/utils/dates.dart';
+import '../../../components/button.dart';
+import '../../../components/colors.dart';
+import '../../../components/images.dart';
+import '../../../components/text.dart';
+import '../../../presenters/baby.dart';
+import '../../../presenters/date.dart';
+import '../../app/services.dart';
+import '../../history/history_controller.dart';
 
 class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
   const BottomMenu({super.key});
@@ -20,15 +22,11 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
 
   Future _startSleep(HistoryController hc) async {
     DateTime? startDate = now;
-    // вызов диалога редактирования времени
-    // if (startDate != null) {
     hc.startSleep(startDate);
   }
 
   Future _stopSleep(HistoryController hc) async {
     DateTime? endDate = now;
-    // вызов диалога редактирования времени
-    // if (endDate != null) {
     hc.stopSleep(endDate);
   }
 

@@ -18,4 +18,5 @@ class Baby extends LocalPersistable {
   bool get defined => named && hasDateOfBirth;
   bool get named => name?.isNotEmpty == true;
   bool get hasDateOfBirth => dateOfBirth != null;
+  bool get wasBorn => hasDateOfBirth && daysSinceBirth! > 0;
 }

@@ -1,6 +1,8 @@
 // Copyright (c) 2025. Xenia Moroz
 
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:mamagochi/L3_app/presenters/duration.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../L1_domain/entities/abstract_entry.dart';
@@ -8,9 +10,12 @@ import '../../../L1_domain/entities/baby.dart';
 import '../../../L1_domain/entities/feed.dart';
 import '../../../L1_domain/entities/sleep.dart';
 import '../../../L1_domain/utils/dates.dart';
+import '../../components/colors.dart';
 import '../../components/snackbar_dialog.dart';
+import '../../components/text.dart';
 import '../_base/loadable.dart';
 import '../app/services.dart';
+import 'edit_sleep_dialog.dart';
 
 part 'history_controller.g.dart';
 
@@ -34,9 +39,27 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
 
   Future stopSleep(DateTime endDate) async {
     await load(() async {
-      await _stopSleep(endDate);
+      await _editSleep(lastSleep!, endDate: endDate);
     });
-    showMTSnackbar(_baby.isBoy ? loc.action_stop_sleep_title_boy : loc.action_stop_sleep_title_girl);
+
+    final hc = mainController.selectedBabyController?.historyController;
+    final sleepDuration = hc!.lastSleep!.durationFromStartToEnd.strInHoursAndMinutes;
+    showMTSnackbar(
+      _baby.isBoy ? loc.how_much_slept_boy(sleepDuration) : loc.how_much_slept_girl(sleepDuration),
+      titleAlign: TextAlign.start,
+      trailing: BaseText(loc.action_edit_title, color: mainBtnTitleColor),
+      onTap: () => EditSleepDialog.show(lastSleep!),
+    );
+  }
+
+  Future editSleep(Sleep sleep, {DateTime? startDate, DateTime? endDate}) async {
+    await load(() async {
+      await _editSleep(sleep, startDate: startDate, endDate: endDate);
+    });
+  }
+
+  Future editLastSleep({DateTime? startDate, DateTime? endDate}) async {
+    await editSleep(lastSleep!, startDate: startDate, endDate: endDate);
   }
 
   Future addFeed() async {
@@ -70,13 +93,11 @@ abstract class _Base with Store {
   }
 
   @action
-  Future _stopSleep(DateTime endDate) async {
-    final sleep = lastSleep;
-    if (sleep != null) {
-      final index = sleepEntries.length - 1;
-      sleepEntries[index] = sleep.copyWith(endDate: endDate);
-      await sleepUC.edit(sleepEntries[index]);
-    }
+  Future _editSleep(Sleep sleep, {DateTime? startDate, DateTime? endDate}) async {
+    final index = sleepEntries.indexWhere((s) => s.created == sleep.created);
+    final editedSleep = sleep.copyWith(startDate: startDate, endDate: endDate);
+    sleepEntries[index] = editedSleep;
+    await sleepUC.edit(editedSleep);
   }
 
   @computed

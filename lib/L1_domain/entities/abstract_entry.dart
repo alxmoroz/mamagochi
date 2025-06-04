@@ -14,6 +14,8 @@ abstract class AbstractEntry extends LocalPersistable {
   bool get endIsToday => end.date == today;
 
   Duration get duration => end.difference(start);
+  Duration get durationFromStartToEnd => end.difference(start);
+  Duration get durationFromStartToNow => now.difference(start);
 
   AbstractEntry copyWith({DateTime? startDate, DateTime? endDate});
 }
