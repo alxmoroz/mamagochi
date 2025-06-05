@@ -1,6 +1,9 @@
 // Copyright (c) 2025. Xenia Moroz
 
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
+import 'package:mamagochi/L3_app/components/adaptive.dart';
 import 'package:mamagochi/L3_app/components/text.dart';
 
 import '../../L1_domain/utils/dates.dart';
@@ -39,6 +42,9 @@ class _State extends State<MTDateTimePicker> {
 
   @override
   Widget build(BuildContext context) {
+    final screen = screenSize(context);
+    final datePickerHeight = min(380.0, screen.height * 0.6);
+
     return MTDialog(
       topBar: MTTopBar(middle: H1(widget.title, maxLines: 1)),
       body: ListView(
@@ -46,17 +52,18 @@ class _State extends State<MTDateTimePicker> {
         physics: const NeverScrollableScrollPhysics(),
         children: [
           SizedBox(
-            height: 350,
+            height: datePickerHeight,
             child: CupertinoDatePicker(
               initialDateTime: _date,
               maximumDate: now,
               use24hFormat: true,
-              onDateTimeChanged: (DateTime value) => _date = value,
+              onDateTimeChanged: (value) => _date = value,
             ),
           ),
           MTButton.main(titleText: loc.action_save_title, onTap: () => Navigator.of(context).pop(_date)),
         ],
       ),
+      forceBottomPadding: true,
     );
   }
 }

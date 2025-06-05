@@ -1,5 +1,7 @@
 // Copyright (c) 2024. Alexandr Moroz
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +15,7 @@ import 'package:mamagochi/L3_app/presenters/duration.dart';
 import 'package:mamagochi/L3_app/views/history/history_view.dart';
 
 import '../../../L2_data/services/platform.dart';
+import '../../components/adaptive.dart';
 import '../../components/colors.dart';
 import '../../components/images.dart';
 import '../../components/page.dart';
@@ -87,13 +90,21 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
   Widget _page(BuildContext context) {
     final hc = mainController.selectedBabyController?.historyController;
     final baby = mainController.selectedBabyController?.baby;
-    final sleepDuration = hc?.lastSleep?.durationFromStartToNow.strInHoursAndMinutes;
+    final sleepDuration = hc?.lastSleep?.durationFromStartToNow;
+    final sleepDurationStr = sleepDuration?.strInHoursAndMinutes;
+
+    final screen = screenSize(context);
+    final buttonSize = min(270.0, min(screen.width, screen.height) - 90 - 3 * P2);
 
     return MTPage(
       bg1Color: hc!.babyIsSleeping ? b1Color : b2Color,
       key: widget.key,
       body: SafeArea(
+        minimum: const EdgeInsets.symmetric(vertical: P5),
         child: Stack(children: [
+          Align(
+            child: hc.babyIsSleeping ? baby.imageSleep(size: 300) : baby.image(size: 300),
+          ),
           Align(
             alignment: Alignment.topLeft,
             child: MTButton(
@@ -109,14 +120,14 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
               ? Align(
                   alignment: Alignment.topRight,
                   child: MTButton(
-                    minSize: const Size(270, 90),
+                    minSize: Size(buttonSize, 90),
                     constrained: false,
                     color: b3Color,
                     margin: const EdgeInsets.symmetric(horizontal: P2),
                     type: MTButtonType.main,
                     leading: const MTImage('time', height: 60),
                     trailing: H2(
-                      baby!.isBoy ? loc.how_much_sleep_boy(sleepDuration!) : loc.how_much_sleep_girl(sleepDuration!),
+                      sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : loc.sleep_process_title,
                       maxLines: 2,
                       color: f2Color,
                     ),
@@ -124,9 +135,6 @@ class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
                   ),
                 )
               : const SizedBox(),
-          Align(
-            child: hc.babyIsSleeping ? baby.imageSleep(size: 300) : baby.image(size: 300),
-          ),
           const Align(
             alignment: Alignment.bottomCenter,
             child: BottomMenu(),

@@ -40,10 +40,10 @@
   "history_title": "История",
   "history_empty_title": "Записей пока нет",
   "history_feed_title": "Кормление",
-  "history_sleep_title": "Сон",
+  "history_sleep_title": "Сон {duration}",
+  "history_sleep_trailing_still_sleep": "ещё спит",
 
-  "how_much_sleep_boy": "Спит\n{duration}",
-  "how_much_sleep_girl": "Спит\n{duration}",
+  "how_much_sleep": "Спит\n{duration}",
   "how_much_slept_boy": "Поспал {duration}",
   "how_much_slept_girl": "Поспала {duration}",
 
@@ -75,6 +75,8 @@
   "sex_man": "Мальчик",
   "sex_woman": "Девочка",
 
+  "sleep_process_title": "Спит",
+
   "time_just_now": "только что",
   "time_hours": "{hours} ч",
   "time_hours_ago": "{hours} ч назад",
@@ -91,5 +93,5 @@
   "weeks_count_accusative": "{count, plural, one{{count} неделю} few{{count} недели} other{{count} недель}}",
 
   "years_count": "{count, plural, one{{count} год} few{{count} года} other{{count} лет}}",
-  "yesterday_date_title": "вчера"
+  "yesterday_date_title": "Вчера"
 }

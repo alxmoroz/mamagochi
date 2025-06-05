@@ -34,7 +34,7 @@ class _MyAppState extends State<_MTSnackbarDialog> {
 
   @override
   void initState() {
-    _closingTimer = Timer(const Duration(milliseconds: 2500), () {
+    _closingTimer = Timer(const Duration(milliseconds: 3000), () {
       if (context.mounted) Navigator.of(context).pop();
     });
     super.initState();

@@ -78,6 +78,7 @@ abstract class _Base with Store {
   ObservableList<Sleep> sleepEntries = ObservableList();
 
   @computed
+  // TODO: нужно уточнить логику тут: та, у которой нет даты конца или у которой самая поздняя дата конца. Иначе null
   Sleep? get lastSleep => sleepEntries.lastOrNull;
 
   @action

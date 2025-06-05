@@ -39,10 +39,10 @@
 
   "history_title": "History",
   "history_empty_title": "There are no events yet",
-  "history_sleep_title": "Sleep",
+  "history_sleep_title": "Sleep {duration}",
+  "history_sleep_trailing_still_sleep": "still sleeping",
 
-  "how_much_sleep_boy": "Sleeps for\n{duration}",
-  "how_much_sleep_girl": "Sleeps for\n{duration}",
+  "how_much_sleep": "Sleeps for\n{duration}",
   "how_much_slept_boy": "Slept for {duration}",
   "how_much_slept_girl": "Slept for {duration}",
 
@@ -74,6 +74,8 @@
   "sex_man": "Boy",
   "sex_woman": "Girl",
 
+  "sleep_process_title": "Sleeps",
+
   "time_just_now": "just now",
   "time_hours": "{hours} h",
   "time_hours_ago": "{hours} h ago",
@@ -90,5 +92,5 @@
   "weeks_count_accusative": "{count, plural, one{{count} week} other{{count} weeks}}",
 
   "years_count": "{count, plural, one{{count} year} other{{count} years}}",
-  "yesterday_date_title": "yesterday"
+  "yesterday_date_title": "Yesterday"
 }

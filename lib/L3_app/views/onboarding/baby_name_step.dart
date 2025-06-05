@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mamagochi/L3_app/components/adaptive.dart';
 
 import '../../components/button.dart';
 import '../../components/constants.dart';
@@ -23,26 +24,33 @@ class BabyNameStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(
-      builder: (_) => ListView(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          H1(
-            loc.onboarding_baby_name_step_title,
-            align: TextAlign.center,
-            padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
-          ),
-          Center(child: _bc.baby.image()),
-          MTTextField(
-            controller: _bc.teController(0),
-            label: loc.onboarding_baby_name_step_field_label,
-          ),
-          const SizedBox(height: P3),
-          MTButton.main(
-            titleText: loc.next_action_title,
-            onTap: _bc.validated ? _setName : null,
-          ),
-        ],
+      builder: (_) => Center(
+        child: ListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            H1(
+              loc.onboarding_baby_name_step_title,
+              align: TextAlign.center,
+              padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
+            ),
+            Center(child: _bc.baby.image()),
+            MTAdaptive.s(
+              child: MTTextField(
+                maxLines: 1,
+                controller: _bc.teController(0),
+                label: loc.onboarding_baby_name_step_field_label,
+                onSubmitted: (_) => _bc.validated ? _setName() : null,
+              ),
+            ),
+            const SizedBox(height: P3),
+            if (MediaQuery.viewInsetsOf(context).bottom == 0)
+              MTButton.main(
+                titleText: loc.next_action_title,
+                onTap: _bc.validated ? _setName : null,
+              ),
+          ],
+        ),
       ),
     );
   }

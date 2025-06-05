@@ -100,6 +100,7 @@ class EditSleepDialog extends StatelessWidget {
                   ),
                 ],
               ),
+              forceBottomPadding: true,
             );
     });
   }
