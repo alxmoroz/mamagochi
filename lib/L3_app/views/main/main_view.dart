@@ -52,29 +52,32 @@ class _MainView extends StatefulWidget {
   State<StatefulWidget> createState() => _MainViewState();
 }
 
-class _MainViewState extends State<_MainView> with WidgetsBindingObserver {
+class _MainViewState extends State<_MainView> {
+  AppLifecycleListener? _appstateListener;
+
   @override
   void initState() {
-    mainController.startup();
-    WidgetsBinding.instance.addObserver(this);
-
     super.initState();
-  }
+    if (isWeb || isSimulator) {
+      mainController.startup();
+    }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!isWeb) {
-      if (state == AppLifecycleState.resumed) {
-        mainController.startup();
-      } else {
-        mainController.onInactive();
-      }
+      _appstateListener = AppLifecycleListener(
+        onStateChange: (state) {
+          if (state == AppLifecycleState.resumed) {
+            mainController.startup();
+          } else {
+            mainController.onInactive();
+          }
+        },
+      );
     }
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    _appstateListener?.dispose();
     super.dispose();
   }
 

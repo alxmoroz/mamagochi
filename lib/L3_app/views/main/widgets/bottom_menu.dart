@@ -77,7 +77,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
                         ),
                         onTap: () => _startSleep(hc),
                       ),
-                Spacer(),
+                const Spacer(),
                 MTButton(
                   minSize: buttonSize,
                   constrained: false,

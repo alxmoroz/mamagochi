@@ -237,7 +237,7 @@ class MTButton extends StatelessWidget with GestureManaging {
               focusColor: Colors.transparent,
               child: CupertinoButton(
                 onPressed: _onPressed,
-                minSize: 0,
+                minimumSize: Size.zero,
                 padding: padding ?? EdgeInsets.zero,
                 color: color,
                 borderRadius: const BorderRadius.all(Radius.zero),

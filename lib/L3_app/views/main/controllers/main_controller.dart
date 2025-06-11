@@ -53,7 +53,11 @@ class MainController extends _Base with _$MainController {
     await bc.historyController.reload();
   }
 
-  void clear() {}
+  void clear() {
+    babiesControllers.clear();
+    selectedBabyController = null;
+    currentRoute = null;
+  }
 }
 
 abstract class _Base with Store, Loadable {
