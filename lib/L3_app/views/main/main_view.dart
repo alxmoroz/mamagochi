@@ -5,24 +5,24 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mamagochi/L3_app/components/button.dart';
-import 'package:mamagochi/L3_app/components/constants.dart';
-import 'package:mamagochi/L3_app/components/datetime_picker.dart';
-import 'package:mamagochi/L3_app/components/text.dart';
-import 'package:mamagochi/L3_app/navigation/router.dart';
-import 'package:mamagochi/L3_app/presenters/baby.dart';
-import 'package:mamagochi/L3_app/presenters/duration.dart';
-import 'package:mamagochi/L3_app/views/history/history_view.dart';
 
 import '../../../L2_data/services/platform.dart';
 import '../../components/adaptive.dart';
+import '../../components/button.dart';
 import '../../components/colors.dart';
+import '../../components/constants.dart';
+import '../../components/datetime_picker.dart';
 import '../../components/images.dart';
 import '../../components/page.dart';
+import '../../components/text.dart';
 import '../../navigation/route.dart';
+import '../../navigation/router.dart';
+import '../../presenters/baby.dart';
+import '../../presenters/duration.dart';
 import '../_base/loader_screen.dart';
 import '../app/services.dart';
 import '../history/history_controller.dart';
+import '../history/history_view.dart';
 import 'widgets/bottom_menu.dart';
 
 class MainRoute extends MTRoute {
@@ -54,24 +54,26 @@ class _MainView extends StatefulWidget {
 
 class _MainViewState extends State<_MainView> {
   AppLifecycleListener? _appstateListener;
+  AppLifecycleState? _currentLifecycleState;
+
+  void _lifecycleChanged(AppLifecycleState state) {
+    if (_currentLifecycleState != state) {
+      _currentLifecycleState = state;
+      if (state == AppLifecycleState.resumed) {
+        mainController.startup();
+      } else {
+        mainController.onInactive();
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    if (isWeb || isSimulator) {
-      mainController.startup();
-    }
+    _lifecycleChanged(AppLifecycleState.resumed);
 
     if (!isWeb) {
-      _appstateListener = AppLifecycleListener(
-        onStateChange: (state) {
-          if (state == AppLifecycleState.resumed) {
-            mainController.startup();
-          } else {
-            mainController.onInactive();
-          }
-        },
-      );
+      _appstateListener = AppLifecycleListener(onStateChange: _lifecycleChanged);
     }
   }
 
