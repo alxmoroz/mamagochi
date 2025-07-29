@@ -72,7 +72,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const MTImage('bed', height: 90),
-                            if (hc.hasSleepEntriesToday) SmallText(hc.lastSleepEntry!.end.strTimeAgo),
+                            if (hc.hasSleepEntriesToday) SmallText(hc.lastSleep!.end.strTimeAgo),
                           ],
                         ),
                         onTap: () => _startSleep(hc),
@@ -87,7 +87,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const MTImage('babybottle', height: 90),
-                      if (hc.hasFeedEntriesToday) SmallText(hc.lastFeedEntry!.end.strTimeAgo),
+                      if (hc.hasFeedEntriesToday) SmallText(hc.lastFeed!.end.strTimeAgo),
                     ],
                   ),
                   onTap: hc.addFeed,

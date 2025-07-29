@@ -75,29 +75,26 @@ abstract class _Base with Store {
 
   /// записи о сне
   @observable
-  ObservableList<Sleep> sleepEntries = ObservableList();
+  ObservableList<Sleep> _sleepEntries = ObservableList();
 
   @computed
-  // TODO: нужно уточнить логику тут: та, у которой нет даты конца или у которой самая поздняя дата конца. Иначе null
-  Sleep? get lastSleep => sleepEntries.lastOrNull;
+  Sleep? get lastSleep => _sortedSleepEntries.lastOrNull;
 
   @action
-  Future _fetchSleepEntries() async {
-    sleepEntries = ObservableList.of(await sleepUC.entries(_baby));
-  }
+  Future _fetchSleepEntries() async => _sleepEntries = ObservableList.of(await sleepUC.entries(_baby));
 
   @action
   Future _startSleep(DateTime startDate) async {
     final sleep = Sleep(created: now, startDate: startDate, babyCreatedTime: _baby.created);
-    sleepEntries.add(sleep);
+    _sleepEntries.add(sleep);
     await sleepUC.edit(sleep);
   }
 
   @action
   Future _editSleep(Sleep sleep, {DateTime? startDate, DateTime? endDate}) async {
-    final index = sleepEntries.indexWhere((s) => s.created == sleep.created);
+    final index = _sleepEntries.indexWhere((s) => s.created == sleep.created);
     final editedSleep = sleep.copyWith(startDate: startDate, endDate: endDate);
-    sleepEntries[index] = editedSleep;
+    _sleepEntries[index] = editedSleep;
     await sleepUC.edit(editedSleep);
   }
 
@@ -105,48 +102,43 @@ abstract class _Base with Store {
   bool get babyIsSleeping => lastSleep != null && lastSleep!.endDate == null;
 
   @computed
-  bool get hasSleepEntriesToday => lastSleepEntry?.endIsToday == true;
+  bool get hasSleepEntriesToday => lastSleep?.endIsToday == true;
 
   @computed
-  Sleep? get lastSleepEntry => sleepEntries.lastOrNull;
-
-  @computed
-  Iterable<Sleep> get sortedSleepEntries => sleepEntries.reversed;
+  Iterable<Sleep> get _sortedSleepEntries => _sleepEntries.sortedBy<DateTime>((e) => e.end);
 
   /// записи о кормлении
   @observable
-  ObservableList<Feed> feedEntries = ObservableList();
+  ObservableList<Feed> _feedEntries = ObservableList();
 
   @action
-  Future _fetchFeedEntries() async {
-    feedEntries = ObservableList.of(await feedUC.entries(_baby));
-  }
+  Future _fetchFeedEntries() async => _feedEntries = ObservableList.of(await feedUC.entries(_baby));
 
   @action
   Future _addFeed() async {
     final feed = Feed(created: now, babyCreatedTime: _baby.created);
-    feedEntries.add(feed);
+    _feedEntries.add(feed);
     await feedUC.edit(feed);
   }
 
   @computed
-  bool get hasFeedEntriesToday => lastFeedEntry?.endIsToday == true;
+  bool get hasFeedEntriesToday => lastFeed?.endIsToday == true;
 
   @computed
-  Feed? get lastFeedEntry => feedEntries.lastOrNull;
+  Feed? get lastFeed => _sortedFeedEntries.lastOrNull;
 
   @computed
-  Iterable<Feed> get sortedFeedEntries => feedEntries.reversed;
+  Iterable<Feed> get _sortedFeedEntries => _feedEntries.sortedBy<DateTime>((e) => e.end);
 
   /// общие
   @computed
-  Iterable<AbstractEntry> get _entries => [...feedEntries, ...sleepEntries];
+  Iterable<AbstractEntry> get _entries => [..._feedEntries, ..._sleepEntries];
 
   @computed
-  Iterable<AbstractEntry> get sortedEntries => _entries.sortedBy<DateTime>((e) => e.end).reversed;
-
-  @computed
-  Map<DateTime, Iterable<AbstractEntry>> get groupedEntries => sortedEntries.groupListsBy((e) => e.end.date);
+  Map<DateTime, Iterable<AbstractEntry>> get groupedEntries {
+    final sorted = _entries.sortedBy<DateTime>((e) => e.end).reversed;
+    return sorted.groupListsBy((e) => e.end.date);
+  }
 
   @computed
   bool get hasEntries => _entries.isNotEmpty;
