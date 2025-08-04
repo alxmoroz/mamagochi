@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mamagochi/L3_app/presenters/duration.dart';
-import 'package:mamagochi/L3_app/presenters/entry.dart';
 
 import '../../../L1_domain/entities/abstract_entry.dart';
+import '../../../L1_domain/entities/feed.dart';
 import '../../../L1_domain/entities/sleep.dart';
 import '../../components/constants.dart';
 import '../../components/images.dart';
@@ -13,7 +12,11 @@ import '../../components/text.dart';
 import '../../components/toolbar.dart';
 import '../../navigation/route.dart';
 import '../../presenters/date.dart';
+import '../../presenters/duration.dart';
+import '../../presenters/entry.dart';
 import '../app/services.dart';
+import 'edit_feed_dialog.dart';
+import 'edit_sleep_dialog.dart';
 import 'history_controller.dart';
 
 class HistoryRoute extends MTRoute {
@@ -50,6 +53,13 @@ class _HistoryView extends StatelessWidget {
                     : '',
                 trailing: SmallText(entry is Sleep && entry.endDate == null ? loc.history_sleep_trailing_still_sleep : entry.end.strTimeAgo),
                 bottomDivider: index < group.length - 1,
+                onTap: () {
+                  if (entry is Sleep) {
+                    EditSleepDialog.show(entry);
+                  } else if (entry is Feed) {
+                    EditFeedDialog.show(entry);
+                  }
+                },
               );
             })
       ],

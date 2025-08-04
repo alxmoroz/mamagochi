@@ -15,6 +15,7 @@ import '../../components/snackbar_dialog.dart';
 import '../../components/text.dart';
 import '../_base/loadable.dart';
 import '../app/services.dart';
+import 'edit_feed_dialog.dart';
 import 'edit_sleep_dialog.dart';
 
 part 'history_controller.g.dart';
@@ -63,10 +64,19 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
   }
 
   Future addFeed() async {
+    await load(_addFeed);
+    showMTSnackbar(
+      _baby.isBoy ? loc.action_add_feed_title_boy : loc.action_add_feed_title_girl,
+      titleAlign: TextAlign.start,
+      trailing: BaseText(loc.action_edit_title, color: mainBtnTitleColor),
+      onTap: () => EditFeedDialog.show(lastFeed!),
+    );
+  }
+
+  Future editFeed(Feed feed, DateTime endDate) async {
     await load(() async {
-      await _addFeed();
+      await _editFeed(feed, endDate);
     });
-    showMTSnackbar(_baby.isBoy ? loc.action_add_feed_title_boy : loc.action_add_feed_title_girl);
   }
 }
 
@@ -119,6 +129,14 @@ abstract class _Base with Store {
     final feed = Feed(created: now, babyCreatedTime: _baby.created);
     _feedEntries.add(feed);
     await feedUC.edit(feed);
+  }
+
+  @action
+  Future _editFeed(Feed feed, DateTime endDate) async {
+    final index = _feedEntries.indexWhere((s) => s.created == feed.created);
+    final editedFeed = feed.copyWith(endDate: endDate);
+    _feedEntries[index] = editedFeed;
+    await feedUC.edit(editedFeed);
   }
 
   @computed
