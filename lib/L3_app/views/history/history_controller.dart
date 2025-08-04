@@ -78,6 +78,12 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await _editFeed(feed, endDate);
     });
   }
+
+  Future deleteEntry(AbstractEntry entry) async {
+    await load(() async {
+      await _deleteEntry(entry);
+    });
+  }
 }
 
 abstract class _Base with Store {
@@ -133,7 +139,7 @@ abstract class _Base with Store {
 
   @action
   Future _editFeed(Feed feed, DateTime endDate) async {
-    final index = _feedEntries.indexWhere((s) => s.created == feed.created);
+    final index = _feedEntries.indexWhere((f) => f.created == feed.created);
     final editedFeed = feed.copyWith(endDate: endDate);
     _feedEntries[index] = editedFeed;
     await feedUC.edit(editedFeed);
@@ -160,4 +166,15 @@ abstract class _Base with Store {
 
   @computed
   bool get hasEntries => _entries.isNotEmpty;
+
+  @action
+  Future _deleteEntry(AbstractEntry entry) async {
+    if (entry is Feed) {
+      _feedEntries.remove(entry);
+      await feedUC.delete(entry);
+    } else if (entry is Sleep) {
+      _sleepEntries.remove(entry);
+      await sleepUC.delete(entry);
+    }
+  }
 }

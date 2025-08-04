@@ -100,7 +100,6 @@ const defaultBarrierColor = CupertinoDynamicColor.withBrightness(
 );
 
 /// фон барьера клавиатуры
-
 const b1BarrierColor = CupertinoDynamicColor.withBrightness(
   color: Color.fromARGB(200, _b1R, _b1G, _b1B),
   darkColor: Color.fromARGB(200, _b1R_d, _b1G_d, _b1B_d),
@@ -162,6 +161,12 @@ const dangerColor = CupertinoDynamicColor.withBrightness(
 const warningColor = CupertinoDynamicColor.withBrightness(
   color: Color.fromARGB(255, 255, 192, 8),
   darkColor: Color.fromARGB(255, 255, 200, 20),
+);
+
+// цвет для текста и иконок, которые должны оставаться белыми в светлой и тёмной теме
+const whiteColor = CupertinoDynamicColor.withBrightness(
+  color: Color.fromARGB(255, _b3R, _b3G, _b3B),
+  darkColor: Color.fromARGB(255, _b3R, _b3G, _b3B),
 );
 
 // цвет текста на основной кнопке

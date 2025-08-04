@@ -21,6 +21,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_mobx: any
+  flutter_slidable: any
   get_it: any
   go_router: any
   hive: any

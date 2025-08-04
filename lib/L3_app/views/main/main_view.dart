@@ -132,7 +132,7 @@ class _MainViewState extends State<_MainView> {
                     type: MTButtonType.main,
                     leading: const MTImage('time', height: 60),
                     trailing: H2(
-                      sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : loc.sleep_process_title,
+                      sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : loc.sleep_just_now_title,
                       maxLines: 2,
                       color: f2Color,
                     ),

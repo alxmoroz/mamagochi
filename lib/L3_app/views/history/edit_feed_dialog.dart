@@ -68,7 +68,7 @@ class EditFeedDialog extends StatelessWidget {
                     elevation: 0,
                     child: MTListTile(
                       leading: const MTImage('time', height: 60),
-                      middle: BaseText(Intl.message('action_add_feed_title_${_baby.sex}')),
+                      middle: BaseText(Intl.message('edit_feed_date_title_${_baby.sex}')),
                       subtitle: H2('${_fc.feed.end.strMedium}, ${_fc.feed.end.strTime}'),
                       bottomDivider: false,
                       onTap: _editEnd,

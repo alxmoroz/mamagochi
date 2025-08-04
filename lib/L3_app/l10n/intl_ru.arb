@@ -37,6 +37,9 @@
   "edit_sleep_end_date_title_boy": "Во сколько проснулся",
   "edit_sleep_end_date_title_girl": "Во сколько проснулась",
 
+  "edit_feed_date_title_boy": "Во сколько покушал",
+  "edit_feed_date_title_girl": "Во сколько покушала",
+
   "history_title": "История",
   "history_empty_title": "Записей пока нет",
   "history_feed_title": "Кормление",
@@ -75,7 +78,7 @@
   "sex_man": "Мальчик",
   "sex_woman": "Девочка",
 
-  "sleep_process_title": "Спит",
+  "sleep_just_now_title": "Только что\nуснул",
 
   "time_just_now": "только что",
   "time_hours": "{hours} ч",

@@ -37,6 +37,9 @@
   "edit_sleep_end_date_title_boy": "What time did he wake up",
   "edit_sleep_end_date_title_girl": "What time did she wake up",
 
+  "edit_feed_date_title_boy": "What time did he fed",
+  "edit_feed_date_title_girl": "What time did she fed",
+
   "history_title": "History",
   "history_empty_title": "There are no events yet",
   "history_sleep_title": "Sleep {duration}",
@@ -74,7 +77,7 @@
   "sex_man": "Boy",
   "sex_woman": "Girl",
 
-  "sleep_process_title": "Sleeps",
+  "sleep_just_now_title": "Just fell\nasleep",
 
   "time_just_now": "just now",
   "time_hours": "{hours} h",

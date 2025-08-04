@@ -17,4 +17,11 @@ class FeedUC {
       feed,
     );
   }
+
+  Future delete(Feed feed) async {
+    await repo.delete(
+      (saved) => saved.created.isAtSameMomentAs(feed.created),
+      feed,
+    );
+  }
 }

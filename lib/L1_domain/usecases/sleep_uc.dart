@@ -17,4 +17,11 @@ class SleepUC {
       sleep,
     );
   }
+
+  Future delete(Sleep sleep) async {
+    await repo.delete(
+      (saved) => saved.created.isAtSameMomentAs(sleep.created),
+      sleep,
+    );
+  }
 }
