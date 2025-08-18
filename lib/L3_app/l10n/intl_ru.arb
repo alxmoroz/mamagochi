@@ -40,6 +40,11 @@
   "edit_feed_date_title_boy": "Во сколько покушал",
   "edit_feed_date_title_girl": "Во сколько покушала",
 
+  "feed_type_right_breast": "Правая",
+  "feed_type_left_breast": "Левая",
+  "feed_type_baby_formula": "Смесь",
+  "feed_type_milk": "Молоко",
+
   "history_title": "История",
   "history_empty_title": "Записей пока нет",
   "history_feed_title": "Кормление",

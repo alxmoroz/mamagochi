@@ -31,6 +31,7 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     });
   }
 
+  /// сон
   Future startSleep(DateTime startDate) async {
     await load(() async {
       await _startSleep(startDate);
@@ -63,8 +64,11 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     await editSleep(lastSleep!, startDate: startDate, endDate: endDate);
   }
 
-  Future addFeed() async {
-    await load(_addFeed);
+  /// кормление
+  Future addFeed(FeedingType type) async {
+    await load(() async {
+      await _addFeed(type);
+    });
     showMTSnackbar(
       _baby.isBoy ? loc.action_add_feed_title_boy : loc.action_add_feed_title_girl,
       titleAlign: TextAlign.start,
@@ -73,12 +77,13 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     );
   }
 
-  Future editFeed(Feed feed, DateTime endDate) async {
+  Future editFeed(Feed feed, DateTime endDate, FeedingType type) async {
     await load(() async {
-      await _editFeed(feed, endDate);
+      await _editFeed(feed, endDate, type);
     });
   }
 
+  /// общие
   Future deleteEntry(AbstractEntry entry) async {
     await load(() async {
       await _deleteEntry(entry);
@@ -131,16 +136,16 @@ abstract class _Base with Store {
   Future _fetchFeedEntries() async => _feedEntries = ObservableList.of(await feedUC.entries(_baby));
 
   @action
-  Future _addFeed() async {
-    final feed = Feed(created: now, babyCreatedTime: _baby.created);
+  Future _addFeed(FeedingType type) async {
+    final feed = Feed(created: now, babyCreatedTime: _baby.created, type: type);
     _feedEntries.add(feed);
     await feedUC.edit(feed);
   }
 
   @action
-  Future _editFeed(Feed feed, DateTime endDate) async {
+  Future _editFeed(Feed feed, DateTime endDate, FeedingType type) async {
     final index = _feedEntries.indexWhere((f) => f.created == feed.created);
-    final editedFeed = feed.copyWith(endDate: endDate);
+    final editedFeed = feed.copyWith(endDate: endDate, type: type);
     _feedEntries[index] = editedFeed;
     await feedUC.edit(editedFeed);
   }

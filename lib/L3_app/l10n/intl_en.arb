@@ -40,6 +40,11 @@
   "edit_feed_date_title_boy": "What time did he fed",
   "edit_feed_date_title_girl": "What time did she fed",
 
+  "feed_type_right_breast": "Right",
+  "feed_type_left_breast": "Left",
+  "feed_type_baby_formula": "Baby formula",
+  "feed_type_milk": "Milk",
+
   "history_title": "History",
   "history_empty_title": "There are no events yet",
   "history_sleep_title": "Sleep {duration}",

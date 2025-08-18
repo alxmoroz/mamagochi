@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:mamagochi/L3_app/presenters/feed.dart';
 
 import '../../../L1_domain/entities/abstract_entry.dart';
 import '../../../L1_domain/entities/feed.dart';
@@ -71,11 +72,17 @@ class _HistoryView extends StatelessWidget {
                   ],
                 ),
                 child: MTListTile(
-                  leading: entry.image(size: P10),
+                  leading: entry is Feed ? entry.feedImage(size: P10) : entry.image(size: P10),
                   titleText: entry is Sleep && entry.duration.inMinutes > 0 && entry.endDate != null
                       ? loc.history_sleep_title(entry.duration.strInHoursAndMinutes)
-                      : '',
-                  trailing: SmallText(entry is Sleep && entry.endDate == null ? loc.history_sleep_trailing_still_sleep : entry.end.strTimeAgo),
+                      : entry is Feed
+                          ? entry.feedTypeName
+                          : '',
+                  trailing: SmallText(entry is Sleep && entry.endDate == null
+                      ? loc.history_sleep_trailing_still_sleep
+                      : entry is Sleep && entry.duration.inMinutes > 0
+                          ? '${entry.start.strTime}\n${entry.end.strTime}'
+                          : entry.end.strTimeAgo),
                   bottomDivider: index < group.length - 1,
                   onTap: () {
                     if (entry is Sleep) {

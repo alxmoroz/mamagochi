@@ -47,7 +47,7 @@ class EditFeedDialog extends StatelessWidget {
   Future _editEnd() async {
     final end = await MTDateTimePicker.show(Intl.message('action_add_feed_title_${_baby.sex}'), initialDate: _fc.feed.end);
     if (end != null) {
-      await _hc.editFeed(_fc.feed, end);
+      await _hc.editFeed(_fc.feed, end, _fc.feed.type);
       _fc.setEnd(end);
     }
   }
