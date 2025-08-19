@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mamagochi/L1_domain/entities/baby.dart';
 
+import '/../L1_domain/entities/baby.dart';
 import '../components/images.dart';
 
 extension BabyPresenter on Baby? {
   String get sex => this?.isBoy == true ? 'boy' : 'girl';
 
   Widget image({double? size}) => MTImage(
-        sex,
+        this?.isOlderNineMonths == true ? '${sex}_with_teeth' : sex,
         height: size,
         width: size,
       );

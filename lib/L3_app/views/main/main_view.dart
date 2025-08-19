@@ -108,7 +108,7 @@ class _MainViewState extends State<_MainView> {
         minimum: const EdgeInsets.symmetric(vertical: P5),
         child: Stack(children: [
           Align(
-            child: hc.babyIsSleeping ? baby.imageSleep(size: 300) : baby.image(size: 300),
+            child: hc.babyIsSleeping ? baby!.imageSleep(size: 300) : baby!.image(size: 300),
           ),
           Align(
             alignment: Alignment.topLeft,

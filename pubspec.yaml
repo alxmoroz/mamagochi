@@ -26,6 +26,7 @@ dependencies:
   go_router: any
   hive: any
   intl: any
+  jiffy: any
   mobx: any
   package_info_plus: ^8.0.0
   path_provider: any
