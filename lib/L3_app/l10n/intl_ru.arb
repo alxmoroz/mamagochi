@@ -39,6 +39,9 @@
 
   "edit_feed_date_title_boy": "Во сколько покушал",
   "edit_feed_date_title_girl": "Во сколько покушала",
+  "edit_feed_breast_title": "Кормление грудью",
+  "edit_feed_milk_bottle_title": "Кормление молоком",
+  "edit_feed_baby_formula_title": "Кормление смесью",
 
   "feed_type_right_breast": "Правая",
   "feed_type_left_breast": "Левая",

@@ -24,7 +24,7 @@ class FeedHO extends BaseModel<Feed> {
   DateTime? babyCreatedTime;
 
   @HiveField(4)
-  FeedingType? type;
+  String? type;
 
   @HiveField(5)
   int? count;
@@ -35,7 +35,7 @@ class FeedHO extends BaseModel<Feed> {
         startDate: start,
         endDate: end,
         babyCreatedTime: babyCreatedTime ?? now,
-        type: type ?? FeedingType.right_breast,
+        type: FeedingType.fromString(type),
         count: count,
       );
 
@@ -45,7 +45,7 @@ class FeedHO extends BaseModel<Feed> {
     start = entity.startDate;
     end = entity.endDate;
     babyCreatedTime = entity.babyCreatedTime;
-    type = entity.type;
+    type = entity.type.name;
     count = entity.count;
     await save();
     return this;

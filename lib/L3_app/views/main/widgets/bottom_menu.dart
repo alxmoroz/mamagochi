@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mamagochi/L3_app/views/main/widgets/feed_type_dialog.dart';
 
 import '../../../../L1_domain/utils/dates.dart';
 import '../../../components/adaptive.dart';
@@ -91,7 +90,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
                       if (hc.hasFeedEntriesToday) SmallText(hc.lastFeed!.end.strTimeAgo),
                     ],
                   ),
-                  onTap: FeedTypeDialog.show,
+                  onTap: hc.addFeed,
                 ),
                 const SizedBox(width: P2),
               ],

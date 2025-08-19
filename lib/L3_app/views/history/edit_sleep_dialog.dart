@@ -10,8 +10,8 @@ import 'package:mamagochi/L3_app/components/list_tile.dart';
 import 'package:mamagochi/L3_app/components/text.dart';
 import 'package:mamagochi/L3_app/components/toolbar.dart';
 import 'package:mamagochi/L3_app/presenters/baby.dart';
-import 'package:mamagochi/L3_app/presenters/date.dart';
 import 'package:mamagochi/L3_app/presenters/duration.dart';
+import 'package:mamagochi/L3_app/presenters/entry.dart';
 import 'package:mamagochi/L3_app/views/_base/loader_screen.dart';
 import 'package:mobx/mobx.dart';
 
@@ -81,7 +81,7 @@ class EditSleepDialog extends StatelessWidget {
                     child: MTListTile(
                       leading: const MTImage('eye_closed', height: 60),
                       middle: BaseText(Intl.message('action_start_sleep_title_${_baby.sex}')),
-                      subtitle: H2('${_sc.sleep.start.strMedium}, ${_sc.sleep.start.strTime}'),
+                      subtitle: H2(_sc.sleep.startDateTime),
                       bottomDivider: false,
                       onTap: _editStart,
                     ),
@@ -93,7 +93,7 @@ class EditSleepDialog extends StatelessWidget {
                     child: MTListTile(
                       leading: const MTImage('eye', height: 60),
                       middle: BaseText(Intl.message('action_stop_sleep_title_${_baby.sex}')),
-                      subtitle: H2('${_sc.sleep.end.strMedium}, ${_sc.sleep.end.strTime}'),
+                      subtitle: H2(_sc.sleep.endDateTime),
                       bottomDivider: false,
                       onTap: _editEnd,
                     ),

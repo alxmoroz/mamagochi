@@ -55,6 +55,9 @@ class _HistoryView extends StatelessWidget {
             itemCount: group.length,
             itemBuilder: (_, index) {
               final entry = group.elementAt(index);
+              final isStillSleep = entry is Sleep && entry.endDate == null;
+              final isMoreMinute = entry.duration.inMinutes > 0;
+
               return Slidable(
                 key: ObjectKey(entry),
                 endActionPane: ActionPane(
@@ -73,24 +76,22 @@ class _HistoryView extends StatelessWidget {
                 ),
                 child: MTListTile(
                   leading: entry is Feed ? entry.feedImage(size: P10) : entry.image(size: P10),
-                  titleText: entry is Sleep && entry.duration.inMinutes > 0 && entry.endDate != null
+                  titleText: isStillSleep && isMoreMinute
                       ? loc.history_sleep_title(entry.duration.strInHoursAndMinutes)
                       : entry is Feed
                           ? entry.feedTypeName
                           : '',
-                  trailing: SmallText(entry is Sleep && entry.endDate == null
+                  trailing: SmallText(isStillSleep
                       ? loc.history_sleep_trailing_still_sleep
-                      : entry is Sleep && entry.duration.inMinutes > 0
+                      : isMoreMinute
                           ? '${entry.start.strTime}\n${entry.end.strTime}'
                           : entry.end.strTimeAgo),
                   bottomDivider: index < group.length - 1,
-                  onTap: () {
-                    if (entry is Sleep) {
-                      EditSleepDialog.show(entry);
-                    } else if (entry is Feed) {
-                      EditFeedDialog.show(entry);
-                    }
-                  },
+                  onTap: () => entry is Sleep
+                      ? EditSleepDialog.show(entry)
+                      : entry is Feed
+                          ? EditFeedDialog.show(entry)
+                          : null,
                 ),
               );
             })

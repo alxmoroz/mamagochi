@@ -39,6 +39,9 @@
 
   "edit_feed_date_title_boy": "What time did he fed",
   "edit_feed_date_title_girl": "What time did she fed",
+  "edit_feed_breast_title": "Breastfeeding",
+  "edit_feed_milk_bottle_title": "Milk feeding",
+  "edit_feed_baby_formula_title": "Baby formula feeding",
 
   "feed_type_right_breast": "Right",
   "feed_type_left_breast": "Left",

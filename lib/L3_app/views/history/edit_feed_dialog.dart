@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../../L1_domain/entities/baby.dart';
+import '/../L3_app/presenters/entry.dart';
+import '/../L3_app/presenters/feed.dart';
 import '../../../L1_domain/entities/feed.dart';
 import '../../components/card.dart';
 import '../../components/constants.dart';
@@ -13,8 +13,6 @@ import '../../components/images.dart';
 import '../../components/list_tile.dart';
 import '../../components/text.dart';
 import '../../components/toolbar.dart';
-import '../../presenters/baby.dart';
-import '../../presenters/date.dart';
 import '../_base/loader_screen.dart';
 import '../app/services.dart';
 import 'history_controller.dart';
@@ -42,10 +40,9 @@ class EditFeedDialog extends StatelessWidget {
   static Future show(Feed feed) async => await showMTDialog(EditFeedDialog._(_EditFeedController(feed)));
 
   HistoryController get _hc => mainController.selectedBabyController!.historyController;
-  Baby get _baby => mainController.selectedBabyController!.baby;
 
   Future _editEnd() async {
-    final end = await MTDateTimePicker.show(Intl.message('action_add_feed_title_${_baby.sex}'), initialDate: _fc.feed.end);
+    final end = await MTDateTimePicker.show(_fc.feed.editFeedDateTimeTitle, initialDate: _fc.feed.end);
     if (end != null) {
       await _hc.editFeed(_fc.feed, end, _fc.feed.type);
       _fc.setEnd(end);
@@ -58,7 +55,7 @@ class EditFeedDialog extends StatelessWidget {
       return _hc.loading
           ? LoaderScreen(_hc)
           : MTDialog(
-              topBar: MTTopBar(middle: H1(Intl.message('action_add_feed_title_${_baby.sex}'))),
+              topBar: MTTopBar(middle: H1(_fc.feed.editFeedTitle)),
               body: ListView(
                 shrinkWrap: true,
                 children: [
@@ -68,8 +65,8 @@ class EditFeedDialog extends StatelessWidget {
                     elevation: 0,
                     child: MTListTile(
                       leading: const MTImage('time', height: 60),
-                      middle: BaseText(Intl.message('edit_feed_date_title_${_baby.sex}')),
-                      subtitle: H2('${_fc.feed.end.strMedium}, ${_fc.feed.end.strTime}'),
+                      middle: BaseText(_fc.feed.editFeedDateTimeTitle),
+                      subtitle: H2(_fc.feed.endDateTime),
                       bottomDivider: false,
                       onTap: _editEnd,
                     ),

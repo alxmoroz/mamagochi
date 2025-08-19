@@ -2,9 +2,9 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mamagochi/L3_app/presenters/duration.dart';
 import 'package:mobx/mobx.dart';
 
+import '/../L3_app/presenters/duration.dart';
 import '../../../L1_domain/entities/abstract_entry.dart';
 import '../../../L1_domain/entities/baby.dart';
 import '../../../L1_domain/entities/feed.dart';
@@ -15,6 +15,7 @@ import '../../components/snackbar_dialog.dart';
 import '../../components/text.dart';
 import '../_base/loadable.dart';
 import '../app/services.dart';
+import '../main/widgets/feed_type_dialog.dart';
 import 'edit_feed_dialog.dart';
 import 'edit_sleep_dialog.dart';
 
@@ -65,16 +66,22 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
   }
 
   /// кормление
-  Future addFeed(FeedingType type) async {
-    await load(() async {
-      await _addFeed(type);
-    });
-    showMTSnackbar(
-      _baby.isBoy ? loc.action_add_feed_title_boy : loc.action_add_feed_title_girl,
-      titleAlign: TextAlign.start,
-      trailing: BaseText(loc.action_edit_title, color: mainBtnTitleColor),
-      onTap: () => EditFeedDialog.show(lastFeed!),
-    );
+  Future addFeed() async {
+    final feedType = await FeedTypeDialog.show();
+    if (feedType != null) {
+      await load(() async {
+        await _addFeed(feedType);
+      });
+
+      if (feedType.isBottle == true) await EditFeedDialog.show(lastFeed!);
+
+      showMTSnackbar(
+        _baby.isBoy ? loc.action_add_feed_title_boy : loc.action_add_feed_title_girl,
+        titleAlign: TextAlign.start,
+        trailing: BaseText(loc.action_edit_title, color: mainBtnTitleColor),
+        onTap: () => EditFeedDialog.show(lastFeed!),
+      );
+    }
   }
 
   Future editFeed(Feed feed, DateTime endDate, FeedingType type) async {

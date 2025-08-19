@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import 'abstract_entry.dart';
 
 enum FeedingType {
@@ -11,16 +13,15 @@ enum FeedingType {
   bool get isBreast => isRightBreast || isLeftBreast;
   bool get isBabyFormula => this == baby_formula_bottle;
   bool get isMilkBottle => this == milk_bottle;
+  bool get isBottle => isBabyFormula || isMilkBottle;
+
+  static FeedingType fromString(String? name) => values.firstWhereOrNull((v) => v.name.toLowerCase() == name?.toLowerCase()) ?? right_breast;
 }
 
 class Feed extends AbstractEntry {
   Feed({required super.created, super.startDate, super.endDate, required super.babyCreatedTime, required this.type, this.count});
   final FeedingType type;
   int? count;
-
-  // TODO: Это лучше в презентер перенести
-  @override
-  String toString() => 'Кормление $type, $endDate';
 
   @override
   Feed copyWith({DateTime? startDate, DateTime? endDate, FeedingType? type, int? count}) => Feed(
