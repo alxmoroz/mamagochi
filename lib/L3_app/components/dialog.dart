@@ -65,15 +65,16 @@ Future<T?> showMTDialog<T>(
   Widget child, {
   double? maxWidth,
   bool forceBottomSheet = false,
+  bool forceCenter = false,
   Color? barrierColor,
 }) async {
-  return !forceBottomSheet && isBigScreen(globalContext)
+  return forceCenter || (!forceBottomSheet && isBigScreen(globalContext))
       ? await showDialog<T?>(
           context: globalContext,
           barrierColor: (barrierColor ?? defaultBarrierColor).resolve(globalContext),
           useRootNavigator: false,
           useSafeArea: false,
-          builder: (_) => _constrainedDialog(globalContext, child, maxWidth: maxWidth),
+          builder: (_) => forceCenter ? child : _constrainedDialog(globalContext, child, maxWidth: maxWidth),
         )
       : await showModalBottomSheet<T?>(
           context: globalContext,

@@ -1,4 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:math';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../../../L1_domain/entities/feed.dart';
@@ -14,7 +16,7 @@ import '../../history/history_controller.dart';
 class FeedTypeDialog extends StatelessWidget {
   const FeedTypeDialog._();
 
-  static Future<FeedingType?> show() async => await showMTDialog(const FeedTypeDialog._());
+  static Future<FeedingType?> show() async => await showMTDialog(const FeedTypeDialog._(), forceCenter: true);
 
   HistoryController get _hc => mainController.selectedBabyController!.historyController;
 
@@ -22,110 +24,102 @@ class FeedTypeDialog extends StatelessWidget {
     Navigator.of(context).pop(type);
   }
 
+  static const _closeButtonMargin = 40.0;
+
   @override
   Widget build(BuildContext context) {
-    // final screen = screenSize(context);
-    // final size = min(200.0, min(screen.width, screen.height) / 2 - P3);
-    // final buttonSize = Size.square(size);
-
     return Observer(builder: (_) {
       return _hc.loading
           ? LoaderScreen(_hc)
-          : MTDialog(
-              body: ListView(
-                shrinkWrap: true,
-                children: [
-                  Column(
-                    children: [
-                      /// первая строка: бутылочка, смесь
-                      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                        MTButton(
-                            // minSize: buttonSize,
-                            minSize: Size.square(200),
-                            constrained: false,
-                            color: b3Color,
-                            type: MTButtonType.main,
-                            middle: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const MTImage('bottle_baby_formula', height: 90),
-                                SmallText(loc.feed_type_baby_formula),
-                              ],
-                            ),
-                            onTap: () => _addFeed(FeedingType.baby_formula_bottle, context)),
-                      ]),
+          : SafeArea(
+              child: LayoutBuilder(
+                builder: (_, constraints) {
+                  final btnSize = min(200.0, constraints.maxHeight / 2 - _closeButtonMargin);
 
-                      /// вторая строка: грудь и кнопка закрытия
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  return GestureDetector(
+                    onTap: Navigator.of(context).pop,
+                    child: Container(
+                      color: Colors.transparent,
+                      width: constraints.maxWidth,
+                      child: Stack(
+                        alignment: Alignment.center,
                         children: [
-                          /// левая грудь
-                          Stack(
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Positioned(
-                                child: MTButton(
-                                  // minSize: buttonSize,
-                                  minSize: Size.square(150),
-                                  constrained: false,
-                                  color: b3Color,
-                                  type: MTButtonType.main,
-                                  middle: const MTImage('breast', height: 100),
-                                  onTap: () => _addFeed(FeedingType.left_breast, context),
+                              /// бутылочка, смесь
+                              MTButton(
+                                minSize: Size.square(btnSize),
+                                color: b3Color,
+                                type: MTButtonType.main,
+                                middle: Column(
+                                  children: [
+                                    const MTImage('bottle_baby_formula', height: 90),
+                                    BaseText(loc.feed_type_baby_formula, color: f2Color),
+                                  ],
                                 ),
+                                onTap: () => _addFeed(FeedingType.baby_formula_bottle, context),
+                              ),
+
+                              /// кнопка закрытия
+                              constraints.maxHeight > btnSize * 2 + 100 + _closeButtonMargin * 2
+                                  ? MTButton(
+                                      margin: const EdgeInsets.symmetric(vertical: _closeButtonMargin),
+                                      minSize: const Size.square(100),
+                                      color: b3Color,
+                                      type: MTButtonType.main,
+                                      middle: const MTImage('close', height: 50),
+                                      onTap: Navigator.of(context).pop,
+                                    )
+                                  : const SizedBox(height: _closeButtonMargin),
+
+                              /// бутылочка с молоком
+                              MTButton(
+                                minSize: Size.square(btnSize),
+                                color: b3Color,
+                                type: MTButtonType.main,
+                                middle: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const MTImage('bottle_milk', height: 90),
+                                    BaseText(loc.feed_type_milk, color: f2Color),
+                                  ],
+                                ),
+                                onTap: () => _addFeed(FeedingType.milk_bottle, context),
                               ),
                             ],
                           ),
 
-                          /// кнопка закрытия
-                          MTButton(
-                            // minSize: buttonSize,
-                            minSize: const Size.square(60),
-                            constrained: false,
-                            color: b3Color,
-                            type: MTButtonType.main,
-                            middle: const MTImage('close', height: 30),
-                            onTap: Navigator.of(context).pop,
+                          /// левая грудь
+                          Positioned(
+                            left: -125,
+                            child: MTButton(
+                              minSize: const Size.square(250),
+                              color: b3Color,
+                              type: MTButtonType.main,
+                              middle: const MTImage('breast', height: 200),
+                              onTap: () => _addFeed(FeedingType.left_breast, context),
+                            ),
                           ),
 
                           /// правая грудь
-                          MTButton(
-                            // minSize: buttonSize,
-                            minSize: Size.square(150),
-                            constrained: false,
-                            color: b3Color,
-                            type: MTButtonType.main,
-                            middle: const MTImage('breast', height: 100),
-                            onTap: () => _addFeed(FeedingType.right_breast, context),
+                          Positioned(
+                            right: -125,
+                            child: MTButton(
+                              minSize: const Size.square(250),
+                              constrained: false,
+                              color: b3Color,
+                              type: MTButtonType.main,
+                              middle: const MTImage('breast', height: 200),
+                              onTap: () => _addFeed(FeedingType.right_breast, context),
+                            ),
                           ),
                         ],
                       ),
-
-                      /// третья строка: бутылочка с молоком
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          MTButton(
-                            // minSize: buttonSize,
-                            minSize: Size.square(200),
-                            constrained: false,
-                            color: b3Color,
-                            type: MTButtonType.main,
-                            middle: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const MTImage('bottle_milk', height: 90),
-                                SmallText(loc.feed_type_milk),
-                              ],
-                            ),
-                            onTap: () => _addFeed(FeedingType.milk_bottle, context),
-                          ),
-                        ],
-                      )
-                    ],
-                  )
-                ],
+                    ),
+                  );
+                },
               ),
-              forceBottomPadding: true,
             );
     });
   }
