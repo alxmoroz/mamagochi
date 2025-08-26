@@ -62,6 +62,8 @@
   "loader_refreshing_title": "Refreshing...",
   "loader_saving_title": "Saving...",
 
+  "milliliters": "ml",
+
   "months_count": "{count, plural, one{{count} month} other{{count} months}}",
 
   "next_action_title": "Next",

@@ -63,6 +63,8 @@
   "loader_refreshing_title": "Обновляем...",
   "loader_saving_title": "Сохраняем...",
 
+  "milliliters": "мл",
+
   "months_count": "{count, plural, one{{count} месяц} few{{count} месяца} other{{count} месяцев}}",
 
   "next_action_title": "Продолжить",

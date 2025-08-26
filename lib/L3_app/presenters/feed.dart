@@ -21,11 +21,13 @@ extension FeedPresenter on Feed {
   String get editFeedDateTimeTitle => Intl.message('edit_feed_date_title_${_baby.sex}');
 
   Widget feedImage({double? size}) => MTImage(
-        type.isBreast == true
-            ? 'breast'
-            : type.isMilkBottle == true
-                ? 'bottle_milk'
-                : 'bottle_baby_formula',
+        type.isRightBreast == true
+            ? 'right_breast'
+            : type.isLeftBreast == true
+                ? 'left_breast'
+                : type.isMilkBottle == true
+                    ? 'bottle_milk'
+                    : 'bottle_baby_formula',
         height: size,
         width: size,
       );
@@ -39,4 +41,6 @@ extension FeedPresenter on Feed {
               : loc.feed_type_milk;
 
   String get feedName => 'Кормление $type, $endDate, $count';
+
+  String get historyFeedTitle => count != null ? '$feedTypeName, $count ${loc.milliliters}' : feedTypeName;
 }

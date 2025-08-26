@@ -79,7 +79,7 @@ class _HistoryView extends StatelessWidget {
                   titleText: isStillSleep && isMoreMinute
                       ? loc.history_sleep_title(entry.duration.strInHoursAndMinutes)
                       : entry is Feed
-                          ? entry.feedTypeName
+                          ? entry.historyFeedTitle
                           : '',
                   trailing: SmallText(isStillSleep
                       ? loc.history_sleep_trailing_still_sleep
