@@ -73,9 +73,7 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await load(() async {
         await _addFeed(feedType);
       });
-
-      if (feedType.isBottle == true) await EditFeedDialog.show(lastFeed!);
-
+      // if (feedType.isBottle == true) await EditFeedDialog.show(lastFeed!);
       showMTSnackbar(
         lastFeed!.addFeedTitle,
         titleAlign: TextAlign.start,
@@ -85,9 +83,9 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     }
   }
 
-  Future editFeed(Feed feed, DateTime endDate, FeedingType type) async {
+  Future editFeed(Feed feed, DateTime endDate, FeedingType type, int? count) async {
     await load(() async {
-      await _editFeed(feed, endDate, type);
+      await _editFeed(feed, endDate, type, count);
     });
   }
 
@@ -151,9 +149,9 @@ abstract class _Base with Store {
   }
 
   @action
-  Future _editFeed(Feed feed, DateTime endDate, FeedingType type) async {
+  Future _editFeed(Feed feed, DateTime endDate, FeedingType type, int? count) async {
     final index = _feedEntries.indexWhere((f) => f.created == feed.created);
-    final editedFeed = feed.copyWith(endDate: endDate, type: type);
+    final editedFeed = feed.copyWith(endDate: endDate, type: type, count: count);
     _feedEntries[index] = editedFeed;
     await feedUC.edit(editedFeed);
   }
