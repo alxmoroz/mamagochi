@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 
 import '/../L3_app/presenters/duration.dart';
+import '/../L3_app/presenters/feed.dart';
 import '../../../L1_domain/entities/abstract_entry.dart';
 import '../../../L1_domain/entities/baby.dart';
 import '../../../L1_domain/entities/feed.dart';
@@ -50,7 +51,7 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     showMTSnackbar(
       _baby.isBoy ? loc.how_much_slept_boy(sleepDuration) : loc.how_much_slept_girl(sleepDuration),
       titleAlign: TextAlign.start,
-      trailing: BaseText(loc.action_edit_title, color: mainBtnTitleColor),
+      trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
       onTap: () => EditSleepDialog.show(lastSleep!),
     );
   }
@@ -76,9 +77,9 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       if (feedType.isBottle == true) await EditFeedDialog.show(lastFeed!);
 
       showMTSnackbar(
-        _baby.isBoy ? loc.action_add_feed_title_boy : loc.action_add_feed_title_girl,
+        lastFeed!.addFeedTitle,
         titleAlign: TextAlign.start,
-        trailing: BaseText(loc.action_edit_title, color: mainBtnTitleColor),
+        trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
         onTap: () => EditFeedDialog.show(lastFeed!),
       );
     }

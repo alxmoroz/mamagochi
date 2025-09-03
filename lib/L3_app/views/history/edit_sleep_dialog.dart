@@ -1,21 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:intl/intl.dart';
-import 'package:mamagochi/L3_app/components/card.dart';
-import 'package:mamagochi/L3_app/components/constants.dart';
-import 'package:mamagochi/L3_app/components/datetime_picker.dart';
-import 'package:mamagochi/L3_app/components/dialog.dart';
-import 'package:mamagochi/L3_app/components/images.dart';
-import 'package:mamagochi/L3_app/components/list_tile.dart';
-import 'package:mamagochi/L3_app/components/text.dart';
-import 'package:mamagochi/L3_app/components/toolbar.dart';
-import 'package:mamagochi/L3_app/presenters/baby.dart';
-import 'package:mamagochi/L3_app/presenters/duration.dart';
-import 'package:mamagochi/L3_app/presenters/entry.dart';
-import 'package:mamagochi/L3_app/views/_base/loader_screen.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../../L1_domain/entities/baby.dart';
+import '/../L3_app/components/card.dart';
+import '/../L3_app/components/constants.dart';
+import '/../L3_app/components/datetime_picker.dart';
+import '/../L3_app/components/dialog.dart';
+import '/../L3_app/components/images.dart';
+import '/../L3_app/components/list_tile.dart';
+import '/../L3_app/components/text.dart';
+import '/../L3_app/components/toolbar.dart';
+import '/../L3_app/presenters/entry.dart';
+import '/../L3_app/presenters/sleep.dart';
+import '/../L3_app/views/_base/loader_screen.dart';
 import '../../../L1_domain/entities/sleep.dart';
 import '../app/services.dart';
 import 'history_controller.dart';
@@ -46,10 +43,9 @@ class EditSleepDialog extends StatelessWidget {
   static Future show(Sleep sleep) async => await showMTDialog(EditSleepDialog._(_EditSleepController(sleep)));
 
   HistoryController get _hc => mainController.selectedBabyController!.historyController;
-  Baby get _baby => mainController.selectedBabyController!.baby;
 
   Future _editStart() async {
-    final start = await MTDateTimePicker.show(Intl.message('edit_sleep_start_date_title_${_baby.sex}'), initialDate: _sc.sleep.start);
+    final start = await MTDateTimePicker.show(_sc.sleep.editSleepStartTitle, initialDate: _sc.sleep.start);
     if (start != null) {
       await _hc.editSleep(_sc.sleep, startDate: start);
       _sc.setStart(start);
@@ -57,7 +53,7 @@ class EditSleepDialog extends StatelessWidget {
   }
 
   Future _editEnd() async {
-    final end = await MTDateTimePicker.show(Intl.message('edit_sleep_end_date_title_${_baby.sex}'), initialDate: _sc.sleep.end);
+    final end = await MTDateTimePicker.show(_sc.sleep.editSleepEndTitle, initialDate: _sc.sleep.end);
     if (end != null) {
       await _hc.editSleep(_sc.sleep, endDate: end);
       _sc.setEnd(end);
@@ -70,7 +66,7 @@ class EditSleepDialog extends StatelessWidget {
       return _hc.loading
           ? LoaderScreen(_hc)
           : MTDialog(
-              topBar: MTTopBar(middle: H1(Intl.message('how_much_slept_${_baby.sex}', args: [_sc.sleep.duration.strInHoursAndMinutes]))),
+              topBar: MTTopBar(middle: H1(_sc.sleep.howMuchSleptTitle)),
               body: ListView(
                 shrinkWrap: true,
                 children: [
@@ -80,7 +76,7 @@ class EditSleepDialog extends StatelessWidget {
                     elevation: 0,
                     child: MTListTile(
                       leading: const MTImage('eye_closed', height: 60),
-                      middle: BaseText(Intl.message('action_start_sleep_title_${_baby.sex}')),
+                      middle: BaseText(_sc.sleep.startSleepActionTitle),
                       subtitle: H2(_sc.sleep.startDateTime),
                       bottomDivider: false,
                       onTap: _editStart,
@@ -92,7 +88,7 @@ class EditSleepDialog extends StatelessWidget {
                     elevation: 0,
                     child: MTListTile(
                       leading: const MTImage('eye', height: 60),
-                      middle: BaseText(Intl.message('action_stop_sleep_title_${_baby.sex}')),
+                      middle: BaseText(_sc.sleep.stopSleepActionTitle),
                       subtitle: H2(_sc.sleep.endDateTime),
                       bottomDivider: false,
                       onTap: _editEnd,

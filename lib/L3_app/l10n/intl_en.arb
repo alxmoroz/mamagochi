@@ -39,6 +39,7 @@
 
   "edit_feed_date_title_boy": "What time did he fed",
   "edit_feed_date_title_girl": "What time did she fed",
+
   "edit_feed_breast_title": "Breastfeeding",
   "edit_feed_milk_bottle_title": "Milk feeding",
   "edit_feed_baby_formula_title": "Baby formula feeding",
@@ -50,7 +51,7 @@
 
   "history_title": "History",
   "history_empty_title": "There are no events yet",
-  "history_sleep_title": "Sleep {duration}",
+  "history_sleep_title": "Sleep",
   "history_sleep_trailing_still_sleep": "still sleeping",
 
   "how_much_sleep": "Sleeps for\n{duration}",
@@ -103,6 +104,11 @@
   "validation_empty_text": "Should not be empty",
 
   "weeks_count_accusative": "{count, plural, one{{count} week} other{{count} weeks}}",
+
+  "what_to_eat_right_breast": "right breast",
+  "what_to_eat_left_breast": "left breast",
+  "what_to_eat_baby_formula_bottle": "baby formula",
+  "what_to_eat_milk_bottle": "breast milk",
 
   "years_count": "{count, plural, one{{count} year} other{{count} years}}",
   "yesterday_date_title": "Yesterday"

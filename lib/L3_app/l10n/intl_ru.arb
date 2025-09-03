@@ -39,6 +39,7 @@
 
   "edit_feed_date_title_boy": "Во сколько покушал",
   "edit_feed_date_title_girl": "Во сколько покушала",
+
   "edit_feed_breast_title": "Кормление грудью",
   "edit_feed_milk_bottle_title": "Кормление молоком",
   "edit_feed_baby_formula_title": "Кормление смесью",
@@ -51,7 +52,7 @@
   "history_title": "История",
   "history_empty_title": "Записей пока нет",
   "history_feed_title": "Кормление",
-  "history_sleep_title": "Сон {duration}",
+  "history_sleep_title": "Сон",
   "history_sleep_trailing_still_sleep": "ещё спит",
 
   "how_much_sleep": "Спит\n{duration}",
@@ -104,6 +105,11 @@
   "validation_empty_text": "Нужно заполнить",
 
   "weeks_count_accusative": "{count, plural, one{{count} неделю} few{{count} недели} other{{count} недель}}",
+
+  "what_to_eat_right_breast": "правую грудь",
+  "what_to_eat_left_breast": "левую грудь",
+  "what_to_eat_baby_formula_bottle": "смесь",
+  "what_to_eat_milk_bottle": "молоко",
 
   "years_count": "{count, plural, one{{count} год} few{{count} года} other{{count} лет}}",
   "yesterday_date_title": "Вчера"

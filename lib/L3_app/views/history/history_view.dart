@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:mamagochi/L3_app/presenters/feed.dart';
 
 import '../../../L1_domain/entities/abstract_entry.dart';
 import '../../../L1_domain/entities/feed.dart';
@@ -16,8 +15,9 @@ import '../../components/text.dart';
 import '../../components/toolbar.dart';
 import '../../navigation/route.dart';
 import '../../presenters/date.dart';
-import '../../presenters/duration.dart';
 import '../../presenters/entry.dart';
+import '../../presenters/feed.dart';
+import '../../presenters/sleep.dart';
 import '../app/services.dart';
 import 'edit_feed_dialog.dart';
 import 'edit_sleep_dialog.dart';
@@ -56,7 +56,6 @@ class _HistoryView extends StatelessWidget {
             itemBuilder: (_, index) {
               final entry = group.elementAt(index);
               final isStillSleep = entry is Sleep && entry.endDate == null;
-              final isMoreMinute = entry.duration.inMinutes > 0;
 
               return Slidable(
                 key: ObjectKey(entry),
@@ -74,25 +73,25 @@ class _HistoryView extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: MTListTile(
-                  leading: entry is Feed ? entry.feedImage(size: P10) : entry.image(size: P10),
-                  titleText: isStillSleep && isMoreMinute
-                      ? loc.history_sleep_title(entry.duration.strInHoursAndMinutes)
-                      : entry is Feed
-                          ? entry.historyFeedTitle
-                          : '',
-                  trailing: SmallText(isStillSleep
-                      ? loc.history_sleep_trailing_still_sleep
-                      : isMoreMinute
-                          ? '${entry.start.strTime}\n${entry.end.strTime}'
-                          : entry.end.strTimeAgo),
-                  bottomDivider: index < group.length - 1,
-                  onTap: () => entry is Sleep
-                      ? EditSleepDialog.show(entry)
-                      : entry is Feed
-                          ? EditFeedDialog.show(entry)
-                          : null,
-                ),
+                child: entry is Feed
+                    ? MTListTile(
+                        leading: entry.feedImage(size: P10),
+                        titleText: entry.feedTypeName,
+                        subtitle: entry.count != null ? SmallText(entry.feedCount) : null,
+                        trailing: SmallText(entry.end.strTimeAgo),
+                        bottomDivider: index < group.length - 1,
+                        onTap: () => EditFeedDialog.show(entry),
+                      )
+                    : entry is Sleep
+                        ? MTListTile(
+                            leading: entry.sleepImage(size: P10),
+                            titleText: entry.isMoreMinute ? loc.history_sleep_title : '',
+                            subtitle: SmallText(entry.isMoreMinute ? entry.sleepDuration : ''),
+                            trailing: SmallText(isStillSleep ? loc.history_sleep_trailing_still_sleep : entry.historyTrailingDateTime),
+                            bottomDivider: index < group.length - 1,
+                            onTap: () => EditSleepDialog.show(entry),
+                          )
+                        : const SizedBox(),
               );
             })
       ],

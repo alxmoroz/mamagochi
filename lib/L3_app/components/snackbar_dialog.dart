@@ -58,7 +58,7 @@ class _MyAppState extends State<_MTSnackbarDialog> {
   Widget build(BuildContext context) {
     return MTDialog(
       topBar: null,
-      bgColor: f3Color,
+      bgColor: b3Color,
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(DEF_BORDER_RADIUS),
         topRight: Radius.circular(DEF_BORDER_RADIUS),
@@ -69,7 +69,7 @@ class _MyAppState extends State<_MTSnackbarDialog> {
           color: Colors.transparent,
           middle: H2(
             widget._text,
-            color: b3Color,
+            color: f2Color,
             align: widget.titleAlign,
             maxLines: 3,
           ),
