@@ -76,42 +76,38 @@ class EditFeedDialog extends StatelessWidget {
               body: ListView(
                 shrinkWrap: true,
                 children: [
-                  Row(
-                    children: [
-                      const SizedBox(width: P2),
-
-                      /// левая грудь
-                      _fc.feed.type.isBreast
-                          ? Positioned(
-                              left: -125,
-                              child: MTButton(
-                                minSize: buttonSize,
-                                color: b3Color,
-                                type: _fc.feed.type.isLeftBreast ? MTButtonType.secondary : MTButtonType.main,
-                                middle: const BaseText('Левая'),
-                                onTap: () => _editFeedType(FeedingType.left_breast),
+                  _fc.feed.type.isBreast
+                      ? SizedBox(
+                          height: size + P2,
+                          child: Stack(
+                            children: [
+                              /// левая грудь
+                              Positioned(
+                                left: P2,
+                                child: MTButton(
+                                  minSize: buttonSize,
+                                  color: b3Color,
+                                  type: _fc.feed.type.isLeftBreast ? MTButtonType.secondary : MTButtonType.main,
+                                  middle: const BaseText('Левая'),
+                                  onTap: () => _editFeedType(FeedingType.left_breast),
+                                ),
                               ),
-                            )
-                          : const SizedBox(),
-                      const Spacer(),
-
-                      /// правая грудь
-                      _fc.feed.type.isBreast
-                          ? Positioned(
-                              right: -125,
-                              child: MTButton(
-                                minSize: buttonSize,
-                                constrained: false,
-                                color: b3Color,
-                                type: _fc.feed.type.isRightBreast ? MTButtonType.secondary : MTButtonType.main,
-                                middle: const BaseText('Правая'),
-                                onTap: () => _editFeedType(FeedingType.right_breast),
+                              /// правая грудь
+                              Positioned(
+                                right: P2,
+                                child: MTButton(
+                                  minSize: buttonSize,
+                                  constrained: false,
+                                  color: b3Color,
+                                  type: _fc.feed.type.isRightBreast ? MTButtonType.secondary : MTButtonType.main,
+                                  middle: const BaseText('Правая'),
+                                  onTap: () => _editFeedType(FeedingType.right_breast),
+                                ),
                               ),
-                            )
-                          : const SizedBox(),
-                      const SizedBox(width: P2),
-                    ],
-                  ),
+                            ],
+                          ),
+                        )
+                      : const SizedBox(),
                   const SizedBox(height: P2),
 
                   /// редактор времени
