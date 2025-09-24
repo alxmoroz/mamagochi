@@ -19,11 +19,9 @@ InputDecoration tfDecoration(
   TextStyle? hintStyle,
   bool readOnly = false,
 }) {
-  final bRadius = BorderRadius.circular(DEF_BORDER_RADIUS);
-  final OutlineInputBorder dangerBorder = OutlineInputBorder(borderSide: BorderSide(color: dangerColor.resolve(context)), borderRadius: bRadius);
-  final OutlineInputBorder border = OutlineInputBorder(borderSide: BorderSide(color: f3Color.resolve(context)), borderRadius: bRadius);
-  final OutlineInputBorder focusedBorder =
-      OutlineInputBorder(borderSide: BorderSide(width: 2, color: mainColor.resolve(context)), borderRadius: bRadius);
+  final border = InputBorder.none;
+  final focusedBorder = border;
+  final dangerBorder = border;
 
   return InputDecoration(
     labelText: label,
