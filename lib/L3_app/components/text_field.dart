@@ -19,9 +19,9 @@ InputDecoration tfDecoration(
   TextStyle? hintStyle,
   bool readOnly = false,
 }) {
-  final border = InputBorder.none;
-  final focusedBorder = border;
-  final dangerBorder = border;
+  const border = InputBorder.none;
+  const focusedBorder = border;
+  const dangerBorder = border;
 
   return InputDecoration(
     labelText: label,

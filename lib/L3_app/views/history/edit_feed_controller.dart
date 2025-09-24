@@ -16,24 +16,7 @@ class EditFeedController extends _Base with _$EditFeedController {
     initState(fds: [MTFieldData(0, text: feed.count?.toString() ?? '')]);
   }
 
-  Timer? _countEditTimer;
   HistoryController get _hc => mainController.selectedBabyController!.historyController;
-
-  Future<void> _editCount(String str) async {
-    final countText = str.trim();
-    if (countText.isNotEmpty) {
-      final count = int.parse(countText);
-      await _hc.editFeed(feed.copyWith(count: count));
-      _setCount(count);
-    }
-  }
-
-  void editCount(String str) {
-    if (_countEditTimer != null) {
-      _countEditTimer!.cancel();
-    }
-    _countEditTimer = Timer(const Duration(milliseconds: 500), () => _editCount(str));
-  }
 
   Future setEnd(DateTime end) async {
     await _hc.editFeed(feed.copyWith(endDate: end));
@@ -55,7 +38,4 @@ abstract class _Base extends EditController with Store {
 
   @action
   void _setFeedType(FeedingType value) => feed = feed.copyWith(type: value);
-
-  @action
-  void _setCount(int value) => feed = feed.copyWith(count: value);
 }

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mamagochi/L3_app/presenters/entry.dart';
 import 'package:mamagochi/L3_app/presenters/feed.dart';
@@ -17,20 +16,19 @@ import '../../components/dialog.dart';
 import '../../components/images.dart';
 import '../../components/list_tile.dart';
 import '../../components/text.dart';
-import '../../components/text_field.dart';
 import '../../components/toolbar.dart';
 import 'edit_feed_controller.dart';
-
+import 'food_count_editor.dart';
 
 class EditFeedDialog extends StatelessWidget {
-  const EditFeedDialog._(this._fc);
-  final EditFeedController _fc;
+  const EditFeedDialog._(this._fec);
+  final EditFeedController _fec;
 
   static Future show(Feed feed) async => await showMTDialog(EditFeedDialog._(EditFeedController(feed)));
 
   Future _editEnd() async {
-    final end = await MTDateTimePicker.show(_fc.feed.editFeedDateTimeTitle, initialDate: _fc.feed.endDate);
-    if (end != null) _fc.setEnd(end);
+    final end = await MTDateTimePicker.show(_fec.feed.editFeedDateTimeTitle, initialDate: _fec.feed.endDate);
+    if (end != null) _fec.setEnd(end);
   }
 
   @override
@@ -41,11 +39,11 @@ class EditFeedDialog extends StatelessWidget {
       final buttonSize = Size.square(size);
 
       return MTDialog(
-        topBar: MTTopBar(middle: H1(_fc.feed.editFeedTitle)),
+        topBar: MTTopBar(middle: H1(_fec.feed.editFeedTitle)),
         body: ListView(
           shrinkWrap: true,
           children: [
-            _fc.feed.type.isBreast
+            _fec.feed.type.isBreast
                 ? SizedBox(
                     height: size + P2,
                     child: Stack(
@@ -56,9 +54,9 @@ class EditFeedDialog extends StatelessWidget {
                           child: MTButton(
                             minSize: buttonSize,
                             color: b3Color,
-                            type: _fc.feed.type.isLeftBreast ? MTButtonType.secondary : MTButtonType.main,
+                            type: _fec.feed.type.isLeftBreast ? MTButtonType.secondary : MTButtonType.main,
                             middle: const BaseText('Левая'),
-                            onTap: () => _fc.setFeedType(FeedingType.left_breast),
+                            onTap: () => _fec.setFeedType(FeedingType.left_breast),
                           ),
                         ),
 
@@ -69,9 +67,9 @@ class EditFeedDialog extends StatelessWidget {
                             minSize: buttonSize,
                             constrained: false,
                             color: b3Color,
-                            type: _fc.feed.type.isRightBreast ? MTButtonType.secondary : MTButtonType.main,
+                            type: _fec.feed.type.isRightBreast ? MTButtonType.secondary : MTButtonType.main,
                             middle: const BaseText('Правая'),
-                            onTap: () => _fc.setFeedType(FeedingType.right_breast),
+                            onTap: () => _fec.setFeedType(FeedingType.right_breast),
                           ),
                         ),
                       ],
@@ -87,32 +85,18 @@ class EditFeedDialog extends StatelessWidget {
               elevation: 0,
               child: MTListTile(
                 leading: const MTImage('time', height: 60),
-                middle: BaseText(_fc.feed.editFeedDateTimeTitle),
-                subtitle: H2(_fc.feed.endDateTime),
+                middle: BaseText(_fec.feed.editFeedDateTimeTitle),
+                subtitle: H2(_fec.feed.endDateTime),
                 bottomDivider: false,
                 onTap: _editEnd,
               ),
             ),
 
             /// редактор количества (только для бутылочек)
-            if (_fc.feed.type.isBottle) ...[
+            if (_fec.feed.type.isBottle) ...[
               const SizedBox(height: P2),
-              MTCard(
-                margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
-                radius: 40,
-                elevation: 0,
-                child: MTTextField(
-                  controller: _fc.teController(0),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  style: const H1('', color: f1Color).style(context),
-                  margin: EdgeInsets.zero,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(4),
-                  ],
-                  onChanged: (value) => _fc.editCount(value),
-                ),
+              FoodCountEditor(
+                feed: _fec.feed,
               ),
             ],
           ],
