@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mamagochi/L3_app/presenters/entry.dart';
 import 'package:mamagochi/L3_app/presenters/feed.dart';
-import 'package:mobx/mobx.dart';
 
 import '../../../L1_domain/entities/feed.dart';
 import '../../components/adaptive.dart';
@@ -16,75 +14,19 @@ import '../../components/colors.dart';
 import '../../components/constants.dart';
 import '../../components/datetime_picker.dart';
 import '../../components/dialog.dart';
-import '../../components/field_data.dart';
 import '../../components/images.dart';
 import '../../components/list_tile.dart';
 import '../../components/text.dart';
 import '../../components/text_field.dart';
 import '../../components/toolbar.dart';
-import '../_base/edit_controller.dart';
-import '../app/services.dart';
-import 'history_controller.dart';
+import 'edit_feed_controller.dart';
 
-part 'edit_feed_dialog.g.dart';
-
-class _EditFeedController extends _Base with _$_EditFeedController {
-  _EditFeedController(Feed feedIn) {
-    feed = feedIn;
-    initState(fds: [MTFieldData(0, text: feed.count?.toString() ?? '')]);
-  }
-
-  Timer? _countEditTimer;
-  HistoryController get _hc => mainController.selectedBabyController!.historyController;
-
-  Future<void> _editCount(String str) async {
-    final countText = str.trim();
-    if (countText.isNotEmpty) {
-      final count = int.parse(countText);
-      await _hc.editFeed(feed.copyWith(count: count));
-      _setCount(count);
-    }
-  }
-
-  void editCount(String str) {
-    if (_countEditTimer != null) {
-      _countEditTimer!.cancel();
-    }
-    _countEditTimer = Timer(const Duration(milliseconds: 500), () => _editCount(str));
-  }
-
-  Future setEnd(DateTime end) async {
-    await _hc.editFeed(feed.copyWith(endDate: end));
-    _setEnd(end);
-  }
-
-  Future setFeedType(FeedingType type) async {
-    await _hc.editFeed(feed.copyWith(type: type));
-    _setFeedType(type);
-  }
-}
-
-abstract class _Base extends EditController with Store {
-  @observable
-  late Feed feed;
-
-  @action
-  void _setEnd(DateTime value) => feed = feed.copyWith(endDate: value);
-
-  @action
-  void _setFeedType(FeedingType value) => feed = feed.copyWith(type: value);
-
-  @action
-  void _setCount(int value) => feed = feed.copyWith(count: value);
-}
 
 class EditFeedDialog extends StatelessWidget {
   const EditFeedDialog._(this._fc);
-  final _EditFeedController _fc;
+  final EditFeedController _fc;
 
-  static Future show(Feed feed) async => await showMTDialog(EditFeedDialog._(_EditFeedController(feed)));
-
-  HistoryController get _hc => mainController.selectedBabyController!.historyController;
+  static Future show(Feed feed) async => await showMTDialog(EditFeedDialog._(EditFeedController(feed)));
 
   Future _editEnd() async {
     final end = await MTDateTimePicker.show(_fc.feed.editFeedDateTimeTitle, initialDate: _fc.feed.endDate);
