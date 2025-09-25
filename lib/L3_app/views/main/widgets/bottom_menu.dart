@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mamagochi/L3_app/presenters/feed.dart';
 
 import '../../../../L1_domain/utils/dates.dart';
 import '../../../components/adaptive.dart';
@@ -86,7 +87,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
                   middle: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const MTImage('bottle_baby_formula', height: 90),
+                      MTImage(hc.hasFeedEntriesToday ? hc.lastFeed!.feedImageName : 'bottle_baby_formula', height: 90),
                       if (hc.hasFeedEntriesToday) SmallText(hc.lastFeed!.end.strTimeAgo),
                     ],
                   ),

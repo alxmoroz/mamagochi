@@ -24,16 +24,18 @@ extension FeedPresenter on Feed {
   String get feedCount => count != null ? '$count ${loc.milliliters}' : '';
 
   Widget feedImage({double? size}) => MTImage(
-        type.isRightBreast == true
-            ? 'right_breast'
-            : type.isLeftBreast == true
-                ? 'left_breast'
-                : type.isMilkBottle == true
-                    ? 'bottle_milk'
-                    : 'bottle_baby_formula',
+        feedImageName,
         height: size,
         width: size,
       );
+
+  String get feedImageName => type.isRightBreast == true
+      ? 'right_breast'
+      : type.isLeftBreast == true
+          ? 'left_breast'
+          : type.isMilkBottle == true
+              ? 'bottle_milk'
+              : 'bottle_baby_formula';
 
   String get feedTypeName => type.isRightBreast == true
       ? loc.feed_type_right_breast

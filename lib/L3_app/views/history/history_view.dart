@@ -78,7 +78,7 @@ class _HistoryView extends StatelessWidget {
                         leading: entry.feedImage(size: P10),
                         titleText: entry.feedTypeName,
                         subtitle: entry.count != null ? SmallText(entry.feedCount) : null,
-                        trailing: SmallText(entry.end.strTimeAgo),
+                        trailing: SmallText(entry.end.strTime),
                         bottomDivider: index < group.length - 1,
                         onTap: () => EditFeedDialog.show(entry),
                       )
