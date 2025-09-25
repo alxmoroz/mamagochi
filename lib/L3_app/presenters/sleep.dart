@@ -16,8 +16,6 @@ extension SleepPresenter on Sleep {
   String get editSleepEndTitle => Intl.message('edit_sleep_end_date_title_${_baby.sex}');
   String get howMuchSleptTitle => Intl.message('how_much_slept_${_baby.sex}', args: [duration.strInHoursAndMinutes]);
 
-  String get sleepDuration => isMoreMinute ? duration.strInHoursAndMinutes : '';
-
   Widget sleepImage({double? size}) => MTImage(
         'bed',
         height: size,
@@ -25,6 +23,8 @@ extension SleepPresenter on Sleep {
       );
 
   String get sleepName => '${loc.history_sleep_title} $startDate - $endDate';
+  String get sleepDuration => isStillSleeping ? durationFromStartToNow.strInHoursAndMinutes : duration.strInHoursAndMinutes;
+  String get sleepDurationTitle => isMoreMinute ? sleepDuration : '';
 
   String get startSleepActionTitle => Intl.message('action_start_sleep_title_${_baby.sex}');
   String get stopSleepActionTitle => Intl.message('action_stop_sleep_title_${_baby.sex}');

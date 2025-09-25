@@ -55,7 +55,7 @@ class _HistoryView extends StatelessWidget {
             itemCount: group.length,
             itemBuilder: (_, index) {
               final entry = group.elementAt(index);
-              final isStillSleep = entry is Sleep && entry.endDate == null;
+              final isStillSleep = entry is Sleep && entry.isStillSleeping;
 
               return Slidable(
                 key: ObjectKey(entry),

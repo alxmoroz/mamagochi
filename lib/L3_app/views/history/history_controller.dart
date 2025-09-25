@@ -126,7 +126,7 @@ abstract class _Base with Store {
   }
 
   @computed
-  bool get babyIsSleeping => lastSleep != null && lastSleep!.endDate == null;
+  bool get babyIsSleeping => lastSleep != null && lastSleep!.isStillSleeping;
 
   @computed
   bool get hasSleepEntriesToday => lastSleep?.endIsToday == true;
