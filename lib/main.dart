@@ -38,12 +38,13 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = MediaQuery.platformBrightnessOf(context);
     return FutureBuilder(
       future: getIt.allReady(),
       builder: (_, snapshot) => snapshot.hasData
           ? AnnotatedRegion<SystemUiOverlayStyle>(
-              value: const SystemUiOverlayStyle(
-                statusBarIconBrightness: Brightness.dark,
+              value: SystemUiOverlayStyle(
+                statusBarIconBrightness: brightness == Brightness.dark ? Brightness.light : Brightness.dark,
                 statusBarColor: Colors.transparent,
                 systemNavigationBarColor: Colors.transparent,
               ),
@@ -53,7 +54,7 @@ class App extends StatelessWidget {
                   colorScheme: ColorScheme.fromSeed(
                     seedColor: mainColor.resolve(context),
                     primary: mainColor.resolve(context),
-                    brightness: MediaQuery.platformBrightnessOf(context),
+                    brightness: brightness,
                     surfaceTint: b2Color.resolve(context),
                     surface: b2Color.resolve(context),
                   ),
