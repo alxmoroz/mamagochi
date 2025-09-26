@@ -41,33 +41,39 @@ class App extends StatelessWidget {
     return FutureBuilder(
       future: getIt.allReady(),
       builder: (_, snapshot) => snapshot.hasData
-          ? MaterialApp.router(
-              debugShowCheckedModeBanner: true,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: mainColor.resolve(context),
-                  primary: mainColor.resolve(context),
-                  brightness: MediaQuery.platformBrightnessOf(context),
-                  surfaceTint: b2Color.resolve(context),
-                  surface: b2Color.resolve(context),
-                ),
-                fontFamily: 'MontserratMamagochi',
-                useMaterial3: true,
+          ? AnnotatedRegion<SystemUiOverlayStyle>(
+              value: const SystemUiOverlayStyle(
+                statusBarIconBrightness: Brightness.dark,
+                statusBarColor: Colors.transparent,
+                systemNavigationBarColor: Colors.transparent,
               ),
-              scrollBehavior: const MaterialScrollBehavior().copyWith(dragDevices: {
-                if (isWeb) PointerDeviceKind.mouse,
-                ...const MaterialScrollBehavior().dragDevices,
-              }),
-              localizationsDelegates: const [
-                S.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate
-              ],
-              supportedLocales: S.delegate.supportedLocales,
-              routerConfig: router,
-              onGenerateTitle: (_) => loc.app_title,
-            )
+              child: MaterialApp.router(
+                debugShowCheckedModeBanner: true,
+                theme: ThemeData(
+                  colorScheme: ColorScheme.fromSeed(
+                    seedColor: mainColor.resolve(context),
+                    primary: mainColor.resolve(context),
+                    brightness: MediaQuery.platformBrightnessOf(context),
+                    surfaceTint: b2Color.resolve(context),
+                    surface: b2Color.resolve(context),
+                  ),
+                  fontFamily: 'MontserratMamagochi',
+                  useMaterial3: true,
+                ),
+                scrollBehavior: const MaterialScrollBehavior().copyWith(dragDevices: {
+                  if (isWeb) PointerDeviceKind.mouse,
+                  ...const MaterialScrollBehavior().dragDevices,
+                }),
+                localizationsDelegates: const [
+                  S.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate
+                ],
+                supportedLocales: S.delegate.supportedLocales,
+                routerConfig: router,
+                onGenerateTitle: (_) => loc.app_title,
+              ))
           : const MTBackgroundWrapper(Center(child: MTCircularProgress(size: P10))),
     );
   }
