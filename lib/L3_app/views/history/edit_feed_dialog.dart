@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mamagochi/L3_app/presenters/entry.dart';
-import 'package:mamagochi/L3_app/presenters/feed.dart';
 
+import '/../L3_app/presenters/entry.dart';
+import '/../L3_app/presenters/feed.dart';
 import '../../../L1_domain/entities/feed.dart';
 import '../../components/adaptive.dart';
 import '../../components/button.dart';
@@ -78,6 +78,12 @@ class EditFeedDialog extends StatelessWidget {
                 : const SizedBox(),
             const SizedBox(height: P2),
 
+            /// редактор количества (только для бутылочек)
+            if (_fec.feed.type.isBottle) ...[
+              FoodCountEditor(_fec.feed),
+              const SizedBox(height: P2),
+            ],
+
             /// редактор времени
             MTCard(
               margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
@@ -91,14 +97,6 @@ class EditFeedDialog extends StatelessWidget {
                 onTap: _editEnd,
               ),
             ),
-
-            /// редактор количества (только для бутылочек)
-            if (_fec.feed.type.isBottle) ...[
-              const SizedBox(height: P2),
-              FoodCountEditor(
-                feed: _fec.feed,
-              ),
-            ],
           ],
         ),
         hasKBInput: true,
