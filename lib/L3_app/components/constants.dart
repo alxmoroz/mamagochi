@@ -1,5 +1,6 @@
 // Copyright (c) 2022. Alexandr Moroz
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 const P = 6.0;
@@ -21,9 +22,16 @@ const P_3 = P / 3; // 2
 const DEF_PAGE_TOP_PADDING = P3;
 const DEF_PAGE_BOTTOM_PADDING = P5;
 const DEF_DIALOG_BOTTOM_PADDING = P3;
+
+const DEF_HP = P3;
+const DEF_VP = P2;
+const DEF_PADDING = EdgeInsets.symmetric(horizontal: DEF_HP, vertical: DEF_VP);
+const DEF_MARGIN = EdgeInsets.fromLTRB(DEF_HP, DEF_VP, DEF_HP, 0);
+
 const DEF_BORDER_RADIUS = P2;
 const DEF_BTN_BORDER_RADIUS = MIN_BTN_HEIGHT / 2;
 const DEF_BORDER_WIDTH = P_3;
+const DEF_BAR_HEIGHT = P8;
 const MIN_BTN_HEIGHT = P8;
 const DEF_TAPPABLE_ICON_SIZE = kIsWeb ? P5 : P6;
 

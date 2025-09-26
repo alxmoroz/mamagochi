@@ -100,6 +100,7 @@ class EditFeedDialog extends StatelessWidget {
           ],
         ),
         hasKBInput: true,
+        forceBottomPadding: true,
       );
     });
   }

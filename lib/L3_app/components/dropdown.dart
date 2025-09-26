@@ -53,7 +53,7 @@ class MTDropdown<T extends RPersistable> extends StatelessWidget {
         icon: const DropdownIcon(),
         items: _ddItems,
         isExpanded: true,
-        value: value,
+        initialValue: value,
         onChanged: onChanged,
         borderRadius: BorderRadius.circular(DEF_BORDER_RADIUS),
       ),

@@ -1,12 +1,9 @@
 // Copyright (c) 2024. Alexandr Moroz
 
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
-import '../navigation/router.dart';
 import 'adaptive.dart';
 import 'close_dialog_button.dart';
 import 'colors.dart';
@@ -81,7 +78,7 @@ abstract class _MTAppBar extends StatelessWidget implements PreferredSizeWidget 
   final Widget? leading;
   final Widget? middle;
   final Widget? trailing;
-  final Widget? bottomWidget;
+  final PreferredSizeWidget? bottomWidget;
 
   final double? innerHeight;
   final double topPadding;
@@ -91,18 +88,22 @@ abstract class _MTAppBar extends StatelessWidget implements PreferredSizeWidget 
   final bool fullScreen;
   final MTToolbarController? toolbarController;
 
-  double get _innerHeight => innerHeight ?? P8;
+  double get _innerHeight => innerHeight ?? DEF_BAR_HEIGHT;
 
   @override
-  Size get preferredSize => Size.fromHeight(toolbarController != null ? toolbarController!.height : (topPadding + _innerHeight + bottomPadding));
+  Size get preferredSize => Size.fromHeight(toolbarController != null
+      ? toolbarController!.height
+      : (topPadding + _innerHeight + (bottomWidget?.preferredSize.height ?? 0) + bottomPadding));
 
-  Widget? get _leading =>
-      leading ??
-      (!isBottom && router.canPop()
-          ? fullScreen
-              ? CupertinoNavigationBarBackButton(onPressed: router.pop)
-              : const MTCloseDialogButton()
-          : null);
+  Widget? _leading(BuildContext context) {
+    final navigator = Navigator.of(context);
+    return leading ??
+        (!isBottom && navigator.canPop()
+            ? fullScreen
+                ? CupertinoNavigationBarBackButton(previousPageTitle: '', onPressed: navigator.pop)
+                : const MTCloseDialogButton()
+            : null);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,13 +113,13 @@ abstract class _MTAppBar extends StatelessWidget implements PreferredSizeWidget 
     final bottomInsets = ignoreBottomInsets ? 0.0 : MediaQuery.viewInsetsOf(context).bottom;
 
     final h = (isBottom ? max(bottomInsets, mqPadding.bottom) : mqPadding.top) + preferredSize.height;
-
-    final flat = big || isBottom;
+    final flat = !fullScreen || big || isBottom;
+    final leading = _leading(context);
 
     final toolbarContent = _ToolbarContent(
       pageTitle: pageTitle,
       parentPageTitle: parentPageTitle,
-      leading: _leading,
+      leading: leading,
       middle: middle,
       trailing: trailing,
       bottom: bottomWidget,
@@ -134,23 +135,24 @@ abstract class _MTAppBar extends StatelessWidget implements PreferredSizeWidget 
               bottom: isBottom,
               child: toolbarContent,
             )
-          : Platform.isAndroid
-              ? AppBar(
-                  automaticallyImplyLeading: false,
-                  title: toolbarContent,
-                  backgroundColor: color,
-                )
-              : CupertinoNavigationBar(
-                  automaticallyImplyLeading: false,
-                  automaticallyImplyMiddle: false,
-                  padding: EdgeInsetsDirectional.only(top: topPadding, bottom: bottomPadding, start: 0, end: 0),
-                  leading: OverflowBox(
-                    maxHeight: MIN_BTN_HEIGHT,
-                    child: toolbarContent,
-                  ),
-                  backgroundColor: color,
-                  border: null,
+          : CupertinoNavigationBar(
+              automaticallyImplyLeading: false,
+              automaticallyImplyMiddle: false,
+              padding: EdgeInsetsDirectional.only(top: topPadding, bottom: bottomPadding, start: 0, end: 0),
+              leading: OverflowBox(
+                maxHeight: preferredSize.height,
+                child: _ToolbarContent(
+                  leading: leading,
+                  pageTitle: pageTitle,
+                  parentPageTitle: parentPageTitle,
+                  middle: middle,
+                  trailing: trailing,
                 ),
+              ),
+              bottom: bottomWidget,
+              backgroundColor: color,
+              border: null,
+            ),
     );
   }
 }
@@ -162,6 +164,7 @@ class MTTopBar extends _MTAppBar {
     super.leading,
     super.middle,
     super.trailing,
+    super.bottomPadding,
     super.bottomWidget,
     super.color = b2Color,
     super.innerHeight,
@@ -176,6 +179,7 @@ class MTNavBar extends MTTopBar {
     super.parentPageTitle,
     super.middle,
     super.trailing,
+    super.bottomPadding,
     super.bottomWidget,
     super.color = navbarColor,
     super.innerHeight,
