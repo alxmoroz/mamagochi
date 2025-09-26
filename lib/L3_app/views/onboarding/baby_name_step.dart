@@ -1,10 +1,11 @@
 // Copyright (c) 2025. Xenia Moroz
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mamagochi/L3_app/components/adaptive.dart';
 
+import '../../components/adaptive.dart';
 import '../../components/button.dart';
+import '../../components/colors.dart';
 import '../../components/constants.dart';
 import '../../components/text.dart';
 import '../../components/text_field.dart';
@@ -39,7 +40,13 @@ class BabyNameStep extends StatelessWidget {
               child: MTTextField(
                 maxLines: 1,
                 controller: _bc.teController(0),
-                label: loc.onboarding_baby_name_step_field_label,
+                style: const H2('', color: f2Color).style(context),
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  hintText: loc.onboarding_baby_name_step_field_label,
+                  hintStyle: const H2('', color: f3Color).style(context),
+                  border: InputBorder.none,
+                ),
                 onSubmitted: (_) => _bc.validated ? _setName() : null,
               ),
             ),

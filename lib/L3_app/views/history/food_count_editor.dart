@@ -88,10 +88,8 @@ class _FoodCountEditorController extends EditController {
 }
 
 class FoodCountEditor extends StatefulWidget {
-  const FoodCountEditor._(this.feed);
+  const FoodCountEditor(this.feed, {super.key});
   final Feed feed;
-
-  factory FoodCountEditor(Feed feed) => FoodCountEditor._(feed);
 
   @override
   State<FoodCountEditor> createState() => _FoodCountEditorState();
