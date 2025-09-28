@@ -89,7 +89,8 @@
   "sex_man": "Мальчик",
   "sex_woman": "Девочка",
 
-  "sleep_just_now_title": "Только что\nуснул",
+  "sleep_just_now_title_boy": "Только что\nуснул",
+  "sleep_just_now_title_girl": "Только что\nуснула",
 
   "time_just_now": "только что",
   "time_hours": "{hours} ч",

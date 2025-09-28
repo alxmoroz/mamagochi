@@ -88,7 +88,8 @@
   "sex_man": "Boy",
   "sex_woman": "Girl",
 
-  "sleep_just_now_title": "Just fell\nasleep",
+  "sleep_just_now_title_boy": "Just fell\nasleep",
+  "sleep_just_now_title_girl": "Just fell\nasleep",
 
   "time_just_now": "just now",
   "time_hours": "{hours} h",

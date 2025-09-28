@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mamagochi/L3_app/presenters/sleep.dart';
 
 import '../../../L2_data/services/platform.dart';
 import '../../components/adaptive.dart';
@@ -132,7 +133,7 @@ class _MainViewState extends State<_MainView> {
                     type: MTButtonType.main,
                     leading: const MTImage('time', height: 60),
                     trailing: H2(
-                      sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : loc.sleep_just_now_title,
+                      sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : hc.lastSleep?.sleepJustNowTitle ?? '',
                       maxLines: 2,
                       color: f2Color,
                     ),
