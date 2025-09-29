@@ -11,7 +11,10 @@ Baby get _baby => mainController.selectedBabyController!.baby;
 
 extension FeedPresenter on Feed {
   String get actionAddFeedTitle => Intl.message('action_add_feed_title_${_baby.sex}');
-  String get addFeedTitle => type.isBottle ? '$actionAddFeedTitle $whatToEatTitle $feedCount' : '$actionAddFeedTitle $whatToEatTitle';
+  String get addFeedTitle {
+    final baseTitle = '$actionAddFeedTitle $whatToEatTitle';
+    return type.isBottle && shouldShowCount ? '$baseTitle $feedCount' : baseTitle;
+  }
 
   String get editFeedTitle => type.isBreast == true
       ? loc.edit_feed_breast_title
@@ -21,7 +24,7 @@ extension FeedPresenter on Feed {
 
   String get editFeedDateTimeTitle => Intl.message('edit_feed_date_title_${_baby.sex}');
 
-  String get feedCount => count != null ? '$count ${loc.milliliters}' : '';
+  String get feedCount => shouldShowCount ? '$count\u00A0${loc.milliliters}' : '';
 
   Widget feedImage({double? size}) => MTImage(
         feedImageName,
@@ -47,5 +50,6 @@ extension FeedPresenter on Feed {
 
   String get feedName => 'Кормление $type, $endDate, $count';
 
+  bool get shouldShowCount => count != null && count! > 0;
   String get whatToEatTitle => Intl.message('what_to_eat_${type.name}');
 }

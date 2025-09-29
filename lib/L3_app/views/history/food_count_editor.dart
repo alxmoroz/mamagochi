@@ -18,29 +18,48 @@ import 'history_controller.dart';
 
 const int _countStep = 10;
 const int _maxCount = 9999;
-const double _buttonSize = 60.0;
-const double _imageSize = 30.0;
 
 int _roundUpToTen(int value) => ((value + 9) ~/ 10) * 10;
 int _roundDownToTen(int value) => (value ~/ 10) * 10;
 int _clampCount(int value) => value.clamp(0, _maxCount);
 
+// Удаление ведущих нулей из поля ввода
+class _LeadingZerosFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text;
+
+    if (text.isEmpty) {
+      return newValue;
+    }
+
+    final cleanedText = text.replaceFirst(RegExp(r'^0+'), '');
+    final finalText = cleanedText.isEmpty ? '' : cleanedText;
+
+    return TextEditingValue(
+      text: finalText,
+      selection: TextSelection.collapsed(offset: finalText.length),
+    );
+  }
+}
+
 class _FoodCountEditorController extends EditController {
   _FoodCountEditorController({
     required this.feed,
   }) {
-    initState(fds: [MTFieldData(0, text: feed.count?.toString() ?? '0')]);
+    initState(fds: [MTFieldData(0, text: feed.count?.toString() ?? '')]);
   }
 
   final Feed feed;
-
   HistoryController get _hc => mainController.selectedBabyController!.historyController;
   Timer? _debounceTimer;
 
+  // Обновляет количество с задержкой (debounce)
   void updateCount(String value) {
-    if (_debounceTimer != null) {
-      _debounceTimer!.cancel();
-    }
+    if (_debounceTimer != null) _debounceTimer!.cancel();
     _debounceTimer = Timer(TEXT_SAVE_DELAY_DURATION, () => _saveCount(value));
   }
 
@@ -52,32 +71,41 @@ class _FoodCountEditorController extends EditController {
 
   void incrementCount() {
     final currentCount = currentCountFromField;
-    if (currentCount >= _maxCount) return;
-
-    final roundedUp = _roundUpToTen(currentCount);
-    final newCount = currentCount == roundedUp ? currentCount + _countStep : roundedUp;
-    _updateCount(_clampCount(newCount));
+    if (currentCount < _maxCount) _updateCount(_clampCount(_calculateNewCount(currentCount, true)));
   }
 
   void decrementCount() {
     final currentCount = currentCountFromField;
-    if (currentCount <= 0) return;
+    if (currentCount > 0) _updateCount(_clampCount(_calculateNewCount(currentCount, false)));
+  }
 
-    final roundedDown = _roundDownToTen(currentCount);
-    final newCount = currentCount == roundedDown ? currentCount - _countStep : roundedDown;
-    _updateCount(_clampCount(newCount));
+  // Вычисляет новое значение с учетом умного округления
+  int _calculateNewCount(int currentCount, bool isIncrement) {
+    final rounded = isIncrement ? _roundUpToTen(currentCount) : _roundDownToTen(currentCount);
+    if (currentCount == rounded) {
+      return currentCount + (isIncrement ? _countStep : -_countStep);
+    } else {
+      return rounded;
+    }
   }
 
   int get currentCountFromField {
     final text = teController(0)?.text.trim() ?? '';
-    if (text.isEmpty) return 0;
-    return _clampCount(int.tryParse(text) ?? 0);
+    if (text.isEmpty) {
+      return 0;
+    } else {
+      return _clampCount(int.tryParse(text) ?? 0);
+    }
   }
 
+  // Обновляет количество кормления и синхронизирует с полем ввода
   void _updateCount(int newCount) {
     _hc.editFeed(feed.copyWith(count: newCount));
-    teController(0)?.text = newCount.toString();
-    focusNode(0)?.requestFocus();
+    if (newCount == 0) {
+      teController(0)?.text = '';
+    } else {
+      teController(0)?.text = newCount.toString();
+    }
   }
 
   @override
@@ -105,6 +133,7 @@ class _FoodCountEditorState extends State<FoodCountEditor> {
     _controller.teController(0)?.addListener(_onTextChanged);
   }
 
+  // Обработчик изменения текста в поле ввода. Обновляет состояние виджета для перерисовки кнопок
   void _onTextChanged() => setState(() {});
 
   @override
@@ -114,58 +143,52 @@ class _FoodCountEditorState extends State<FoodCountEditor> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final currentCount = _controller.currentCountFromField;
+  Widget _buildButton(String icon, VoidCallback? onTap) => MTButton(
+        type: MTButtonType.main,
+        color: b3Color,
+        middle: MTImage(icon, height: 30),
+        minSize: const Size.square(60),
+        uf: false,
+        onTap: onTap,
+      );
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            /// кнопка минус
-            MTButton(
-              type: MTButtonType.main,
-              color: b3Color,
-              middle: const MTImage('minus', height: _imageSize),
-              minSize: const Size(_buttonSize, _buttonSize),
-              uf: false,
-              onTap: currentCount > 0 ? _controller.decrementCount : null,
-            ),
-            const SizedBox(width: P3),
-
-            /// кнопка плюс
-            MTButton(
-              type: MTButtonType.main,
-              color: b3Color,
-              middle: const MTImage('plus', height: _imageSize),
-              minSize: const Size(_buttonSize, _buttonSize),
-              uf: false,
-              onTap: currentCount < _maxCount ? _controller.incrementCount : null,
-            ),
-          ],
-        ),
-        const SizedBox(height: P2),
-
-        /// поле ввода количества
-        MTCard(
-          margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
+  Widget _buildTextField(BuildContext context) => Expanded(
+        child: MTCard(
+          margin: const EdgeInsets.symmetric(vertical: P),
           radius: 40,
           elevation: 0,
           child: MTTextField(
             controller: _controller.teController(0),
+            focusNode: _controller.focusNode(0),
             keyboardType: TextInputType.number,
             textAlign: TextAlign.center,
             style: const H1('', color: f1Color).style(context),
             margin: EdgeInsets.zero,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
+              _LeadingZerosFormatter(),
               LengthLimitingTextInputFormatter(4),
             ],
             onChanged: _controller.updateCount,
           ),
         ),
-      ],
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final currentCount = _controller.currentCountFromField;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: P3),
+      child: Row(
+        children: [
+          _buildButton('minus', currentCount > 0 ? _controller.decrementCount : null),
+          const SizedBox(width: P2),
+          _buildTextField(context),
+          const SizedBox(width: P2),
+          _buildButton('plus', currentCount < _maxCount ? _controller.incrementCount : null),
+        ],
+      ),
     );
   }
 }

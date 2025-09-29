@@ -151,7 +151,6 @@ abstract class _Base with Store {
   @action
   Future _editFeed(Feed feed) async {
     final index = _feedEntries.indexWhere((f) => f.created == feed.created);
-    // final editedFeed = feed.copyWith(endDate: endDate, type: type, count: count);
     _feedEntries[index] = feed;
     await feedUC.edit(feed);
   }

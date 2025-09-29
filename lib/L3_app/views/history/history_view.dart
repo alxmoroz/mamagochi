@@ -77,7 +77,7 @@ class _HistoryView extends StatelessWidget {
                     ? MTListTile(
                         leading: entry.feedImage(size: P10),
                         titleText: entry.feedTypeName,
-                        subtitle: entry.count != null ? SmallText(entry.feedCount) : null,
+                        subtitle: entry.shouldShowCount ? SmallText(entry.feedCount) : null,
                         trailing: SmallText(entry.end.strTime),
                         bottomDivider: index < group.length - 1,
                         onTap: () => EditFeedDialog.show(entry),
