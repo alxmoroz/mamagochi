@@ -28,6 +28,10 @@
   "app_release_notes_title": "Release Notes",
   "app_title": "Mamagochi",
 
+  "baby_profile_today_age": "Today I am",
+  "baby_profile_birthday_today": "Happy birthday!",
+  "baby_profile_awaiting_birth": "Waiting for birth in {days}",
+
   "contact_us_mail_subject": "Mamagochi - feedback",
 
   "days_count": "{count, plural, one{{count} day} other{{count} days}}",

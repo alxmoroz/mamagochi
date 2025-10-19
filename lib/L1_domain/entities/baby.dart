@@ -23,4 +23,40 @@ class Baby extends LocalPersistable {
   bool get named => name?.isNotEmpty == true;
   bool get hasDateOfBirth => dateOfBirth != null;
   bool get wasBorn => hasDateOfBirth && daysSinceBirth! > 0;
+
+  int? get ageInWeeks => hasDateOfBirth ? (daysSinceBirth! / 7).floor() : null;
+
+  BabyAge? get fullAge {
+    if (!hasDateOfBirth) return null;
+
+    // Если ещё не родился
+    if (dateOfBirth!.isAfter(now)) {
+      final daysUntilBirth = dateOfBirth!.difference(now).inDays;
+      return BabyAge(years: 0, months: 0, days: 0, daysUntilBirth: daysUntilBirth);
+    }
+
+    // Если уже родился
+    final nowJiffy = Jiffy.now();
+    final birthJiffy = Jiffy.parseFromDateTime(dateOfBirth!);
+
+    final years = nowJiffy.diff(birthJiffy, unit: Unit.year).floor();
+    final months = nowJiffy.diff(birthJiffy.add(years: years), unit: Unit.month).floor();
+    final days = nowJiffy.diff(birthJiffy.add(years: years, months: months), unit: Unit.day).floor();
+
+    return BabyAge(years: years, months: months, days: days);
+  }
+}
+
+class BabyAge {
+  final int years;
+  final int months;
+  final int days;
+  final int? daysUntilBirth;
+
+  BabyAge({
+    required this.years,
+    required this.months,
+    required this.days,
+    this.daysUntilBirth,
+  });
 }

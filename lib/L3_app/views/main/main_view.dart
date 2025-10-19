@@ -24,6 +24,7 @@ import '../_base/loader_screen.dart';
 import '../app/services.dart';
 import '../history/history_controller.dart';
 import '../history/history_view.dart';
+import 'widgets/baby_profile_dialog.dart';
 import 'widgets/bottom_menu.dart';
 
 class MainRoute extends MTRoute {
@@ -109,7 +110,10 @@ class _MainViewState extends State<_MainView> {
         minimum: const EdgeInsets.symmetric(vertical: P5),
         child: Stack(children: [
           Align(
-            child: hc.babyIsSleeping ? baby!.imageSleep(size: 300) : baby!.image(size: 300),
+            child: GestureDetector(
+              onTap: () => BabyProfileDialog.show(),
+              child: hc.babyIsSleeping ? baby!.imageSleep(size: 300) : baby!.image(size: 300),
+            ),
           ),
           Align(
             alignment: Alignment.topLeft,
