@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 import '/../L1_domain/entities/baby.dart';
 import '../components/images.dart';
@@ -18,6 +19,8 @@ extension BabyPresenter on Baby? {
         height: size,
         width: size,
       );
+
+  String? get formattedDateOfBirth => this?.dateOfBirth != null ? DateFormat.yMMMMd().format(this!.dateOfBirth!) : null;
 }
 
 extension BabyAgePresenter on BabyAge {
