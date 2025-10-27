@@ -108,7 +108,7 @@
 
   "validation_empty_text": "Нужно заполнить",
 
-  "weeks_count_accusative": "{count, plural, one{{count} неделю} few{{count} недели} other{{count} недель}}",
+  "weeks_count_accusative": "{count, plural, one{{count} неделя} few{{count} недели} other{{count} недель}}",
 
   "what_to_eat_right_breast": "правую грудь",
   "what_to_eat_left_breast": "левую грудь",
