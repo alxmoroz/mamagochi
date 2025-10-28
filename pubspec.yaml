@@ -74,7 +74,13 @@ flutter_intl:
 # Исходная картинка должна быть @4x
 # после запуска команды вручную заменить все измененные изображения, т.к. очень плохо ресайзит, размер больших больше, а мелкие - лесенкой все
 flutter_native_splash:
-  color: "#F4F5F7"
-  color_dark: "#24262E"
+  color: "#EFF2FB"
+  color_dark: "#2B3049"
+  android_12:
+    color: "#EFF2FB"
+    color_dark: "#2B3049"
+    image: scripts/launch_image_android12.png
+    image_dark: scripts/launch_image_android12_dark.png
+
   image: scripts/launch_image.png
   image_dark: scripts/launch_image_dark.png
