@@ -4,6 +4,9 @@
 
 echo "BUILDING FOR ANDROID..."
 
-flutter build appbundle --release
+flutter build appbundle \
+  --release \
+  --shrink \
+  --split-debug-info=build/app/outputs/symbols
 
 echo "BUILDING FOR ANDROID COMPLETE"

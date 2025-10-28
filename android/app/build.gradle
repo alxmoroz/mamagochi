@@ -32,6 +32,13 @@ android {
         versionName = flutter.versionName
     }
 
+    // Настройки для совместимости с 16 КБ страницами
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
     signingConfigs {
         key0 {
             keyAlias = keystoreProperties.getProperty('keyAlias')
