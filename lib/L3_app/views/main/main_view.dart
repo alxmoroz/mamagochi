@@ -104,7 +104,8 @@ class _MainViewState extends State<_MainView> {
     final buttonSize = min(270.0, min(screen.width, screen.height) - 90 - 3 * P2);
 
     return MTPage(
-      bg1Color: hc!.babyIsSleeping ? b1Color : b2Color,
+      bg1Color: hc!.babyIsSleeping ? b1StartGradientColor : null,
+      bg2Color: hc.babyIsSleeping ? b1EndGradientColor : null,
       key: widget.key,
       body: SafeArea(
         minimum: const EdgeInsets.symmetric(vertical: P5),
