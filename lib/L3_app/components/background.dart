@@ -2,17 +2,23 @@
 
 import 'package:flutter/cupertino.dart';
 
-import 'adaptive.dart';
 import 'colors.dart';
 
-Decoration? backgroundDecoration(BuildContext context, {Color? bg1Color, Color? bg2Color}) => BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          (bg1Color ?? b2Color).resolve(context),
-          (bg2Color ?? (isBigScreen(context) ? b1Color : b2Color)).resolve(context),
-        ],
-      ),
-    );
+Decoration? backgroundDecoration(BuildContext context, {Color? bg1Color, Color? bg2Color}) {
+      final brightness = MediaQuery.platformBrightnessOf(context);
+      final isDark = brightness == Brightness.dark;
+      
+      return BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            (bg1Color ?? (isDark ? b2Color : b2GradientColor)).resolve(context),
+            (bg2Color ?? (isDark ? b2GradientColor : b2Color)).resolve(context),
+          ],
+        ),
+      );
+    }
 
 class MTBackgroundWrapper extends StatelessWidget {
   const MTBackgroundWrapper(this.child, {super.key, this.bg1Color, this.bg2Color});

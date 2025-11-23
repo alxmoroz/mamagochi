@@ -95,8 +95,8 @@ const b1Color = CupertinoDynamicColor.withBrightness(
 
 /// фон барьера диалогов
 const defaultBarrierColor = CupertinoDynamicColor.withBrightness(
-  color: Color.fromARGB(240, _b1R, _b1G, _b1B),
-  darkColor: Color.fromARGB(240, _b1R_d, _b1G_d, _b1B_d),
+  color: Color.fromARGB(235, 169, 209, 245),
+  darkColor: Color.fromARGB(235, 34, 40, 65),
 );
 
 /// фон барьера клавиатуры
@@ -114,6 +114,24 @@ const b2BarrierColor = CupertinoDynamicColor.withBrightness(
 const b0Color = CupertinoDynamicColor.withBrightness(
   color: Color.fromARGB(255, _b0R, _b0G, _b0B),
   darkColor: Color.fromARGB(255, _b0R_d, _b0G_d, _b0B_d),
+);
+
+/// цвет начала градиента для притушенного фона
+const b1StartGradientColor = CupertinoDynamicColor.withBrightness(
+  color: Color.fromARGB(255, 169, 209, 245),
+  darkColor: Color.fromARGB(255, 34, 40, 65),
+);
+
+/// цвет конца градиента для притушенного фона
+const b1EndGradientColor = CupertinoDynamicColor.withBrightness(
+  color: Color.fromARGB(255, 232, 235, 245),
+  darkColor: Color.fromARGB(255, 44, 55, 111),
+);
+
+/// дополнительный цвет градиента основного фона
+const b2GradientColor = CupertinoDynamicColor.withBrightness(
+  color: Color.fromARGB(255, 160, 216, 252),
+  darkColor: Color.fromARGB(255, 62, 80, 166),
 );
 
 /// Цвета текста

@@ -17,6 +17,7 @@ import '../../components/images.dart';
 import '../../components/list_tile.dart';
 import '../../components/text.dart';
 import '../../components/toolbar.dart';
+import '../app/services.dart';
 import 'edit_feed_controller.dart';
 import 'food_count_editor.dart';
 
@@ -44,36 +45,41 @@ class EditFeedDialog extends StatelessWidget {
           shrinkWrap: true,
           children: [
             _fec.feed.type.isBreast
-                ? SizedBox(
-                    height: size + P2,
-                    child: Stack(
-                      children: [
-                        /// левая грудь
-                        Positioned(
-                          left: P2,
-                          child: MTButton(
-                            minSize: buttonSize,
-                            color: b3Color,
-                            type: _fec.feed.type.isLeftBreast ? MTButtonType.secondary : MTButtonType.main,
-                            middle: const BaseText('Левая'),
-                            onTap: () => _fec.setFeedType(FeedingType.left_breast),
-                          ),
-                        ),
+                ? Column(
+                    children: [
+                      const SizedBox(height: P2),
+                      SizedBox(
+                        height: size + P2,
+                        child: Stack(
+                          children: [
+                            /// левая грудь
+                            Positioned(
+                              left: P2,
+                              child: MTButton(
+                                minSize: buttonSize,
+                                color: b3Color,
+                                type: _fec.feed.type.isLeftBreast ? MTButtonType.secondary : MTButtonType.main,
+                                middle: BaseText(loc.feed_type_left_breast),
+                                onTap: () => _fec.setFeedType(FeedingType.left_breast),
+                              ),
+                            ),
 
-                        /// правая грудь
-                        Positioned(
-                          right: P2,
-                          child: MTButton(
-                            minSize: buttonSize,
-                            constrained: false,
-                            color: b3Color,
-                            type: _fec.feed.type.isRightBreast ? MTButtonType.secondary : MTButtonType.main,
-                            middle: const BaseText('Правая'),
-                            onTap: () => _fec.setFeedType(FeedingType.right_breast),
-                          ),
+                            /// правая грудь
+                            Positioned(
+                              right: P2,
+                              child: MTButton(
+                                minSize: buttonSize,
+                                constrained: false,
+                                color: b3Color,
+                                type: _fec.feed.type.isRightBreast ? MTButtonType.secondary : MTButtonType.main,
+                                middle: BaseText(loc.feed_type_right_breast),
+                                onTap: () => _fec.setFeedType(FeedingType.right_breast),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   )
                 : const SizedBox(),
             const SizedBox(height: P2),
