@@ -29,17 +29,17 @@ import 'widgets/bottom_menu.dart';
 
 class MainRoute extends MTRoute {
   MainRoute()
-      : super(
-          baseName: 'main',
-          path: '/',
-          redirect: (_, state) {
-            if (state.uri.hasQuery) localSettingsController.parseMainQuery(state.uri);
-            return null;
-          },
-          controller: mainController,
-          noTransition: true,
-          builder: (_, state) => _MainView(key: state.pageKey),
-        );
+    : super(
+        baseName: 'main',
+        path: '/',
+        redirect: (_, state) {
+          if (state.uri.hasQuery) localSettingsController.parseMainQuery(state.uri);
+          return null;
+        },
+        controller: mainController,
+        noTransition: true,
+        builder: (_, state) => _MainView(key: state.pageKey),
+      );
 
   @override
   List<RouteBase> get routes => [HistoryRoute(parent: this)];
@@ -88,8 +88,11 @@ class _MainViewState extends State<_MainView> {
   Future _tapEditStartSleep(HistoryController hc) async {
     final startDate = hc.lastSleep?.startDate;
     final baby = mainController.selectedBabyController?.baby;
-    final date = await MTDateTimePicker.show(baby!.isBoy ? loc.edit_sleep_start_date_title_boy : loc.edit_sleep_start_date_title_girl,
-            initialDate: startDate) ??
+    final date =
+        await MTDateTimePicker.show(
+          baby!.isBoy ? loc.edit_sleep_start_date_title_boy : loc.edit_sleep_start_date_title_girl,
+          initialDate: startDate,
+        ) ??
         startDate;
     await hc.editLastSleep(startDate: date);
   }
@@ -102,55 +105,74 @@ class _MainViewState extends State<_MainView> {
 
     final screen = screenSize(context);
     final buttonSize = min(270.0, min(screen.width, screen.height) - 90 - 3 * P2);
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
     return MTPage(
       bg1Color: hc!.babyIsSleeping ? b1StartGradientColor : null,
       bg2Color: hc.babyIsSleeping ? b1EndGradientColor : null,
       key: widget.key,
-      body: SafeArea(
-        minimum: const EdgeInsets.symmetric(vertical: P5),
-        child: Stack(children: [
-          Align(
-            child: GestureDetector(
-              onTap: () => BabyProfileDialog.show(),
-              child: hc.babyIsSleeping ? baby!.imageSleep(size: 300) : baby!.image(size: 300),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: MTButton(
-                minSize: const Size(90, 90),
-                constrained: false,
-                color: b3Color,
-                margin: const EdgeInsets.symmetric(horizontal: P2),
-                type: MTButtonType.main,
-                middle: const MTImage('menu', height: 60),
-                onTap: () => router.goHistory(hc)),
-          ),
-          hc.babyIsSleeping
-              ? Align(
-                  alignment: Alignment.topRight,
+      body: Stack(
+        children: [
+          /// Фоновые картинки в зависимости от темы (вне SafeArea для наложения на status bar)
+          if (isDark)
+            const Positioned(top: -P12 - P2, left: 0, right: 0, child: MTImage('stars', height: 390))
+          else
+            const Positioned(top: 0, right: -P3, child: MTImage('sun', height: 200)),
+
+          /// Остальные элементы в SafeArea
+          SafeArea(
+            minimum: const EdgeInsets.symmetric(vertical: P5),
+            child: Stack(
+              children: [
+                /// Кнопка меню
+                Align(
+                  alignment: Alignment.topLeft,
                   child: MTButton(
-                    minSize: Size(buttonSize, 90),
+                    minSize: const Size(90, 90),
                     constrained: false,
                     color: b3Color,
                     margin: const EdgeInsets.symmetric(horizontal: P2),
                     type: MTButtonType.main,
-                    leading: const MTImage('time', height: 60),
-                    trailing: H2(
-                      sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : hc.lastSleep?.sleepJustNowTitle ?? '',
-                      maxLines: 2,
-                      color: f2Color,
-                    ),
-                    onTap: () => _tapEditStartSleep(hc),
+                    middle: const MTImage('menu', height: 60),
+                    onTap: () => router.goHistory(hc),
                   ),
-                )
-              : const SizedBox(),
-          const Align(
-            alignment: Alignment.bottomCenter,
-            child: BottomMenu(),
+                ),
+
+                /// Кнопка таймера сна в заголовке
+                hc.babyIsSleeping
+                    ? Align(
+                        alignment: Alignment.topRight,
+                        child: MTButton(
+                          minSize: Size(buttonSize, 90),
+                          constrained: false,
+                          color: b3Color,
+                          margin: const EdgeInsets.symmetric(horizontal: P2),
+                          type: MTButtonType.main,
+                          leading: const MTImage('time', height: 60),
+                          trailing: H2(
+                            sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : hc.lastSleep?.sleepJustNowTitle ?? '',
+                            maxLines: 2,
+                            color: f2Color,
+                          ),
+                          onTap: () => _tapEditStartSleep(hc),
+                        ),
+                      )
+                    : const SizedBox(),
+
+                /// Картинка малыша
+                Align(
+                  child: GestureDetector(
+                    onTap: () => BabyProfileDialog.show(),
+                    child: hc.babyIsSleeping ? baby!.imageSleep(size: 300) : baby!.image(size: 300),
+                  ),
+                ),
+
+                /// Кнопки сна и кормления
+                const Align(alignment: Alignment.bottomCenter, child: BottomMenu()),
+              ],
+            ),
           ),
-        ]),
+        ],
       ),
     );
   }
@@ -161,8 +183,8 @@ class _MainViewState extends State<_MainView> {
       builder: (_) => appController.loading
           ? LoaderScreen(appController)
           : mainController.loading
-              ? LoaderScreen(mainController)
-              : _page(context),
+          ? LoaderScreen(mainController)
+          : _page(context),
     );
   }
 }

@@ -34,80 +34,79 @@ class EditFeedDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      final screen = screenSize(context);
-      final size = min(180.0, min(screen.width, screen.height) / 2 - P3);
-      final buttonSize = Size.square(size);
+    return Observer(
+      builder: (_) {
+        final screen = screenSize(context);
+        final size = min(180.0, min(screen.width, screen.height) / 2 - P3);
+        final buttonSize = Size.square(size);
 
-      return MTDialog(
-        topBar: MTTopBar(middle: H1(_fec.feed.editFeedTitle)),
-        body: ListView(
-          shrinkWrap: true,
-          children: [
-            _fec.feed.type.isBreast
-                ? Column(
-                    children: [
-                      const SizedBox(height: P2),
-                      SizedBox(
-                        height: size + P2,
-                        child: Stack(
-                          children: [
-                            /// левая грудь
-                            Positioned(
-                              left: P2,
-                              child: MTButton(
-                                minSize: buttonSize,
-                                color: b3Color,
-                                type: _fec.feed.type.isLeftBreast ? MTButtonType.secondary : MTButtonType.main,
-                                middle: BaseText(loc.feed_type_left_breast),
-                                onTap: () => _fec.setFeedType(FeedingType.left_breast),
+        return MTDialog(
+          topBar: MTTopBar(middle: H1(_fec.feed.editFeedTitle)),
+          body: ListView(
+            shrinkWrap: true,
+            children: [
+              _fec.feed.type.isBreast
+                  ? Column(
+                      children: [
+                        const SizedBox(height: P2),
+                        SizedBox(
+                          height: size + P2,
+                          child: Stack(
+                            children: [
+                              /// левая грудь
+                              Positioned(
+                                left: P2,
+                                child: MTButton(
+                                  minSize: buttonSize,
+                                  color: b3Color,
+                                  type: _fec.feed.type.isLeftBreast ? MTButtonType.secondary : MTButtonType.main,
+                                  middle: BaseText(loc.feed_type_left_breast),
+                                  onTap: () => _fec.setFeedType(FeedingType.left_breast),
+                                ),
                               ),
-                            ),
 
-                            /// правая грудь
-                            Positioned(
-                              right: P2,
-                              child: MTButton(
-                                minSize: buttonSize,
-                                constrained: false,
-                                color: b3Color,
-                                type: _fec.feed.type.isRightBreast ? MTButtonType.secondary : MTButtonType.main,
-                                middle: BaseText(loc.feed_type_right_breast),
-                                onTap: () => _fec.setFeedType(FeedingType.right_breast),
+                              /// правая грудь
+                              Positioned(
+                                right: P2,
+                                child: MTButton(
+                                  minSize: buttonSize,
+                                  constrained: false,
+                                  color: b3Color,
+                                  type: _fec.feed.type.isRightBreast ? MTButtonType.secondary : MTButtonType.main,
+                                  middle: BaseText(loc.feed_type_right_breast),
+                                  onTap: () => _fec.setFeedType(FeedingType.right_breast),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  )
-                : const SizedBox(),
-            const SizedBox(height: P2),
-
-            /// редактор количества (только для бутылочек)
-            if (_fec.feed.type.isBottle) ...[
-              FoodCountEditor(_fec.feed),
+                      ],
+                    )
+                  : const SizedBox(),
               const SizedBox(height: P2),
-            ],
 
-            /// редактор времени
-            MTCard(
-              margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
-              radius: 40,
-              elevation: 0,
-              child: MTListTile(
-                leading: const MTImage('time', height: 60),
-                middle: BaseText(_fec.feed.editFeedDateTimeTitle),
-                subtitle: H2(_fec.feed.endDateTime),
-                bottomDivider: false,
-                onTap: _editEnd,
+              /// редактор количества (только для бутылочек)
+              if (_fec.feed.type.isBottle) ...[FoodCountEditor(_fec.feed), const SizedBox(height: P2)],
+
+              /// редактор времени
+              MTCard(
+                margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
+                radius: 40,
+                elevation: 0,
+                child: MTListTile(
+                  leading: const MTImage('time', height: 60),
+                  middle: BaseText(_fec.feed.editFeedDateTimeTitle),
+                  subtitle: H2(_fec.feed.endDateTime),
+                  bottomDivider: false,
+                  onTap: _editEnd,
+                ),
               ),
-            ),
-          ],
-        ),
-        hasKBInput: true,
-        forceBottomPadding: true,
-      );
-    });
+            ],
+          ),
+          hasKBInput: true,
+          forceBottomPadding: true,
+        );
+      },
+    );
   }
 }
