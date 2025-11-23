@@ -129,7 +129,7 @@ abstract class _Base with Store {
   bool get babyIsSleeping => lastSleep != null && lastSleep!.isStillSleeping;
 
   @computed
-  bool get hasSleepEntriesToday => lastSleep?.endIsToday == true;
+  bool get hasSleepEntriesFor24Hours => lastSleep != null && now.difference(lastSleep!.end).inHours < 24;
 
   @computed
   Iterable<Sleep> get _sortedSleepEntries => _sleepEntries.sortedBy<DateTime>((e) => e.end);
@@ -156,7 +156,7 @@ abstract class _Base with Store {
   }
 
   @computed
-  bool get hasFeedEntriesToday => lastFeed?.endIsToday == true;
+  bool get hasFeedEntriesFor24Hours => lastFeed != null && now.difference(lastFeed!.end).inHours < 24;
 
   @computed
   Feed? get lastFeed => _sortedFeedEntries.lastOrNull;

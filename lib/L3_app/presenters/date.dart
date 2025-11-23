@@ -16,7 +16,7 @@ extension DateFormatterPresenter on DateTime {
       result = loc.time_just_now;
     } else if (hours < 1) {
       result = loc.time_minutes_ago(minutes);
-    } else if (isToday) {
+    } else if (hours < 24) {
       result = minutes > 0 ? loc.time_hours_minutes_ago(hours, minutes) : loc.time_hours_ago(hours);
     } else {
       result = strTime;
