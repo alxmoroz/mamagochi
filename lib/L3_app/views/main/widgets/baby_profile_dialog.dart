@@ -22,71 +22,73 @@ class BabyProfileDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return SafeArea(
-        child: LayoutBuilder(
-          builder: (_, constraints) {
-            final isLandscape = constraints.maxWidth > constraints.maxHeight;
-            final spacing = isLandscape ? P : P2;
-            final spacingLarge = isLandscape ? P2 : P3;
+    return Observer(
+      builder: (_) {
+        return SafeArea(
+          child: LayoutBuilder(
+            builder: (_, constraints) {
+              final isLandscape = constraints.maxWidth > constraints.maxHeight;
+              final spacing = isLandscape ? P : P2;
+              final spacingLarge = isLandscape ? P2 : P3;
 
-            return GestureDetector(
-              onTap: Navigator.of(context).pop,
-              child: Container(
-                color: Colors.transparent,
-                width: constraints.maxWidth,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    /// Контент диалога
-                    Container(
-                      padding: const EdgeInsets.all(P3),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          /// Имя малыша
-                          if (_baby.named) H1(_baby.name!, color: f2Color, align: TextAlign.center),
-                          if (_baby.named) SizedBox(height: spacing),
+              return GestureDetector(
+                onTap: Navigator.of(context).pop,
+                child: Container(
+                  color: Colors.transparent,
+                  width: constraints.maxWidth,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      /// Контент диалога
+                      Container(
+                        padding: const EdgeInsets.all(P2),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            /// Имя малыша
+                            if (_baby.named) H1(_baby.name!, color: f2Color, align: TextAlign.center),
+                            if (_baby.named) SizedBox(height: spacing),
 
-                          /// Дата рождения
-                          if (_baby.formattedDateOfBirth != null) BaseText(_baby.formattedDateOfBirth!, color: f2Color, align: TextAlign.center),
-                          if (_baby.formattedDateOfBirth != null && !isLandscape) SizedBox(height: spacingLarge),
+                            /// Дата рождения
+                            if (_baby.formattedDateOfBirth != null) BaseText(_baby.formattedDateOfBirth!, color: f2Color, align: TextAlign.center),
+                            if (_baby.formattedDateOfBirth != null && !isLandscape) SizedBox(height: spacingLarge),
 
-                          /// Картинка малыша
-                          _baby.image(size: 200),
-                          if (!isLandscape) SizedBox(height: spacingLarge),
+                            /// Картинка малыша
+                            _baby.image(size: 200),
+                            if (!isLandscape) SizedBox(height: spacingLarge),
 
-                          /// Возраст малыша
-                          _buildAgeDisplay(spacing),
-                        ],
-                      ),
-                    ),
-
-                    /// Кнопка закрытия (только в вертикальном режиме)
-                    if (!isLandscape)
-                      Positioned(
-                        bottom: _closeButtonMargin,
-                        left: 0,
-                        right: 0,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: MTButton(
-                            minSize: const Size.square(100),
-                            color: b3Color,
-                            type: MTButtonType.main,
-                            middle: const MTImage('close', height: 50),
-                            onTap: Navigator.of(context).pop,
-                          ),
+                            /// Возраст малыша
+                            _buildAgeDisplay(spacing),
+                          ],
                         ),
                       ),
-                  ],
+
+                      /// Кнопка закрытия (только в вертикальном режиме)
+                      if (!isLandscape)
+                        Positioned(
+                          bottom: _closeButtonMargin,
+                          left: 0,
+                          right: 0,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: MTButton(
+                              minSize: const Size.square(100),
+                              color: b3Color,
+                              type: MTButtonType.main,
+                              middle: const MTImage('close', height: 50),
+                              onTap: Navigator.of(context).pop,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
-      );
-    });
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildAgeDisplay(double spacing) {
