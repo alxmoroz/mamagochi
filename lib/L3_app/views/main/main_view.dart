@@ -117,7 +117,7 @@ class _MainViewState extends State<_MainView> {
           if (isDark)
             const Positioned(top: -P12 - P2, left: 0, right: 0, child: MTImage('stars', height: 390))
           else
-            const Positioned(top: 0, right: -P3, child: MTImage('sun', height: 200)),
+            const Positioned(top: -P10 * 2.5, right: -P10 * 3, child: MTImage('sun', height: 390)),
 
           /// Остальные элементы в SafeArea
           SafeArea(
