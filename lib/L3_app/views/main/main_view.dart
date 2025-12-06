@@ -97,6 +97,13 @@ class _MainViewState extends State<_MainView> {
     await hc.editLastSleep(startDate: date);
   }
 
+  Widget get backgroundImage {
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    return isDark
+        ? const Positioned(top: 0, left: 0, right: 0, height: 194, child: MTImage('stars', height: 194, width: 390))
+        : const Positioned(right: 0, width: 218, height: 252, child: MTImage('sun', height: 252, width: 218));
+  }
+
   Widget _page(BuildContext context) {
     final hc = mainController.selectedBabyController?.historyController;
     final baby = mainController.selectedBabyController?.baby;
@@ -105,74 +112,63 @@ class _MainViewState extends State<_MainView> {
 
     final screen = screenSize(context);
     final buttonSize = min(270.0, min(screen.width, screen.height) - 90 - 3 * P2);
-    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
     return MTPage(
       bg1Color: hc!.babyIsSleeping ? b1StartGradientColor : null,
       bg2Color: hc.babyIsSleeping ? b1EndGradientColor : null,
+      background: backgroundImage,
       key: widget.key,
-      body: Stack(
-        children: [
-          /// Фоновые картинки в зависимости от темы (вне SafeArea для наложения на status bar)
-          if (isDark)
-            const Positioned(top: -P12 - P2, left: 0, right: 0, child: MTImage('stars', height: 390))
-          else
-            const Positioned(top: -P10 * 2.5, right: -P10 * 3, child: MTImage('sun', height: 390)),
-
-          /// Остальные элементы в SafeArea
-          SafeArea(
-            minimum: const EdgeInsets.symmetric(vertical: P5),
-            child: Stack(
-              children: [
-                /// Кнопка меню
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: MTButton(
-                    minSize: const Size(90, 90),
-                    constrained: false,
-                    color: b3Color,
-                    margin: const EdgeInsets.symmetric(horizontal: P2),
-                    type: MTButtonType.main,
-                    middle: const MTImage('menu', height: 60),
-                    onTap: () => router.goHistory(hc),
-                  ),
-                ),
-
-                /// Кнопка таймера сна в заголовке
-                hc.babyIsSleeping
-                    ? Align(
-                        alignment: Alignment.topRight,
-                        child: MTButton(
-                          minSize: Size(buttonSize, 90),
-                          constrained: false,
-                          color: b3Color,
-                          margin: const EdgeInsets.symmetric(horizontal: P2),
-                          type: MTButtonType.main,
-                          leading: const MTImage('time', height: 60),
-                          trailing: H2(
-                            sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : hc.lastSleep?.sleepJustNowTitle ?? '',
-                            maxLines: 2,
-                            color: f2Color,
-                          ),
-                          onTap: () => _tapEditStartSleep(hc),
-                        ),
-                      )
-                    : const SizedBox(),
-
-                /// Картинка малыша
-                Align(
-                  child: GestureDetector(
-                    onTap: () => BabyProfileDialog.show(),
-                    child: hc.babyIsSleeping ? baby!.imageSleep(size: 300) : baby!.image(size: 300),
-                  ),
-                ),
-
-                /// Кнопки сна и кормления
-                const Align(alignment: Alignment.bottomCenter, child: BottomMenu()),
-              ],
+      body: SafeArea(
+        minimum: const EdgeInsets.symmetric(vertical: P5),
+        child: Stack(
+          children: [
+            /// Кнопка меню
+            Align(
+              alignment: Alignment.topLeft,
+              child: MTButton(
+                minSize: const Size(90, 90),
+                constrained: false,
+                color: b3Color,
+                margin: const EdgeInsets.symmetric(horizontal: P2),
+                type: MTButtonType.main,
+                middle: const MTImage('menu', height: 60),
+                onTap: () => router.goHistory(hc),
+              ),
             ),
-          ),
-        ],
+
+            /// Кнопка таймера сна в заголовке
+            hc.babyIsSleeping
+                ? Align(
+                    alignment: Alignment.topRight,
+                    child: MTButton(
+                      minSize: Size(buttonSize, 90),
+                      constrained: false,
+                      color: b3Color,
+                      margin: const EdgeInsets.symmetric(horizontal: P2),
+                      type: MTButtonType.main,
+                      leading: const MTImage('time', height: 60),
+                      trailing: H2(
+                        sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : hc.lastSleep?.sleepJustNowTitle ?? '',
+                        maxLines: 2,
+                        color: f2Color,
+                      ),
+                      onTap: () => _tapEditStartSleep(hc),
+                    ),
+                  )
+                : const SizedBox(),
+
+            /// Картинка малыша
+            Align(
+              child: GestureDetector(
+                onTap: () => BabyProfileDialog.show(),
+                child: hc.babyIsSleeping ? baby!.imageSleep(size: 300) : baby!.image(size: 300),
+              ),
+            ),
+
+            /// Кнопки сна и кормления
+            const Align(alignment: Alignment.bottomCenter, child: BottomMenu()),
+          ],
+        ),
       ),
     );
   }
