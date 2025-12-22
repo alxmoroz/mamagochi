@@ -27,11 +27,7 @@ class HistoryRoute extends MTRoute {
   static const staticBaseName = 'history';
 
   HistoryRoute({super.parent})
-      : super(
-          path: staticBaseName,
-          baseName: staticBaseName,
-          builder: (_, state) => _HistoryView(state.extra as HistoryController),
-        );
+    : super(path: staticBaseName, baseName: staticBaseName, builder: (_, state) => _HistoryView(state.extra as HistoryController));
 }
 
 class _HistoryView extends StatelessWidget {
@@ -50,50 +46,48 @@ class _HistoryView extends StatelessWidget {
       children: [
         MTListGroupTitle(titleText: date.strMedium),
         ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: group.length,
-            itemBuilder: (_, index) {
-              final entry = group.elementAt(index);
-              final isStillSleep = entry is Sleep && entry.isStillSleeping;
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: group.length,
+          itemBuilder: (_, index) {
+            final entry = group.elementAt(index);
+            final isStillSleep = entry is Sleep && entry.isStillSleeping;
 
-              return Slidable(
-                key: ObjectKey(entry),
-                endActionPane: ActionPane(
-                  motion: const ScrollMotion(),
-                  dismissible: DismissiblePane(
-                    onDismissed: () {},
-                    confirmDismiss: () async => await _delete(entry),
+            return Slidable(
+              key: ObjectKey(entry),
+              endActionPane: ActionPane(
+                motion: const ScrollMotion(),
+                dismissible: DismissiblePane(onDismissed: () {}, confirmDismiss: () async => await _delete(entry)),
+                children: [
+                  CustomSlidableAction(
+                    onPressed: (_) async => await _delete(entry),
+                    backgroundColor: dangerColor.resolve(context),
+                    child: const DeleteIcon(color: whiteColor, size: P6),
                   ),
-                  children: [
-                    CustomSlidableAction(
-                      onPressed: (_) async => await _delete(entry),
-                      backgroundColor: dangerColor.resolve(context),
-                      child: const DeleteIcon(color: whiteColor, size: P6),
-                    ),
-                  ],
-                ),
-                child: entry is Feed
-                    ? MTListTile(
-                        leading: entry.feedImage(size: P10),
-                        titleText: entry.feedTypeName,
-                        subtitle: entry.shouldShowCount ? SmallText(entry.feedCount) : null,
-                        trailing: SmallText(entry.end.strTime),
-                        bottomDivider: index < group.length - 1,
-                        onTap: () => EditFeedDialog.show(entry),
-                      )
-                    : entry is Sleep
-                        ? MTListTile(
-                            leading: entry.sleepImage(size: P10),
-                            titleText: entry.isMoreMinute ? loc.history_sleep_title : '',
-                            subtitle: SmallText(entry.isMoreMinute ? entry.sleepDuration : ''),
-                            trailing: SmallText(isStillSleep ? loc.history_sleep_trailing_still_sleep : entry.historyTrailingDateTime),
-                            bottomDivider: index < group.length - 1,
-                            onTap: () => EditSleepDialog.show(entry),
-                          )
-                        : const SizedBox(),
-              );
-            })
+                ],
+              ),
+              child: entry is Feed
+                  ? MTListTile(
+                      leading: entry.feedImage(size: P10),
+                      titleText: entry.feedTypeName,
+                      subtitle: entry.shouldShowCount ? SmallText(entry.feedCount) : null,
+                      trailing: SmallText(entry.endTitle),
+                      bottomDivider: index < group.length - 1,
+                      onTap: () => EditFeedDialog.show(entry),
+                    )
+                  : entry is Sleep
+                  ? MTListTile(
+                      leading: entry.sleepImage(size: P10),
+                      titleText: entry.isMoreMinute ? loc.history_sleep_title : '',
+                      subtitle: SmallText(entry.isMoreMinute ? entry.sleepDuration : ''),
+                      trailing: SmallText(isStillSleep ? entry.historyStillSleepTimeTitle : entry.historyStartEndTimeTitle, align: TextAlign.right),
+                      bottomDivider: index < group.length - 1,
+                      onTap: () => EditSleepDialog.show(entry),
+                    )
+                  : const SizedBox(),
+            );
+          },
+        ),
       ],
     );
   }
@@ -102,9 +96,7 @@ class _HistoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => MTPage(
-        navBar: MTNavBar(
-          pageTitle: loc.history_title,
-        ),
+        navBar: MTNavBar(pageTitle: loc.history_title),
         body: _hc.hasEntries
             ? ListView.builder(
                 itemCount: _hc.groupedEntries.keys.length,
@@ -112,16 +104,13 @@ class _HistoryView extends StatelessWidget {
                   final date = _hc.groupedEntries.keys.elementAt(index);
                   final group = _hc.groupedEntries[date];
                   return group != null ? _dayEntries(date, group, context) : const SizedBox();
-                })
+                },
+              )
             : Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const MTImage(
-                      'no_info',
-                      height: P10 * 5,
-                      width: P10 * 5,
-                    ),
+                    const MTImage('no_info', height: P10 * 5, width: P10 * 5),
                     H1(loc.history_empty_title, align: TextAlign.center),
                   ],
                 ),

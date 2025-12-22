@@ -14,13 +14,11 @@ Baby get _baby => mainController.selectedBabyController!.baby;
 extension SleepPresenter on Sleep {
   String get editSleepStartTitle => Intl.message('edit_sleep_start_date_title_${_baby.sex}');
   String get editSleepEndTitle => Intl.message('edit_sleep_end_date_title_${_baby.sex}');
+
+  String get historyStillSleepTimeTitle => isMoreMinute ? '$startTitle\n$stillSleepTitle' : stillSleepTitle;
   String get howMuchSleptTitle => Intl.message('how_much_slept_${_baby.sex}', args: [duration.strInHoursAndMinutes]);
 
-  Widget sleepImage({double? size}) => MTImage(
-        'bed',
-        height: size,
-        width: size,
-      );
+  Widget sleepImage({double? size}) => MTImage('bed', height: size, width: size);
 
   String get sleepName => '${loc.history_sleep_title} $startDate - $endDate';
   String get sleepDuration => isStillSleeping ? durationFromStartToNow.strInHoursAndMinutes : duration.strInHoursAndMinutes;
@@ -30,4 +28,5 @@ extension SleepPresenter on Sleep {
   String get stopSleepActionTitle => Intl.message('action_stop_sleep_title_${_baby.sex}');
 
   String get sleepJustNowTitle => Intl.message('sleep_just_now_title_${_baby.sex}');
+  String get stillSleepTitle => Intl.message('history_sleep_trailing_still_sleep');
 }
