@@ -1,7 +1,43 @@
 {
-  "fill" : {
-    "solid" : "srgb:0.96220,0.96220,0.96220,1.00000"
-  },
+  "fill-specializations" : [
+    {
+      "value" : {
+        "linear-gradient" : [
+          "display-p3:0.67529,0.84277,0.97412,1.00000",
+          "display-p3:0.99316,0.98926,0.98535,1.00000"
+        ],
+        "orientation" : {
+          "start" : {
+            "x" : 0.5,
+            "y" : 1
+          },
+          "stop" : {
+            "x" : 0.5,
+            "y" : 0.3
+          }
+        }
+      }
+    },
+    {
+      "appearance" : "dark",
+      "value" : {
+        "linear-gradient" : [
+          "display-p3:0.13696,0.15637,0.24634,1.00000",
+          "display-p3:0.17993,0.21497,0.42261,1.00000"
+        ],
+        "orientation" : {
+          "start" : {
+            "x" : 0.5,
+            "y" : 1
+          },
+          "stop" : {
+            "x" : 0.5,
+            "y" : 0.3
+          }
+        }
+      }
+    }
+  ],
   "groups" : [
     {
       "blend-mode" : "normal",
@@ -16,7 +52,14 @@
           ],
           "glass" : false,
           "image-name" : "baby_eyes 2.svg",
-          "name" : "baby_eyes 2"
+          "name" : "baby_eyes 2",
+          "position" : {
+            "scale" : 0.85,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
         }
       ],
       "shadow" : {
@@ -33,11 +76,25 @@
       "layers" : [
         {
           "image-name" : "baby_pacifier.svg",
-          "name" : "baby_pacifier"
+          "name" : "baby_pacifier",
+          "position" : {
+            "scale" : 0.85,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
         },
         {
           "image-name" : "baby_face.svg",
-          "name" : "baby_face"
+          "name" : "baby_face",
+          "position" : {
+            "scale" : 0.85,
+            "translation-in-points" : [
+              0,
+              0.2880000000000109
+            ]
+          }
         }
       ],
       "lighting" : "individual",
@@ -48,6 +105,49 @@
       "specular" : true,
       "translucency" : {
         "enabled" : false,
+        "value" : 0.5
+      }
+    },
+    {
+      "layers" : [
+        {
+          "blend-mode" : "normal",
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:0.66943,0.83691,0.97217,1.00000",
+              "display-p3:0.74512,0.87354,0.97510,1.00000"
+            ],
+            "orientation" : {
+              "start" : {
+                "x" : 0.5,
+                "y" : 0
+              },
+              "stop" : {
+                "x" : 0.5,
+                "y" : 0.7
+              }
+            }
+          },
+          "glass" : false,
+          "hidden" : false,
+          "image-name" : "starsидгу.svg",
+          "name" : "starsидгу",
+          "position" : {
+            "scale" : 2.5,
+            "translation-in-points" : [
+              -13.071249999999964,
+              -372.40637499999997
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
         "value" : 0.5
       }
     }
