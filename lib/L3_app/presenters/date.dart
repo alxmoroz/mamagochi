@@ -28,10 +28,10 @@ extension DateFormatterPresenter on DateTime {
   String get strMedium => isYesterday
       ? loc.yesterday_date_title
       : isToday
-          ? loc.today_title
-          : isTomorrow
-              ? loc.tomorrow_title
-              : thisYear
-                  ? DateFormat.MMMMd().format(this)
-                  : DateFormat.yMMMMd().format(this);
+      ? loc.today_title
+      : isTomorrow
+      ? loc.tomorrow_title
+      : thisYear
+      ? DateFormat.MMMMd().format(this)
+      : DateFormat.yMMMMd().format(this);
 }

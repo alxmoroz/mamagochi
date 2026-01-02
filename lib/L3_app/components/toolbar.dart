@@ -12,14 +12,7 @@ import 'page_title.dart';
 import 'toolbar_controller.dart';
 
 class _ToolbarContent extends StatelessWidget {
-  const _ToolbarContent({
-    this.pageTitle,
-    this.parentPageTitle,
-    this.leading,
-    this.middle,
-    this.bottom,
-    this.trailing,
-  });
+  const _ToolbarContent({this.pageTitle, this.parentPageTitle, this.leading, this.middle, this.bottom, this.trailing});
   final String? pageTitle;
   final String? parentPageTitle;
   final Widget? leading;
@@ -37,11 +30,7 @@ class _ToolbarContent extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             if (middle != null) middle! else if (pageTitle != null) PageTitle(pageTitle!, parentPageTitle: parentPageTitle),
-            Row(children: [
-              if (leading != null) leading!,
-              const Spacer(),
-              if (trailing != null) trailing!,
-            ]),
+            Row(children: [if (leading != null) leading!, const Spacer(), if (trailing != null) trailing!]),
           ],
         ),
         if (bottom != null) bottom!,
@@ -91,17 +80,17 @@ abstract class _MTAppBar extends StatelessWidget implements PreferredSizeWidget 
   double get _innerHeight => innerHeight ?? DEF_BAR_HEIGHT;
 
   @override
-  Size get preferredSize => Size.fromHeight(toolbarController != null
-      ? toolbarController!.height
-      : (topPadding + _innerHeight + (bottomWidget?.preferredSize.height ?? 0) + bottomPadding));
+  Size get preferredSize => Size.fromHeight(
+    toolbarController != null ? toolbarController!.height : (topPadding + _innerHeight + (bottomWidget?.preferredSize.height ?? 0) + bottomPadding),
+  );
 
   Widget? _leading(BuildContext context) {
     final navigator = Navigator.of(context);
     return leading ??
         (!isBottom && navigator.canPop()
             ? fullScreen
-                ? CupertinoNavigationBarBackButton(previousPageTitle: '', onPressed: navigator.pop)
-                : const MTCloseDialogButton()
+                  ? CupertinoNavigationBarBackButton(previousPageTitle: '', onPressed: navigator.pop)
+                  : const MTCloseDialogButton()
             : null);
   }
 
@@ -130,24 +119,14 @@ abstract class _MTAppBar extends StatelessWidget implements PreferredSizeWidget 
       color: flat ? color.resolve(context) : null,
       padding: EdgeInsets.only(top: topPadding, bottom: bottomPadding),
       child: flat
-          ? SafeArea(
-              top: !isBottom,
-              bottom: isBottom,
-              child: toolbarContent,
-            )
+          ? SafeArea(top: !isBottom, bottom: isBottom, child: toolbarContent)
           : CupertinoNavigationBar(
               automaticallyImplyLeading: false,
               automaticallyImplyMiddle: false,
               padding: EdgeInsetsDirectional.only(top: topPadding, bottom: bottomPadding, start: 0, end: 0),
               leading: OverflowBox(
                 maxHeight: preferredSize.height,
-                child: _ToolbarContent(
-                  leading: leading,
-                  pageTitle: pageTitle,
-                  parentPageTitle: parentPageTitle,
-                  middle: middle,
-                  trailing: trailing,
-                ),
+                child: _ToolbarContent(leading: leading, pageTitle: pageTitle, parentPageTitle: parentPageTitle, middle: middle, trailing: trailing),
               ),
               bottom: bottomWidget,
               backgroundColor: color,

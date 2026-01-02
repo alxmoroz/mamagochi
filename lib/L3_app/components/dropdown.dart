@@ -10,16 +10,8 @@ import 'text.dart';
 import 'text_field.dart';
 
 class MTDropdown<T extends RPersistable> extends StatelessWidget {
-  const MTDropdown({
-    super.key,
-    required this.label,
-    this.helper,
-    this.onChanged,
-    this.value,
-    this.ddItems,
-    this.items,
-    this.margin,
-  }) : assert((ddItems == null && items != null) || (ddItems != null && items == null));
+  const MTDropdown({super.key, required this.label, this.helper, this.onChanged, this.value, this.ddItems, this.items, this.margin})
+    : assert((ddItems == null && items != null) || (ddItems != null && items == null));
 
   final Function(int?)? onChanged;
   final int? value;
@@ -29,15 +21,7 @@ class MTDropdown<T extends RPersistable> extends StatelessWidget {
   final String? helper;
   final EdgeInsets? margin;
 
-  List<DropdownMenuItem<int>> get _ddItems =>
-      ddItems ??
-      [
-        for (final item in items!)
-          DropdownMenuItem<int>(
-            value: item.id,
-            child: BaseText('$item'),
-          ),
-      ];
+  List<DropdownMenuItem<int>> get _ddItems => ddItems ?? [for (final item in items!) DropdownMenuItem<int>(value: item.id, child: BaseText('$item'))];
 
   @override
   Widget build(BuildContext context) {

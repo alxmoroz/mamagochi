@@ -15,20 +15,8 @@ mixin Loadable {
   LoadableState get loaderState => _l;
   bool get loading => _l.loading;
 
-  void setLoaderScreen({
-    String? titleText,
-    String? descriptionText,
-    String? imageName,
-    String? actionText,
-    Widget? actionWidget,
-  }) =>
-      _l.set(
-        titleText: titleText,
-        descriptionText: descriptionText,
-        imageName: imageName,
-        actionText: actionText,
-        actionWidget: actionWidget,
-      );
+  void setLoaderScreen({String? titleText, String? descriptionText, String? imageName, String? actionText, Widget? actionWidget}) =>
+      _l.set(titleText: titleText, descriptionText: descriptionText, imageName: imageName, actionText: actionText, actionWidget: actionWidget);
 
   void setLoaderScreenLoading() => _l.set(titleText: loc.loader_refreshing_title, imageName: 'loading');
   void setLoaderScreenSaving() => _l.set(titleText: loc.loader_saving_title, imageName: 'save');
@@ -103,19 +91,10 @@ abstract class _LoadableBase with Store {
   @observable
   Widget? actionWidget;
 
-  Widget _stopActionButton(String actionText) => MTButton.secondary(
-        titleText: actionText,
-        onTap: () => stop(pop: true),
-      );
+  Widget _stopActionButton(String actionText) => MTButton.secondary(titleText: actionText, onTap: () => stop(pop: true));
 
   @action
-  void set({
-    String? titleText,
-    String? descriptionText,
-    String? imageName,
-    String? actionText,
-    Widget? actionWidget,
-  }) {
+  void set({String? titleText, String? descriptionText, String? imageName, String? actionText, Widget? actionWidget}) {
     actionWidget ??= actionText != null ? _stopActionButton(actionText) : null;
     this.imageName = imageName;
     this.titleText = titleText;

@@ -8,17 +8,9 @@ import '../views/app/services.dart';
 extension BabyPresenter on Baby? {
   String get sex => this?.isBoy == true ? 'boy' : 'girl';
 
-  Widget image({double? size}) => MTImage(
-        this?.isOlderNineMonths == true ? '${sex}_with_teeth' : sex,
-        height: size,
-        width: size,
-      );
+  Widget image({double? size}) => MTImage(this?.isOlderNineMonths == true ? '${sex}_with_teeth' : sex, height: size, width: size);
 
-  Widget imageSleep({double? size}) => MTImage(
-        '${sex}_sleep',
-        height: size,
-        width: size,
-      );
+  Widget imageSleep({double? size}) => MTImage('${sex}_sleep', height: size, width: size);
 
   String? get formattedDateOfBirth => this?.dateOfBirth != null ? DateFormat.yMMMMd().format(this!.dateOfBirth!) : null;
 }

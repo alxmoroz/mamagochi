@@ -31,13 +31,13 @@ class FeedHO extends BaseModel<Feed> {
 
   @override
   Feed toEntity() => Feed(
-        created: created ?? now,
-        startDate: start,
-        endDate: end,
-        babyCreatedTime: babyCreatedTime ?? now,
-        type: FeedingType.fromString(type),
-        count: count,
-      );
+    created: created ?? now,
+    startDate: start,
+    endDate: end,
+    babyCreatedTime: babyCreatedTime ?? now,
+    type: FeedingType.fromString(type),
+    count: count,
+  );
 
   @override
   Future<FeedHO> update(Feed entity) async {

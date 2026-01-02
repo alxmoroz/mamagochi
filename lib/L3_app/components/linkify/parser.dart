@@ -38,11 +38,7 @@ abstract class UriParser {
   }
 }
 
-List<SpanElement> parse(
-  String text, {
-  bool looseUrl = true,
-  List<UriParser> parsers = const [EmailParser(), HttpParser(), PhoneParser()],
-}) {
+List<SpanElement> parse(String text, {bool looseUrl = true, List<UriParser> parsers = const [EmailParser(), HttpParser(), PhoneParser()]}) {
   List<SpanElement> spans = [];
 
   if (text.isNotEmpty) {

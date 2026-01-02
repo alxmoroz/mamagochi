@@ -23,20 +23,19 @@ Future<T?> showMTSelectDialog<T extends RPersistable>(
   Widget? Function(BuildContext, T)? subtitleBuilder,
   final double? dividerIndent,
   final VoidCallback? onReset,
-}) async =>
-    await showMTDialog<T?>(
-      _MTSelectDialog<T>(
-        items,
-        selectedId,
-        pageTitle,
-        parentPageTitle: parentPageTitle,
-        leadingBuilder: leadingBuilder,
-        valueBuilder: valueBuilder,
-        subtitleBuilder: subtitleBuilder,
-        dividerIndent: dividerIndent,
-        onReset: onReset,
-      ),
-    );
+}) async => await showMTDialog<T?>(
+  _MTSelectDialog<T>(
+    items,
+    selectedId,
+    pageTitle,
+    parentPageTitle: parentPageTitle,
+    leadingBuilder: leadingBuilder,
+    valueBuilder: valueBuilder,
+    subtitleBuilder: subtitleBuilder,
+    dividerIndent: dividerIndent,
+    onReset: onReset,
+  ),
+);
 
 class _MTSelectDialog<T extends RPersistable> extends StatelessWidget {
   const _MTSelectDialog(
@@ -78,24 +77,20 @@ class _MTSelectDialog<T extends RPersistable> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MTDialog(
-        topBar: MTTopBar(
-          pageTitle: pageTitle,
-          parentPageTitle: parentPageTitle,
-          trailing: onReset != null && selectedId != null
-              ? MTButton.icon(
-                  const DeleteIcon(),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    onReset!();
-                  },
-                  padding: const EdgeInsets.all(P2),
-                )
-              : null,
-        ),
-        body: ListView.builder(
-          shrinkWrap: true,
-          itemCount: itemCount,
-          itemBuilder: itemBuilder,
-        ),
-      );
+    topBar: MTTopBar(
+      pageTitle: pageTitle,
+      parentPageTitle: parentPageTitle,
+      trailing: onReset != null && selectedId != null
+          ? MTButton.icon(
+              const DeleteIcon(),
+              onTap: () {
+                Navigator.of(context).pop();
+                onReset!();
+              },
+              padding: const EdgeInsets.all(P2),
+            )
+          : null,
+    ),
+    body: ListView.builder(shrinkWrap: true, itemCount: itemCount, itemBuilder: itemBuilder),
+  );
 }

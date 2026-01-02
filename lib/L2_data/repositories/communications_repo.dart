@@ -25,7 +25,8 @@ const homepageUrlString = '$_host/mamagochi';
 // String get appInstallUrlString => isIOS ? _appAppStoreUrlString : _appGooglePlayUrlString;
 
 Future<bool> sendMail(String subject, String appIdentifier, int? userId, {String? text = ''}) async {
-  final body = ''
+  final body =
+      ''
       '$text'
       '\r\n-----'
       '\r\n$appIdentifier'

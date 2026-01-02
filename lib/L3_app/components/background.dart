@@ -31,7 +31,7 @@ class MTBackgroundWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: backgroundDecoration(context, bg1Color: bg1Color, bg2Color: bg2Color),
-      child: Stack(alignment: Alignment.topLeft, children: [?background, child]),
+      child: Stack(alignment: Alignment.topLeft, children: [if (background != null) background!, child]),
     );
   }
 }

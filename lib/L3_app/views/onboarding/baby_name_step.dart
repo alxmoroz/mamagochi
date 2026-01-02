@@ -51,11 +51,7 @@ class BabyNameStep extends StatelessWidget {
               ),
             ),
             const SizedBox(height: P3),
-            if (MediaQuery.viewInsetsOf(context).bottom == 0)
-              MTButton.main(
-                titleText: loc.next_action_title,
-                onTap: _bc.validated ? _setName : null,
-              ),
+            if (MediaQuery.viewInsetsOf(context).bottom == 0) MTButton.main(titleText: loc.next_action_title, onTap: _bc.validated ? _setName : null),
           ],
         ),
       ),

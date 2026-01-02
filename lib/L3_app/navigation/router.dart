@@ -12,17 +12,15 @@ import '../views/onboarding/onboarding_view.dart';
 import 'route.dart';
 
 final router = GoRouter(
-    // debugLogDiagnostics: true,
-    routes: [
-      mainRoute,
-      onboardingRoute,
-    ],
-    initialLocation: '/',
-    initialExtra: 'local',
-    onException: (_, state, r) {
-      if (kDebugMode) print('GoRouter onException -> ${state.uri}');
-      r.goMain();
-    });
+  // debugLogDiagnostics: true,
+  routes: [mainRoute, onboardingRoute],
+  initialLocation: '/',
+  initialExtra: 'local',
+  onException: (_, state, r) {
+    if (kDebugMode) print('GoRouter onException -> ${state.uri}');
+    r.goMain();
+  },
+);
 
 BuildContext get globalContext => router.routerDelegate.navigatorKey.currentContext!;
 
@@ -37,13 +35,7 @@ extension MTRouterHelper on GoRouter {
     Map<String, String> pathParameters = const <String, String>{},
     Map<String, dynamic> queryParameters = const <String, dynamic>{},
     Object? extra,
-  }) =>
-      goNamed(
-        name,
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-        extra: extra ?? 'local',
-      );
+  }) => goNamed(name, pathParameters: pathParameters, queryParameters: queryParameters, extra: extra ?? 'local');
 
   // Главная и вход
   void goMain() => _goNamed(mainRoute.name);

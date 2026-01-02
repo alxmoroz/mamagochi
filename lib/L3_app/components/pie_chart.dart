@@ -8,14 +8,7 @@ import 'colors.dart';
 import 'constants.dart';
 
 class MTPieChartData {
-  const MTPieChartData(
-    this.value, {
-    this.start,
-    this.color,
-    this.radius,
-    this.strokeWidth,
-    this.strokeCap,
-  });
+  const MTPieChartData(this.value, {this.start, this.color, this.radius, this.strokeWidth, this.strokeCap});
   final double value;
   final double? start;
   final Color? color;

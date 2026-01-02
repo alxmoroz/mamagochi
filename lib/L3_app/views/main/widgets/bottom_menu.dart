@@ -37,66 +37,65 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      final hc = mainController.selectedBabyController?.historyController;
-      final baby = mainController.selectedBabyController?.baby;
+    return Observer(
+      builder: (_) {
+        final hc = mainController.selectedBabyController?.historyController;
+        final baby = mainController.selectedBabyController?.baby;
 
-      final screen = screenSize(context);
-      final size = min(180.0, min(screen.width, screen.height) / 2 - P3);
-      final buttonSize = Size.square(size);
+        final screen = screenSize(context);
+        final size = min(180.0, min(screen.width, screen.height) / 2 - P3);
+        final buttonSize = Size.square(size);
 
-      return hc != null
-          ? Row(
-              children: [
-                const SizedBox(width: P2),
-                hc.babyIsSleeping
-                    ? MTButton(
-                        minSize: buttonSize,
-                        constrained: false,
-                        color: b3Color,
-                        type: MTButtonType.main,
-                        middle: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            baby.image(size: 90),
-                            SmallText(baby!.isBoy ? loc.action_stop_sleep_title_boy : loc.action_stop_sleep_title_girl),
-                          ],
+        return hc != null
+            ? Row(
+                children: [
+                  const SizedBox(width: P2),
+                  hc.babyIsSleeping
+                      ? MTButton(
+                          minSize: buttonSize,
+                          constrained: false,
+                          color: b3Color,
+                          type: MTButtonType.main,
+                          middle: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              baby.image(size: 90),
+                              SmallText(baby!.isBoy ? loc.action_stop_sleep_title_boy : loc.action_stop_sleep_title_girl),
+                            ],
+                          ),
+                          onTap: () => _stopSleep(hc),
+                        )
+                      : MTButton(
+                          minSize: buttonSize,
+                          constrained: false,
+                          color: b3Color,
+                          type: MTButtonType.main,
+                          middle: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [const MTImage('bed', height: 90), if (hc.hasSleepEntriesFor24Hours) SmallText(hc.lastSleep!.end.strTimeAgo)],
+                          ),
+                          onTap: () => _startSleep(hc),
                         ),
-                        onTap: () => _stopSleep(hc),
-                      )
-                    : MTButton(
-                        minSize: buttonSize,
-                        constrained: false,
-                        color: b3Color,
-                        type: MTButtonType.main,
-                        middle: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const MTImage('bed', height: 90),
-                            if (hc.hasSleepEntriesFor24Hours) SmallText(hc.lastSleep!.end.strTimeAgo),
-                          ],
-                        ),
-                        onTap: () => _startSleep(hc),
-                      ),
-                const Spacer(),
-                MTButton(
-                  minSize: buttonSize,
-                  constrained: false,
-                  color: b3Color,
-                  type: MTButtonType.main,
-                  middle: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      MTImage(hc.hasFeedEntriesFor24Hours ? hc.lastFeed!.feedImageName : 'bottle_baby_formula', height: 90),
-                      if (hc.hasFeedEntriesFor24Hours) SmallText(hc.lastFeed!.end.strTimeAgo),
-                    ],
+                  const Spacer(),
+                  MTButton(
+                    minSize: buttonSize,
+                    constrained: false,
+                    color: b3Color,
+                    type: MTButtonType.main,
+                    middle: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        MTImage(hc.hasFeedEntriesFor24Hours ? hc.lastFeed!.feedImageName : 'bottle_baby_formula', height: 90),
+                        if (hc.hasFeedEntriesFor24Hours) SmallText(hc.lastFeed!.end.strTimeAgo),
+                      ],
+                    ),
+                    onTap: hc.addFeed,
                   ),
-                  onTap: hc.addFeed,
-                ),
-                const SizedBox(width: P2),
-              ],
-            )
-          : const SizedBox();
-    });
+                  const SizedBox(width: P2),
+                ],
+              )
+            : const SizedBox();
+      },
+    );
   }
 }

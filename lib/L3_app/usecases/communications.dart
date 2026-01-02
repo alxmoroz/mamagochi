@@ -7,12 +7,7 @@ import '../presenters/communications.dart';
 import '../views/app/services.dart';
 
 Future<bool> mailUs({String? subject, String? text}) async {
-  return await sendMail(
-    subject ?? loc.contact_us_mail_subject,
-    appIdentifier,
-    null,
-    text: text,
-  );
+  return await sendMail(subject ?? loc.contact_us_mail_subject, appIdentifier, null, text: text);
 }
 
 // Future go2AppInstall() async => await launchUrlString(appInstallUrlString);

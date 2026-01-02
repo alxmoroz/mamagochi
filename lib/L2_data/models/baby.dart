@@ -24,12 +24,7 @@ class BabyHO extends BaseModel<Baby> {
   DateTime? dateOfBirth;
 
   @override
-  Baby toEntity() => Baby(
-        created: created ?? now,
-        isBoy: isBoy,
-        name: name,
-        dateOfBirth: dateOfBirth,
-      );
+  Baby toEntity() => Baby(created: created ?? now, isBoy: isBoy, name: name, dateOfBirth: dateOfBirth);
 
   @override
   Future<BabyHO> update(Baby entity) async {

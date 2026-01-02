@@ -24,8 +24,8 @@ class VerticalToolbar extends StatelessWidget implements PreferredSizeWidget {
   static const _panelColor = b3Color;
 
   List<BoxShadow> _panelShadow(BuildContext context) => [
-        BoxShadow(blurRadius: P_2, offset: Offset(rightSide ? -1 : 1, 0), color: b1Color.resolve(context)),
-      ];
+    BoxShadow(blurRadius: P_2, offset: Offset(rightSide ? -1 : 1, 0), color: b1Color.resolve(context)),
+  ];
 
   Widget _btnContainer(BuildContext context, double paneWidth, {Widget? child, bool withShadow = false}) {
     final radius = Radius.circular(_tgBtnSize * 0.5);
@@ -37,10 +37,7 @@ class VerticalToolbar extends StatelessWidget implements PreferredSizeWidget {
         height: _tgBtnSize,
         decoration: BoxDecoration(
           color: _panelColor.resolve(context),
-          borderRadius: BorderRadius.horizontal(
-            left: rightSide ? radius : Radius.zero,
-            right: rightSide ? Radius.zero : radius,
-          ),
+          borderRadius: BorderRadius.horizontal(left: rightSide ? radius : Radius.zero, right: rightSide ? Radius.zero : radius),
           boxShadow: withShadow ? _panelShadow(context) : [],
         ),
         alignment: rightSide ? Alignment.centerLeft : Alignment.centerRight,
@@ -57,55 +54,41 @@ class VerticalToolbar extends StatelessWidget implements PreferredSizeWidget {
     /// Тень для кнопки сворачивания / разворачивания
     final tgBtnShadow = _btnContainer(context, paneWidth, withShadow: true);
 
-    return Observer(builder: (_) {
-      /// Панель инструментов с тенью
-      final panel = Container(
-        padding: EdgeInsets.only(top: _tgBtnSize),
-        width: paneWidth,
-        decoration: BoxDecoration(
-          color: _panelColor.resolve(context),
-          borderRadius: BorderRadius.horizontal(
-            left: rightSide ? const Radius.circular(DEF_BORDER_RADIUS) : Radius.zero,
-            right: rightSide ? Radius.zero : const Radius.circular(DEF_BORDER_RADIUS),
+    return Observer(
+      builder: (_) {
+        /// Панель инструментов с тенью
+        final panel = Container(
+          padding: EdgeInsets.only(top: _tgBtnSize),
+          width: paneWidth,
+          decoration: BoxDecoration(
+            color: _panelColor.resolve(context),
+            borderRadius: BorderRadius.horizontal(
+              left: rightSide ? const Radius.circular(DEF_BORDER_RADIUS) : Radius.zero,
+              right: rightSide ? Radius.zero : const Radius.circular(DEF_BORDER_RADIUS),
+            ),
+            boxShadow: _panelShadow(context),
           ),
-          boxShadow: _panelShadow(context),
-        ),
-        child: SafeArea(
-          left: !rightSide,
-          right: rightSide,
-          maintainBottomViewPadding: true,
-          child: child,
-        ),
-      );
+          child: SafeArea(left: !rightSide, right: rightSide, maintainBottomViewPadding: true, child: child),
+        );
 
-      /// Кнопка для сворачивания / разворачивания
-      final icon = ChevronCaretIcon(
-        size: Size(_tgBtnSize / 5, _tgBtnSize / 9),
-        left: rightSide ? _tbc.compact : !_tbc.compact,
-      );
-      final tgBtn = _btnContainer(
-        context,
-        paneWidth,
-        child: MTListTile(
-          padding: EdgeInsets.symmetric(horizontal: _btnDx),
-          minHeight: _tgBtnSize,
-          bottomDivider: false,
-          color: Colors.transparent,
-          leading: rightSide ? icon : null,
-          trailing: rightSide ? null : icon,
-          onTap: _tbc.toggleWidth,
-        ),
-      );
+        /// Кнопка для сворачивания / разворачивания
+        final icon = ChevronCaretIcon(size: Size(_tgBtnSize / 5, _tgBtnSize / 9), left: rightSide ? _tbc.compact : !_tbc.compact);
+        final tgBtn = _btnContainer(
+          context,
+          paneWidth,
+          child: MTListTile(
+            padding: EdgeInsets.symmetric(horizontal: _btnDx),
+            minHeight: _tgBtnSize,
+            bottomDivider: false,
+            color: Colors.transparent,
+            leading: rightSide ? icon : null,
+            trailing: rightSide ? null : icon,
+            onTap: _tbc.toggleWidth,
+          ),
+        );
 
-      return Stack(
-        clipBehavior: Clip.none,
-        alignment: rightSide ? Alignment.topRight : Alignment.topLeft,
-        children: [
-          tgBtnShadow,
-          panel,
-          tgBtn,
-        ],
-      );
-    });
+        return Stack(clipBehavior: Clip.none, alignment: rightSide ? Alignment.topRight : Alignment.topLeft, children: [tgBtnShadow, panel, tgBtn]);
+      },
+    );
   }
 }

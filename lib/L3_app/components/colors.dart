@@ -129,10 +129,7 @@ const b1EndGradientColor = CupertinoDynamicColor.withBrightness(
 );
 
 /// дополнительный цвет градиента основного фона
-const b2GradientColor = CupertinoDynamicColor.withBrightness(
-  color: Color.fromARGB(255, 160, 216, 252),
-  darkColor: Color.fromARGB(255, 62, 80, 166),
-);
+const b2GradientColor = CupertinoDynamicColor.withBrightness(color: Color.fromARGB(255, 160, 216, 252), darkColor: Color.fromARGB(255, 62, 80, 166));
 
 /// Цвета текста
 ///
@@ -156,30 +153,15 @@ const f3Color = CupertinoDynamicColor.withBrightness(
 
 /// Цвета элементов UI
 ///
-const mainColor = CupertinoDynamicColor.withBrightness(
-  color: Color.fromARGB(255, 100, 170, 255),
-  darkColor: Color.fromARGB(255, 100, 170, 255),
-);
+const mainColor = CupertinoDynamicColor.withBrightness(color: Color.fromARGB(255, 100, 170, 255), darkColor: Color.fromARGB(255, 100, 170, 255));
 
-const greenColor = CupertinoDynamicColor.withBrightness(
-  color: Color.fromARGB(255, 31, 188, 180),
-  darkColor: Color.fromARGB(255, 44, 197, 189),
-);
+const greenColor = CupertinoDynamicColor.withBrightness(color: Color.fromARGB(255, 31, 188, 180), darkColor: Color.fromARGB(255, 44, 197, 189));
 
-const greenLightColor = CupertinoDynamicColor.withBrightness(
-  color: Color.fromARGB(42, 31, 188, 180),
-  darkColor: Color.fromARGB(42, 44, 197, 189),
-);
+const greenLightColor = CupertinoDynamicColor.withBrightness(color: Color.fromARGB(42, 31, 188, 180), darkColor: Color.fromARGB(42, 44, 197, 189));
 
-const dangerColor = CupertinoDynamicColor.withBrightness(
-  color: Color.fromARGB(255, 255, 140, 80),
-  darkColor: Color.fromARGB(255, 255, 142, 90),
-);
+const dangerColor = CupertinoDynamicColor.withBrightness(color: Color.fromARGB(255, 255, 140, 80), darkColor: Color.fromARGB(255, 255, 142, 90));
 
-const warningColor = CupertinoDynamicColor.withBrightness(
-  color: Color.fromARGB(255, 255, 192, 8),
-  darkColor: Color.fromARGB(255, 255, 200, 20),
-);
+const warningColor = CupertinoDynamicColor.withBrightness(color: Color.fromARGB(255, 255, 192, 8), darkColor: Color.fromARGB(255, 255, 200, 20));
 
 // цвет для текста и иконок, которые должны оставаться белыми в светлой и тёмной теме
 const whiteColor = CupertinoDynamicColor.withBrightness(
@@ -191,10 +173,7 @@ const whiteColor = CupertinoDynamicColor.withBrightness(
 const mainBtnTitleColor = b2Color;
 
 // цвет для "прозрачного" апп-бара
-const navbarColor = CupertinoDynamicColor.withBrightness(
-  color: Color.fromARGB(0, 255, 255, 255),
-  darkColor: Color.fromARGB(0, 0, 0, 0),
-);
+const navbarColor = CupertinoDynamicColor.withBrightness(color: Color.fromARGB(0, 255, 255, 255), darkColor: Color.fromARGB(0, 0, 0, 0));
 
 extension ResolvedColor on Color {
   Color resolve(BuildContext context) => CupertinoDynamicColor.resolve(this, context);

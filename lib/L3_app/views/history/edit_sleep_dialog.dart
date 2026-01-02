@@ -62,42 +62,44 @@ class EditSleepDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return _hc.loading
-          ? LoaderScreen(_hc)
-          : MTDialog(
-              topBar: MTTopBar(middle: H1(_sc.sleep.howMuchSleptTitle)),
-              body: ListView(
-                shrinkWrap: true,
-                children: [
-                  MTCard(
-                    margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
-                    radius: 40,
-                    elevation: 0,
-                    child: MTListTile(
-                      leading: const MTImage('eye_closed', height: 60),
-                      middle: BaseText(_sc.sleep.startSleepActionTitle),
-                      subtitle: H2(_sc.sleep.startDateTime),
-                      bottomDivider: false,
-                      onTap: _editStart,
+    return Observer(
+      builder: (_) {
+        return _hc.loading
+            ? LoaderScreen(_hc)
+            : MTDialog(
+                topBar: MTTopBar(middle: H1(_sc.sleep.howMuchSleptTitle)),
+                body: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    MTCard(
+                      margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
+                      radius: 40,
+                      elevation: 0,
+                      child: MTListTile(
+                        leading: const MTImage('eye_closed', height: 60),
+                        middle: BaseText(_sc.sleep.startSleepActionTitle),
+                        subtitle: H2(_sc.sleep.startDateTime),
+                        bottomDivider: false,
+                        onTap: _editStart,
+                      ),
                     ),
-                  ),
-                  MTCard(
-                    margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
-                    radius: 40,
-                    elevation: 0,
-                    child: MTListTile(
-                      leading: const MTImage('eye', height: 60),
-                      middle: BaseText(_sc.sleep.stopSleepActionTitle),
-                      subtitle: H2(_sc.sleep.endDateTime),
-                      bottomDivider: false,
-                      onTap: _editEnd,
+                    MTCard(
+                      margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
+                      radius: 40,
+                      elevation: 0,
+                      child: MTListTile(
+                        leading: const MTImage('eye', height: 60),
+                        middle: BaseText(_sc.sleep.stopSleepActionTitle),
+                        subtitle: H2(_sc.sleep.endDateTime),
+                        bottomDivider: false,
+                        onTap: _editEnd,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              forceBottomPadding: true,
-            );
-    });
+                  ],
+                ),
+                forceBottomPadding: true,
+              );
+      },
+    );
   }
 }

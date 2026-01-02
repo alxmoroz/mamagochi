@@ -21,41 +21,14 @@ class BaseText extends StatelessWidget {
     this.decoration,
   });
 
-  const BaseText.f2(
-    this.text, {
-    super.key,
-    this.sizeScale,
-    this.weight,
-    this.maxLines,
-    this.align,
-    this.padding,
-    this.height,
-    this.decoration,
-  }) : color = f2Color;
+  const BaseText.f2(this.text, {super.key, this.sizeScale, this.weight, this.maxLines, this.align, this.padding, this.height, this.decoration})
+    : color = f2Color;
 
-  const BaseText.f3(
-    this.text, {
-    super.key,
-    this.sizeScale,
-    this.weight,
-    this.maxLines,
-    this.align,
-    this.padding,
-    this.height,
-    this.decoration,
-  }) : color = f3Color;
+  const BaseText.f3(this.text, {super.key, this.sizeScale, this.weight, this.maxLines, this.align, this.padding, this.height, this.decoration})
+    : color = f3Color;
 
-  const BaseText.medium(
-    this.text, {
-    super.key,
-    this.sizeScale,
-    this.maxLines,
-    this.align,
-    this.padding,
-    this.height,
-    this.color,
-    this.decoration,
-  }) : weight = FontWeight.w500;
+  const BaseText.medium(this.text, {super.key, this.sizeScale, this.maxLines, this.align, this.padding, this.height, this.color, this.decoration})
+    : weight = FontWeight.w500;
 
   final String text;
   final double? sizeScale;
@@ -90,62 +63,27 @@ class BaseText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: padding ?? EdgeInsets.zero,
-      child: Text(
-        text,
-        style: style(context),
-        textAlign: align,
-        maxLines: maxLines ?? 1000,
-        overflow: TextOverflow.ellipsis,
-      ),
+      child: Text(text, style: style(context), textAlign: align, maxLines: maxLines ?? 1000, overflow: TextOverflow.ellipsis),
     );
   }
 }
 
 class H1 extends BaseText {
-  const H1(
-    super.text, {
-    super.key,
-    super.color = f2Color,
-    super.maxLines = 2,
-    super.height = 1.1,
-    super.align,
-    super.padding,
-  }) : super(weight: FontWeight.w700, sizeScale: 24 / _baseFontSize);
+  const H1(super.text, {super.key, super.color = f2Color, super.maxLines = 2, super.height = 1.1, super.align, super.padding})
+    : super(weight: FontWeight.w700, sizeScale: 24 / _baseFontSize);
 }
 
 class H2 extends BaseText {
-  const H2(
-    super.text, {
-    super.key,
-    super.color,
-    super.maxLines = 3,
-    super.height = 1.1,
-    super.align,
-    super.padding,
-  }) : super(weight: FontWeight.w500, sizeScale: 24 / _baseFontSize);
+  const H2(super.text, {super.key, super.color, super.maxLines = 3, super.height = 1.1, super.align, super.padding})
+    : super(weight: FontWeight.w500, sizeScale: 24 / _baseFontSize);
 }
 
 class SmallText extends BaseText {
   static const _scale = 15 / _baseFontSize;
 
-  const SmallText(
-    super.text, {
-    super.key,
-    super.maxLines = 9,
-    super.height,
-    super.color = f2Color,
-    super.align,
-    super.padding,
-    super.weight,
-  }) : super(sizeScale: _scale);
+  const SmallText(super.text, {super.key, super.maxLines = 9, super.height, super.color = f2Color, super.align, super.padding, super.weight})
+    : super(sizeScale: _scale);
 
-  const SmallText.medium(
-    super.text, {
-    super.key,
-    super.maxLines = 9,
-    super.height,
-    super.color = f2Color,
-    super.align,
-    super.padding,
-  }) : super(sizeScale: _scale, weight: FontWeight.w500);
+  const SmallText.medium(super.text, {super.key, super.maxLines = 9, super.height, super.color = f2Color, super.align, super.padding})
+    : super(sizeScale: _scale, weight: FontWeight.w500);
 }

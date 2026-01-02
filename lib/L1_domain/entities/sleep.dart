@@ -6,10 +6,6 @@ class Sleep extends AbstractEntry {
   bool get isStillSleeping => endDate == null;
 
   @override
-  Sleep copyWith({DateTime? startDate, DateTime? endDate}) => Sleep(
-        created: created,
-        babyCreatedTime: babyCreatedTime,
-        startDate: startDate ?? this.startDate,
-        endDate: endDate ?? this.endDate,
-      );
+  Sleep copyWith({DateTime? startDate, DateTime? endDate}) =>
+      Sleep(created: created, babyCreatedTime: babyCreatedTime, startDate: startDate ?? this.startDate, endDate: endDate ?? this.endDate);
 }

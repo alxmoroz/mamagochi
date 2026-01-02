@@ -56,10 +56,8 @@ class MTListTile extends StatelessWidget with GestureManaging {
 
   static const _defaultIndent = P3;
 
-  Widget get _divider => MTDivider(
-        indent: dividerIndent ?? padding?.left ?? _defaultIndent,
-        endIndent: dividerEndIndent ?? padding?.right ?? _defaultIndent,
-      );
+  Widget get _divider =>
+      MTDivider(indent: dividerIndent ?? padding?.left ?? _defaultIndent, endIndent: dividerEndIndent ?? padding?.right ?? _defaultIndent);
 
   EdgeInsets get _defaultPadding => const EdgeInsets.symmetric(horizontal: _defaultIndent, vertical: P2);
 
@@ -77,7 +75,8 @@ class MTListTile extends StatelessWidget with GestureManaging {
       children: [
         Container(
           margin: margin ?? EdgeInsets.zero,
-          decoration: decoration ??
+          decoration:
+              decoration ??
               BoxDecoration(
                 color: bgColor,
                 // gradient: LinearGradient(
@@ -104,19 +103,13 @@ class MTListTile extends StatelessWidget with GestureManaging {
                       crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,
                       children: [
                         SizedBox(height: minHeight ?? DEF_TAPPABLE_ICON_SIZE),
-                        if (leading != null) ...[
-                          leading!,
-                          if (hasMiddle || hasSubtitle) const SizedBox(width: P2),
-                        ],
+                        if (leading != null) ...[leading!, if (hasMiddle || hasSubtitle) const SizedBox(width: P2)],
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               if (hasMiddle) middle ?? BaseText(titleText!, maxLines: 1),
-                              if (hasSubtitle) ...[
-                                if (hasMiddle) const SizedBox(height: P),
-                                subtitle!,
-                              ],
+                              if (hasSubtitle) ...[if (hasMiddle) const SizedBox(height: P), subtitle!],
                             ],
                           ),
                         ),

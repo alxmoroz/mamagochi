@@ -11,14 +11,7 @@ import 'constants.dart';
 import 'painters.dart';
 
 class MTIcon extends StatelessWidget {
-  const MTIcon(
-    this.iconData, {
-    super.key,
-    this.color = mainColor,
-    this.size = P4,
-    this.solid = false,
-    this.circled = false,
-  });
+  const MTIcon(this.iconData, {super.key, this.color = mainColor, this.size = P4, this.solid = false, this.circled = false});
 
   final IconData? iconData;
   final Color color;
@@ -39,12 +32,7 @@ class MTIcon extends StatelessWidget {
             // от 1 до 3 пикселей ширина обводки, в зависимости от размера иконки
             border: Border.all(color: rColor, width: min(3, max(1, size / 18))),
           ),
-        if (iconData != null)
-          Icon(
-            iconData,
-            color: rColor,
-            size: size - (circled == true ? (sqrt(size * size / 8)) : 0),
-          ),
+        if (iconData != null) Icon(iconData, color: rColor, size: size - (circled == true ? (sqrt(size * size / 8)) : 0)),
       ],
     );
   }
@@ -90,33 +78,29 @@ class CaretIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => RotatedBox(
-        quarterTurns: up ? 0 : 2,
-        child: CustomPaint(
-          painter: TrianglePainter(color: (color ?? f2Color).resolve(context)),
-          child: SizedBox(height: size.height, width: size.width),
-        ),
-      );
+    quarterTurns: up ? 0 : 2,
+    child: CustomPaint(
+      painter: TrianglePainter(color: (color ?? f2Color).resolve(context)),
+      child: SizedBox(height: size.height, width: size.width),
+    ),
+  );
 }
 
 class CheckboxIcon extends MTIcon {
   const CheckboxIcon(this.checked, {super.key, super.color, super.size = P4, super.solid})
-      : super(
-          checked ? (solid == true ? CupertinoIcons.checkmark_square_fill : CupertinoIcons.checkmark_square) : CupertinoIcons.square,
-        );
+    : super(checked ? (solid == true ? CupertinoIcons.checkmark_square_fill : CupertinoIcons.checkmark_square) : CupertinoIcons.square);
   final bool checked;
 }
 
 class ChevronIcon extends MTIcon {
   const ChevronIcon({super.key, super.color, super.size = P3, this.left = false})
-      : super(left ? CupertinoIcons.chevron_left : CupertinoIcons.chevron_right);
+    : super(left ? CupertinoIcons.chevron_left : CupertinoIcons.chevron_right);
   final bool left;
 }
 
 class ChevronCircleIcon extends MTIcon {
   const ChevronCircleIcon({super.key, super.color, super.size = DEF_TAPPABLE_ICON_SIZE, required this.left})
-      : super(
-          left ? CupertinoIcons.chevron_left_circle : CupertinoIcons.chevron_right_circle,
-        );
+    : super(left ? CupertinoIcons.chevron_left_circle : CupertinoIcons.chevron_right_circle);
   final bool left;
 }
 
@@ -128,12 +112,12 @@ class ChevronCaretIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => RotatedBox(
-        quarterTurns: left ? 3 : 1,
-        child: CustomPaint(
-          painter: TrianglePainter(color: (color ?? f2Color).resolve(context)),
-          child: SizedBox(height: size.height, width: size.width),
-        ),
-      );
+    quarterTurns: left ? 3 : 1,
+    child: CustomPaint(
+      painter: TrianglePainter(color: (color ?? f2Color).resolve(context)),
+      child: SizedBox(height: size.height, width: size.width),
+    ),
+  );
 }
 
 class CloseIcon extends MTIcon {
@@ -158,9 +142,7 @@ class DocumentIcon extends MTIcon {
 
 class DoneIcon extends MTIcon {
   const DoneIcon(this.done, {super.key, super.color, super.solid, super.size = P4, super.circled = true})
-      : super(
-          done ? CupertinoIcons.checkmark : null,
-        );
+    : super(done ? CupertinoIcons.checkmark : null);
   final bool done;
 }
 
@@ -177,10 +159,7 @@ class ErrorIcon extends MTIcon {
 }
 
 class EyeIcon extends MTIcon {
-  const EyeIcon({super.key, this.open = true, super.color = f2Color, super.size})
-      : super(
-          open ? CupertinoIcons.eye : CupertinoIcons.eye_slash,
-        );
+  const EyeIcon({super.key, this.open = true, super.color = f2Color, super.size}) : super(open ? CupertinoIcons.eye : CupertinoIcons.eye_slash);
   final bool open;
 }
 

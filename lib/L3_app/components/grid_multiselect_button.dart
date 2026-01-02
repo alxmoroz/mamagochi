@@ -11,14 +11,7 @@ import 'list_tile.dart';
 import 'text.dart';
 
 class MTGridMultiselectButton extends StatelessWidget {
-  const MTGridMultiselectButton(
-    this.items, {
-    this.onChanged,
-    this.values,
-    this.padding,
-    this.segmentsInRow = 1,
-    super.key,
-  });
+  const MTGridMultiselectButton(this.items, {this.onChanged, this.values, this.padding, this.segmentsInRow = 1, super.key});
   final List<MTGridButtonItem> items;
   final Function(String?)? onChanged;
   final List<String>? values;
@@ -46,14 +39,9 @@ class MTGridMultiselectButton extends StatelessWidget {
 
     return Flexible(
       child: MTListTile(
-        middle: BaseText(
-          item.title,
-          maxLines: 1,
-          align: TextAlign.center,
-          color: selected ? mainColor : f2Color,
-        ),
+        middle: BaseText(item.title, maxLines: 1, align: TextAlign.center, color: selected ? mainColor : f2Color),
         decoration: BoxDecoration(
-          color: (selected ? b3Color : f3Color.withOpacity(0.2)).resolve(context),
+          color: (selected ? b3Color : f3Color.withValues(alpha: 0.2)).resolve(context),
           border: Border(
             top: (row == 0 || (selected && !_topSiblingSelected(index))) ? borderSide : BorderSide.none,
             bottom: borderSide,
@@ -82,9 +70,11 @@ class MTGridMultiselectButton extends StatelessWidget {
       child: Column(
         children: [
           for (int row = 0; row < max(1, (items.length / segmentsInRow).ceil()); row++)
-            Row(children: [
-              for (int col = 0; col < segmentsInRow && row * segmentsInRow + col < items.length; col++) _segmentBuilder(context, row, col)
-            ])
+            Row(
+              children: [
+                for (int col = 0; col < segmentsInRow && row * segmentsInRow + col < items.length; col++) _segmentBuilder(context, row, col),
+              ],
+            ),
         ],
       ),
     );

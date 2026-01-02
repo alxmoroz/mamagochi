@@ -42,13 +42,7 @@ abstract class Codable extends RPersistable {
 }
 
 abstract class Titleable extends RPersistable implements Comparable {
-  Titleable({
-    super.id,
-    super.createdOn,
-    super.updatedOn,
-    required this.title,
-    this.description = '',
-  });
+  Titleable({super.id, super.createdOn, super.updatedOn, required this.title, this.description = ''});
 
   String title;
   String description;

@@ -9,12 +9,7 @@ import 'images.dart';
 import 'text.dart';
 
 class MTDialogAction<T> {
-  MTDialogAction({
-    this.result,
-    this.title,
-    this.type = MTButtonType.secondary,
-    this.onTap,
-  });
+  MTDialogAction({this.result, this.title, this.type = MTButtonType.secondary, this.onTap});
 
   final String? title;
   final T? result;
@@ -29,23 +24,13 @@ Future<T?> showMTAlertDialog<T>({
   required List<MTDialogAction<T>> actions,
 }) async {
   return await showMTDialog<T?>(
-    _MTAlertDialog(
-      title,
-      description: description,
-      imageName: imageName,
-      actions: actions,
-    ),
+    _MTAlertDialog(title, description: description, imageName: imageName, actions: actions),
     maxWidth: SCR_XS_WIDTH,
   );
 }
 
 class _MTAlertDialog extends StatelessWidget {
-  const _MTAlertDialog(
-    this.title, {
-    required this.description,
-    required this.imageName,
-    required this.actions,
-  });
+  const _MTAlertDialog(this.title, {required this.description, required this.imageName, required this.actions});
 
   final String title;
   final String description;
@@ -68,7 +53,12 @@ class _MTAlertDialog extends StatelessWidget {
           if (imageName.isNotEmpty) MTImage(imageName),
           H2(title, padding: const EdgeInsets.all(P3), align: TextAlign.center),
           if (description.isNotEmpty)
-            BaseText(description, maxLines: 20, align: TextAlign.center, padding: const EdgeInsets.symmetric(horizontal: P6)),
+            BaseText(
+              description,
+              maxLines: 20,
+              align: TextAlign.center,
+              padding: const EdgeInsets.symmetric(horizontal: P6),
+            ),
           for (final a in actions)
             MTButton(
               titleText: a.title,

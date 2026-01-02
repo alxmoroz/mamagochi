@@ -18,10 +18,10 @@ bool get isSimulator => (isIOS && !_iosDevInfo.isPhysicalDevice) || (isAndroid &
 String get platformCode => isIOS
     ? 'ios'
     : isWeb
-        ? 'web'
-        : isAndroid
-            ? 'android'
-            : '?';
+    ? 'web'
+    : isAndroid
+    ? 'android'
+    : '?';
 
 IosDeviceInfo get _iosDevInfo => deviceInfo as IosDeviceInfo;
 AndroidDeviceInfo get _androidDevInfo => deviceInfo as AndroidDeviceInfo;

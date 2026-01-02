@@ -24,10 +24,7 @@ class MTRoute extends GoRoute {
     super.redirect,
     String? path,
     GoRouterWidgetBuilder? builder,
-  }) : super(
-          path: path ?? '/',
-          builder: builder ?? (_, __) => Container(),
-        );
+  }) : super(path: path ?? '/', builder: builder ?? (_, _) => Container());
 
   final String baseName;
   final MTRoute? parent;
@@ -47,42 +44,28 @@ class MTRoute extends GoRoute {
 
   @override
   GoRouterPageBuilder? get pageBuilder => (BuildContext context, GoRouterState state) {
-        mainController.setRoute(this);
+    mainController.setRoute(this);
 
-        if (isWeb) {
-          final pageTitle = title(state);
-          SystemChrome.setApplicationSwitcherDescription(ApplicationSwitcherDescription(
-            label: '${loc.app_title}${pageTitle.isNotEmpty ? ' | $pageTitle' : ''}',
-            primaryColor: mainColor.resolve(context).toARGB32(),
-          ));
-        }
+    if (isWeb) {
+      final pageTitle = title(state);
+      SystemChrome.setApplicationSwitcherDescription(
+        ApplicationSwitcherDescription(
+          label: '${loc.app_title}${pageTitle.isNotEmpty ? ' | $pageTitle' : ''}',
+          primaryColor: mainColor.resolve(context).toARGB32(),
+        ),
+      );
+    }
 
-        final dialog = isDialog(context);
+    final dialog = isDialog(context);
 
-        Widget child = parent?.controller != null
-            ? Observer(builder: (_) => parentLoading ? LoaderScreen(parent!.controller!, isDialog: dialog) : builder!(context, state))
-            : builder!(context, state);
+    Widget child = parent?.controller != null
+        ? Observer(builder: (_) => parentLoading ? LoaderScreen(parent!.controller!, isDialog: dialog) : builder!(context, state))
+        : builder!(context, state);
 
-        return dialog
-            ? MTDialogPage(
-                name: state.name,
-                arguments: state.extra,
-                maxWidth: dialogMaxWidth,
-                key: state.pageKey,
-                child: child,
-              )
-            : isBigScreen(context) || noTransition
-                ? NoTransitionPage(
-                    name: state.name,
-                    arguments: state.extra,
-                    key: state.pageKey,
-                    child: child,
-                  )
-                : MaterialPage(
-                    name: state.name,
-                    arguments: state.extra,
-                    key: state.pageKey,
-                    child: child,
-                  );
-      };
+    return dialog
+        ? MTDialogPage(name: state.name, arguments: state.extra, maxWidth: dialogMaxWidth, key: state.pageKey, child: child)
+        : isBigScreen(context) || noTransition
+        ? NoTransitionPage(name: state.name, arguments: state.extra, key: state.pageKey, child: child)
+        : MaterialPage(name: state.name, arguments: state.extra, key: state.pageKey, child: child);
+  };
 }

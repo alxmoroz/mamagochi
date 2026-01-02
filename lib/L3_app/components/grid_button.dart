@@ -16,13 +16,7 @@ class MTGridButtonItem {
 }
 
 class MTGridButton extends StatelessWidget {
-  const MTGridButton(
-    this.items, {
-    this.onChanged,
-    this.value,
-    this.padding,
-    super.key,
-  });
+  const MTGridButton(this.items, {this.onChanged, this.value, this.padding, super.key});
   final List<MTGridButtonItem> items;
   final Function(String?)? onChanged;
   final String? value;
@@ -32,10 +26,7 @@ class MTGridButton extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (item.iconData != null) ...[
-          MTIcon(item.iconData, color: color),
-          const SizedBox(width: P),
-        ],
+        if (item.iconData != null) ...[MTIcon(item.iconData, color: color), const SizedBox(width: P)],
         BaseText(item.title, maxLines: 1, align: TextAlign.center, color: color),
       ],
     );
@@ -47,7 +38,7 @@ class MTGridButton extends StatelessWidget {
         middle: _content(context, item, f2Color),
         minHeight: MIN_BTN_HEIGHT,
         padding: EdgeInsets.zero,
-        color: f3Color.withOpacity(0.2),
+        color: f3Color.withValues(alpha: 0.2),
         bottomDivider: false,
         onTap: onChanged != null ? () => onChanged!(item.value) : null,
       ),
@@ -79,10 +70,7 @@ class MTGridButton extends StatelessWidget {
             child: Container(
               alignment: Alignment.center,
               height: MIN_BTN_HEIGHT,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(MIN_BTN_HEIGHT / 2)),
-                color: b3Color.resolve(context),
-              ),
+              decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(MIN_BTN_HEIGHT / 2)), color: b3Color.resolve(context)),
               child: _content(context, item, mainColor),
             ),
           )

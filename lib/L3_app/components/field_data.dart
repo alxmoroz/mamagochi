@@ -29,17 +29,17 @@ class MTFieldData {
   final bool edited;
 
   MTFieldData copyWith({String? text, bool? loading}) => MTFieldData(
-        code,
-        text: text ?? this.text,
-        loading: loading ?? this.loading,
-        label: label,
-        placeholder: placeholder,
-        helper: helper,
-        validator: validator,
-        validate: validate,
-        noText: noText,
-        edited: true,
-      );
+    code,
+    text: text ?? this.text,
+    loading: loading ?? this.loading,
+    label: label,
+    placeholder: placeholder,
+    helper: helper,
+    validator: validator,
+    validate: validate,
+    noText: noText,
+    edited: true,
+  );
 
   @override
   String toString() => text;

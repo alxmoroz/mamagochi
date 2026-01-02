@@ -42,13 +42,7 @@ class BoyOrGirlStep extends StatelessWidget {
                   constrained: false,
                   color: b3Color,
                   type: MTButtonType.main,
-                  middle: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const MTImage('boy', height: 180),
-                      SmallText.medium(loc.sex_man),
-                    ],
-                  ),
+                  middle: Column(mainAxisSize: MainAxisSize.min, children: [const MTImage('boy', height: 180), SmallText.medium(loc.sex_man)]),
                   onTap: () => _setBoyOrGirl(isBoy: true),
                 ),
                 MTButton(
@@ -56,13 +50,7 @@ class BoyOrGirlStep extends StatelessWidget {
                   constrained: false,
                   color: b3Color,
                   type: MTButtonType.main,
-                  middle: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const MTImage('girl', height: 180),
-                      SmallText.medium(loc.sex_woman),
-                    ],
-                  ),
+                  middle: Column(mainAxisSize: MainAxisSize.min, children: [const MTImage('girl', height: 180), SmallText.medium(loc.sex_woman)]),
                   onTap: () => _setBoyOrGirl(isBoy: false),
                 ),
               ],

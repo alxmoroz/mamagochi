@@ -7,24 +7,14 @@ import 'package:flutter/cupertino.dart';
 import 'colors.dart';
 
 class MTProgressMark {
-  const MTProgressMark(
-    this.child, {
-    this.size,
-    this.color,
-  });
+  const MTProgressMark(this.child, {this.size, this.color});
   final Widget child;
   final Color? color;
   final Size? size;
 }
 
 class MTProgress extends StatelessWidget {
-  const MTProgress(
-    this.value, {
-    super.key,
-    this.color,
-    this.mark,
-    this.borderWidth,
-  });
+  const MTProgress(this.value, {super.key, this.color, this.mark, this.borderWidth});
 
   final double value;
   final Color? color;
@@ -33,27 +23,25 @@ class MTProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, size) {
-      final w = max(value * size.maxWidth, size.maxHeight);
-      return Stack(clipBehavior: Clip.none, children: [
-        Positioned(
-          top: 0,
-          bottom: 0,
-          width: w,
-          child: Container(
-            decoration: BoxDecoration(
-              color: color?.resolve(context),
-              borderRadius: BorderRadius.circular(size.maxHeight / 2),
+    return LayoutBuilder(
+      builder: (context, size) {
+        final w = max(value * size.maxWidth, size.maxHeight);
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Positioned(
+              top: 0,
+              bottom: 0,
+              width: w,
+              child: Container(
+                decoration: BoxDecoration(color: color?.resolve(context), borderRadius: BorderRadius.circular(size.maxHeight / 2)),
+              ),
             ),
-          ),
-        ),
-        if (mark != null)
-          Positioned(
-            left: w - (mark!.size?.width ?? 0) / 2,
-            top: (mark!.size?.height ?? 0) - (borderWidth ?? 0),
-            child: mark!.child,
-          ),
-      ]);
-    });
+            if (mark != null)
+              Positioned(left: w - (mark!.size?.width ?? 0) / 2, top: (mark!.size?.height ?? 0) - (borderWidth ?? 0), child: mark!.child),
+          ],
+        );
+      },
+    );
   }
 }

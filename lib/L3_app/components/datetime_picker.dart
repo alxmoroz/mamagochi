@@ -18,14 +18,8 @@ class MTDateTimePicker extends StatefulWidget {
   final String title;
   final DateTime? initialDate;
 
-  static Future<DateTime?> show(
-    String title, {
-    DateTime? initialDate,
-  }) async =>
-      await showMTDialog(MTDateTimePicker._(
-        title,
-        initialDate: initialDate,
-      ));
+  static Future<DateTime?> show(String title, {DateTime? initialDate}) async =>
+      await showMTDialog(MTDateTimePicker._(title, initialDate: initialDate));
 
   @override
   State<MTDateTimePicker> createState() => _State();
@@ -53,12 +47,7 @@ class _State extends State<MTDateTimePicker> {
         children: [
           SizedBox(
             height: datePickerHeight,
-            child: CupertinoDatePicker(
-              initialDateTime: _date,
-              maximumDate: now,
-              use24hFormat: true,
-              onDateTimeChanged: (value) => _date = value,
-            ),
+            child: CupertinoDatePicker(initialDateTime: _date, maximumDate: now, use24hFormat: true, onDateTimeChanged: (value) => _date = value),
           ),
           MTButton.main(titleText: loc.action_save_title, onTap: () => Navigator.of(context).pop(_date)),
         ],

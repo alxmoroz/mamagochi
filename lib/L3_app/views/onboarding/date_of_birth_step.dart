@@ -37,40 +37,42 @@ class _State extends State<DateOfBirthStep> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      final screen = screenSize(context);
-      final screenHeight = min(SCR_M_HEIGHT, screen.height);
+    return Observer(
+      builder: (_) {
+        final screen = screenSize(context);
+        final screenHeight = min(SCR_M_HEIGHT, screen.height);
 
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          Center(
-            child: ListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                H1(
-                  loc.onboarding_baby_date_of_birth_step_title,
-                  align: TextAlign.center,
-                  padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
-                ),
-                Center(child: MTImage('cake', height: screenHeight * 0.3)),
-                SizedBox(
-                  height: screenHeight * 0.45,
-                  child: CupertinoDatePicker(
-                    maximumDate: now.add(const Duration(days: 365)),
-                    initialDateTime: _date,
-                    mode: CupertinoDatePickerMode.date,
-                    onDateTimeChanged: (DateTime value) => _date = value,
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            Center(
+              child: ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  H1(
+                    loc.onboarding_baby_date_of_birth_step_title,
+                    align: TextAlign.center,
+                    padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
                   ),
-                ),
-                MTButton.main(titleText: loc.next_action_title, onTap: _tap),
-              ],
+                  Center(child: MTImage('cake', height: screenHeight * 0.3)),
+                  SizedBox(
+                    height: screenHeight * 0.45,
+                    child: CupertinoDatePicker(
+                      maximumDate: now.add(const Duration(days: 365)),
+                      initialDateTime: _date,
+                      mode: CupertinoDatePickerMode.date,
+                      onDateTimeChanged: (DateTime value) => _date = value,
+                    ),
+                  ),
+                  MTButton.main(titleText: loc.next_action_title, onTap: _tap),
+                ],
+              ),
             ),
-          ),
-          if (_bc.loading) const MTLoader(),
-        ],
-      );
-    });
+            if (_bc.loading) const MTLoader(),
+          ],
+        );
+      },
+    );
   }
 }

@@ -13,10 +13,10 @@ extension DurationPresenter on Duration {
   String get localizedString => _inYears >= 1
       ? loc.years_count(_inYears.round())
       : _inMonths >= 1
-          ? loc.months_count(_inMonths.round())
-          : _inWeeks >= 2
-              ? loc.weeks_count_accusative(_inWeeks.round())
-              : loc.days_count(inDays);
+      ? loc.months_count(_inMonths.round())
+      : _inWeeks >= 2
+      ? loc.weeks_count_accusative(_inWeeks.round())
+      : loc.days_count(inDays);
 
   String get strInHoursAndMinutes {
     String result = '';

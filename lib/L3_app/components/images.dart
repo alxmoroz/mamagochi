@@ -30,9 +30,7 @@ class MTImage extends StatelessWidget {
         _assetPath(name ?? fallbackName ?? 'no_info', context),
         // isAntiAlias: true,
         // filterQuality: FilterQuality.high,
-        errorBuilder: (_, __, ___) => Image.asset(
-          _assetPath(fallbackName ?? 'no_info', context),
-        ),
+        errorBuilder: (_, _, _) => Image.asset(_assetPath(fallbackName ?? 'no_info', context)),
       ),
     );
   }

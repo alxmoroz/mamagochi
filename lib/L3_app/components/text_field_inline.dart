@@ -70,14 +70,7 @@ class MTTextFieldInline extends StatelessWidget {
             focusNode: fNode,
           ),
         ),
-        if (hasText && !hasFocus)
-          MTLinkify(
-            text,
-            maxLines: maxLines,
-            style: textStyle,
-            paddingLines: paddingLines,
-            onTap: onTap,
-          ),
+        if (hasText && !hasFocus) MTLinkify(text, maxLines: maxLines, style: textStyle, paddingLines: paddingLines, onTap: onTap),
       ],
     );
   }

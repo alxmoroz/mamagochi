@@ -101,20 +101,20 @@ class MTTextField extends StatelessWidget {
     this.maxLines = 1,
     this.textAlign,
     this.focusNode,
-  })  : autofocus = false,
-        obscureText = false,
-        capitalization = null,
-        autocorrect = false,
-        suggestions = false,
-        keyboardType = null,
-        onChanged = null,
-        onSubmitted = null,
-        style = null,
-        inputFormatters = null,
-        hintStyle = null,
-        cursorColor = null,
-        textInputAction = null,
-        readOnly = true;
+  }) : autofocus = false,
+       obscureText = false,
+       capitalization = null,
+       autocorrect = false,
+       suggestions = false,
+       keyboardType = null,
+       onChanged = null,
+       onSubmitted = null,
+       style = null,
+       inputFormatters = null,
+       hintStyle = null,
+       cursorColor = null,
+       textInputAction = null,
+       readOnly = true;
 
   final TextEditingController? controller;
   final String? label;
@@ -157,7 +157,8 @@ class MTTextField extends StatelessWidget {
         removeLeft: true,
         child: TextField(
           style: style ?? const BaseText('').style(context),
-          decoration: decoration ??
+          decoration:
+              decoration ??
               tfDecoration(
                 context,
                 label: label,

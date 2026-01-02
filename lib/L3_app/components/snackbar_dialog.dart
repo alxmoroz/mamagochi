@@ -59,20 +59,12 @@ class _MyAppState extends State<_MTSnackbarDialog> {
     return MTDialog(
       topBar: null,
       bgColor: b3Color,
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(DEF_BORDER_RADIUS),
-        topRight: Radius.circular(DEF_BORDER_RADIUS),
-      ),
+      borderRadius: const BorderRadius.only(topLeft: Radius.circular(DEF_BORDER_RADIUS), topRight: Radius.circular(DEF_BORDER_RADIUS)),
       body: SafeArea(
         child: MTListTile(
           padding: const EdgeInsets.all(P3).copyWith(bottom: 0),
           color: Colors.transparent,
-          middle: H2(
-            widget._text,
-            color: f2Color,
-            align: widget.titleAlign,
-            maxLines: 3,
-          ),
+          middle: H2(widget._text, color: f2Color, align: widget.titleAlign, maxLines: 3),
           trailing: widget.trailing,
           bottomDivider: false,
           onTap: () => _onTap(context),

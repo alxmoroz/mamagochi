@@ -1,10 +1,10 @@
 name: mamagochi
 description: Mamagochi
 
-version: 1.0.63+63
+version: 1.4.74+74
 
 environment:
-  sdk: ">=3.9.2 <4.0.0"
+  sdk: ^3.10.0
 
 publish_to: none
 

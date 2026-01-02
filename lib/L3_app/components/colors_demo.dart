@@ -31,9 +31,18 @@ class ColorsDemo extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       children: [
         Row(children: [_fp1, _fp2, _fp3]),
-        Container(color: b1Color.resolve(context), child: Row(children: [_f1, _f2, _f3, _b1])),
-        Container(color: b2Color.resolve(context), child: Row(children: [_f1, _f2, _f3, _b2])),
-        Container(color: b3Color.resolve(context), child: Row(children: [_f1, _f2, _f3, _b3])),
+        Container(
+          color: b1Color.resolve(context),
+          child: Row(children: [_f1, _f2, _f3, _b1]),
+        ),
+        Container(
+          color: b2Color.resolve(context),
+          child: Row(children: [_f1, _f2, _f3, _b2]),
+        ),
+        Container(
+          color: b3Color.resolve(context),
+          child: Row(children: [_f1, _f2, _f3, _b3]),
+        ),
       ],
     );
   }

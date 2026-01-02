@@ -73,13 +73,25 @@ class _AboutDialog extends StatelessWidget {
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MTButton.icon(MTImage('telegram_icon', width: _contactIconSize, height: _contactIconSize), onTap: go2Telegram),
+              MTButton.icon(
+                MTImage('telegram_icon', width: _contactIconSize, height: _contactIconSize),
+                onTap: go2Telegram,
+              ),
               SizedBox(width: P3),
-              MTButton.icon(MTImage('mail_icon', width: _contactIconSize, height: _contactIconSize), onTap: mailUs),
+              MTButton.icon(
+                MTImage('mail_icon', width: _contactIconSize, height: _contactIconSize),
+                onTap: mailUs,
+              ),
               SizedBox(width: P3),
-              MTButton.icon(MTImage('vk_icon', width: _contactIconSize, height: _contactIconSize), onTap: go2VK),
+              MTButton.icon(
+                MTImage('vk_icon', width: _contactIconSize, height: _contactIconSize),
+                onTap: go2VK,
+              ),
               SizedBox(width: P3),
-              MTButton.icon(MTImage('web_icon', width: _contactIconSize, height: _contactIconSize), onTap: go2Homepage),
+              MTButton.icon(
+                MTImage('web_icon', width: _contactIconSize, height: _contactIconSize),
+                onTap: go2Homepage,
+              ),
             ],
           ),
           const SizedBox(height: P),

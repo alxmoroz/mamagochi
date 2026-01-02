@@ -31,8 +31,9 @@ class HelloBabyStep extends StatelessWidget {
           // const SizedBox(height: P3),
           const SizedBox(height: P3),
           MTButton.main(
-            titleText:
-                _bc.baby.wasBorn ? loc.onboarding_hello_step_text_born(_bc.baby.daysSinceBirth ?? '') : loc.onboarding_hello_step_text_not_born,
+            titleText: _bc.baby.wasBorn
+                ? loc.onboarding_hello_step_text_born(_bc.baby.daysSinceBirth ?? '')
+                : loc.onboarding_hello_step_text_not_born,
             onTap: router.pop,
           ),
         ],

@@ -20,10 +20,7 @@ class MTLoader extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Container(
-            decoration: BoxDecoration(
-              color: b2Color.resolve(context).withAlpha(210),
-              borderRadius: BorderRadius.circular(radius ?? 0),
-            ),
+            decoration: BoxDecoration(color: b2Color.resolve(context).withAlpha(210), borderRadius: BorderRadius.circular(radius ?? 0)),
           ),
           const MTCircularProgress(unbound: true),
         ],

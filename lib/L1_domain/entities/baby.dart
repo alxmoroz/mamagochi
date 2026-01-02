@@ -41,7 +41,12 @@ class Baby extends LocalPersistable {
 
     final years = nowJiffy.diff(birthJiffy, unit: Unit.year).floor();
     final months = nowJiffy.diff(birthJiffy.add(years: years), unit: Unit.month).floor();
-    final days = nowJiffy.diff(birthJiffy.add(years: years, months: months), unit: Unit.day).floor();
+    final days = nowJiffy
+        .diff(
+          birthJiffy.add(years: years, months: months),
+          unit: Unit.day,
+        )
+        .floor();
 
     return BabyAge(years: years, months: months, days: days);
   }
@@ -53,10 +58,5 @@ class BabyAge {
   final int days;
   final int? daysUntilBirth;
 
-  BabyAge({
-    required this.years,
-    required this.months,
-    required this.days,
-    this.daysUntilBirth,
-  });
+  BabyAge({required this.years, required this.months, required this.days, this.daysUntilBirth});
 }

@@ -52,10 +52,7 @@ class MTAdaptive extends StatelessWidget {
     return Container(
       alignment: Alignment.topCenter,
       padding: padding,
-      child: SizedBox(
-        width: min(W, mqW),
-        child: child,
-      ),
+      child: SizedBox(width: min(W, mqW), child: child),
     );
   }
 

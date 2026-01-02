@@ -26,10 +26,7 @@ int _clampCount(int value) => value.clamp(0, _maxCount);
 // Удаление ведущих нулей из поля ввода
 class _LeadingZerosFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     final text = newValue.text;
 
     if (text.isEmpty) {
@@ -47,9 +44,7 @@ class _LeadingZerosFormatter extends TextInputFormatter {
 }
 
 class _FoodCountEditorController extends EditController {
-  _FoodCountEditorController({
-    required this.feed,
-  }) {
+  _FoodCountEditorController({required this.feed}) {
     initState(fds: [MTFieldData(0, text: feed.count?.toString() ?? '')]);
   }
 
@@ -143,36 +138,26 @@ class _FoodCountEditorState extends State<FoodCountEditor> {
     super.dispose();
   }
 
-  Widget _buildButton(String icon, VoidCallback? onTap) => MTButton(
-        type: MTButtonType.main,
-        color: b3Color,
-        middle: MTImage(icon, height: 30),
-        minSize: const Size.square(60),
-        uf: false,
-        onTap: onTap,
-      );
+  Widget _buildButton(String icon, VoidCallback? onTap) =>
+      MTButton(type: MTButtonType.main, color: b3Color, middle: MTImage(icon, height: 30), minSize: const Size.square(60), uf: false, onTap: onTap);
 
   Widget _buildTextField(BuildContext context) => Expanded(
-        child: MTCard(
-          margin: const EdgeInsets.symmetric(vertical: P),
-          radius: 40,
-          elevation: 0,
-          child: MTTextField(
-            controller: _controller.teController(0),
-            focusNode: _controller.focusNode(0),
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.center,
-            style: const H1('', color: f1Color).style(context),
-            margin: EdgeInsets.zero,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              _LeadingZerosFormatter(),
-              LengthLimitingTextInputFormatter(4),
-            ],
-            onChanged: _controller.updateCount,
-          ),
-        ),
-      );
+    child: MTCard(
+      margin: const EdgeInsets.symmetric(vertical: P),
+      radius: 40,
+      elevation: 0,
+      child: MTTextField(
+        controller: _controller.teController(0),
+        focusNode: _controller.focusNode(0),
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        style: const H1('', color: f1Color).style(context),
+        margin: EdgeInsets.zero,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly, _LeadingZerosFormatter(), LengthLimitingTextInputFormatter(4)],
+        onChanged: _controller.updateCount,
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {

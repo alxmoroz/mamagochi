@@ -23,10 +23,7 @@ Future main() async {
 
   // Configure system UI for edge-to-edge display
   if (Platform.isAndroid) {
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.edgeToEdge,
-      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-    );
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
   }
 
   usePathUrlStrategy();
@@ -61,20 +58,20 @@ class App extends StatelessWidget {
                   fontFamily: 'MontserratMamagochi',
                   useMaterial3: true,
                 ),
-                scrollBehavior: const MaterialScrollBehavior().copyWith(dragDevices: {
-                  if (isWeb) PointerDeviceKind.mouse,
-                  ...const MaterialScrollBehavior().dragDevices,
-                }),
+                scrollBehavior: const MaterialScrollBehavior().copyWith(
+                  dragDevices: {if (isWeb) PointerDeviceKind.mouse, ...const MaterialScrollBehavior().dragDevices},
+                ),
                 localizationsDelegates: const [
                   S.delegate,
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate
+                  GlobalCupertinoLocalizations.delegate,
                 ],
                 supportedLocales: S.delegate.supportedLocales,
                 routerConfig: router,
                 onGenerateTitle: (_) => loc.app_title,
-              ))
+              ),
+            )
           : const MTBackgroundWrapper(Center(child: MTCircularProgress(size: P10))),
     );
   }

@@ -11,9 +11,6 @@ class BabyUC {
   Future<Iterable<Baby>> babies() async => await repo.getAll();
 
   Future editBaby(Baby baby) async {
-    await repo.update(
-      (saved) => saved.created.isAtSameMomentAs(baby.created),
-      baby,
-    );
+    await repo.update((saved) => saved.created.isAtSameMomentAs(baby.created), baby);
   }
 }

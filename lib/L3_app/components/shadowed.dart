@@ -56,10 +56,7 @@ class MTShadowed extends StatelessWidget {
       children: [
         MediaQuery(
           data: mq.copyWith(
-            padding: mqPadding.copyWith(
-              top: mqPadding.top + (topIndent ?? 0),
-              bottom: mqPadding.bottom + (bottomIndent ?? (bottomShadow ? P6 : 0)),
-            ),
+            padding: mqPadding.copyWith(top: mqPadding.top + (topIndent ?? 0), bottom: mqPadding.bottom + (bottomIndent ?? (bottomShadow ? P6 : 0))),
           ),
           child: child,
         ),

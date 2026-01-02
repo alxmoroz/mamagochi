@@ -9,11 +9,7 @@ import 'constants.dart';
 part 'toolbar_controller.g.dart';
 
 class MTToolbarController extends _Base with _$MTToolbarController {
-  MTToolbarController({
-    bool isCompact = false,
-    double wideWidth = 278.0,
-    double height = P10,
-  }) {
+  MTToolbarController({bool isCompact = false, double wideWidth = 278.0, double height = P10}) {
     compact = isCompact;
     _height = height;
     _wideWidth = wideWidth;
@@ -22,12 +18,7 @@ class MTToolbarController extends _Base with _$MTToolbarController {
 
   void setupAnimation(TickerProvider vsync, VoidCallback animationListener) {
     if (_ac == null) {
-      _ac = AnimationController(
-        value: 1.0,
-        vsync: vsync,
-        duration: KB_RELATED_ANIMATION_DURATION,
-        reverseDuration: KB_RELATED_ANIMATION_DURATION,
-      );
+      _ac = AnimationController(value: 1.0, vsync: vsync, duration: KB_RELATED_ANIMATION_DURATION, reverseDuration: KB_RELATED_ANIMATION_DURATION);
 
       _ac!.addListener(() {
         _updateAnimationValue();
@@ -80,8 +71,8 @@ abstract class _Base with Store {
   double get width => hidden
       ? 0
       : compact
-          ? _compactWidth
-          : _wideWidth;
+      ? _compactWidth
+      : _wideWidth;
 
   @computed
   double get height => _height * (_animationValue ?? 1);

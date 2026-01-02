@@ -24,12 +24,7 @@ class SleepHO extends BaseModel<Sleep> {
   DateTime? babyCreatedTime;
 
   @override
-  Sleep toEntity() => Sleep(
-        created: created ?? now,
-        startDate: start,
-        endDate: end,
-        babyCreatedTime: babyCreatedTime ?? now,
-      );
+  Sleep toEntity() => Sleep(created: created ?? now, startDate: start, endDate: end, babyCreatedTime: babyCreatedTime ?? now);
 
   @override
   Future<SleepHO> update(Sleep entity) async {

@@ -12,16 +12,10 @@ class FeedUC {
   Future<Iterable<Feed>> entries(Baby baby) async => await repo.getAll((e) => e.babyCreatedTime.isAtSameMomentAs(baby.created));
 
   Future edit(Feed feed) async {
-    await repo.update(
-      (saved) => saved.created.isAtSameMomentAs(feed.created),
-      feed,
-    );
+    await repo.update((saved) => saved.created.isAtSameMomentAs(feed.created), feed);
   }
 
   Future delete(Feed feed) async {
-    await repo.delete(
-      (saved) => saved.created.isAtSameMomentAs(feed.created),
-      feed,
-    );
+    await repo.delete((saved) => saved.created.isAtSameMomentAs(feed.created), feed);
   }
 }

@@ -26,13 +26,7 @@ class AppLocalSettingsHO extends BaseModel<AppLocalSettings> {
   Map<String, String>? strings = {};
 
   @override
-  AppLocalSettings toEntity() => AppLocalSettings(
-        version: version,
-        launchCount: launchCount,
-        flags: flags,
-        dates: dates,
-        strings: strings,
-      );
+  AppLocalSettings toEntity() => AppLocalSettings(version: version, launchCount: launchCount, flags: flags, dates: dates, strings: strings);
 
   @override
   Future<AppLocalSettingsHO> update(AppLocalSettings entity) async {

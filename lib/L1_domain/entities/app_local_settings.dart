@@ -11,13 +11,7 @@ class ALSStringCode {
 }
 
 class AppLocalSettings extends LocalPersistable {
-  AppLocalSettings({
-    this.launchCount = 0,
-    this.version = '',
-    this.flags,
-    this.dates,
-    this.strings,
-  });
+  AppLocalSettings({this.launchCount = 0, this.version = '', this.flags, this.dates, this.strings});
 
   int launchCount;
   String version;

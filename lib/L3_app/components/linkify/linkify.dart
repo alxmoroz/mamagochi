@@ -10,16 +10,7 @@ import 'element.dart';
 import 'parser.dart';
 
 class MTLinkify extends StatelessWidget {
-  const MTLinkify(
-    this.text, {
-    this.maxLines,
-    this.style,
-    this.linkStyle,
-    this.textAlign,
-    this.paddingLines = 0,
-    this.onTap,
-    super.key,
-  });
+  const MTLinkify(this.text, {this.maxLines, this.style, this.linkStyle, this.textAlign, this.paddingLines = 0, this.onTap, super.key});
   final String text;
   final int? maxLines;
   final TextStyle? style;
@@ -56,10 +47,8 @@ class MTLinkify extends StatelessWidget {
       textAlign: textAlign,
       minLines: 1,
       maxLines: maxLines,
-      contextMenuBuilder: (_, state) => AdaptiveTextSelectionToolbar.buttonItems(
-        anchors: state.contextMenuAnchors,
-        buttonItems: state.contextMenuButtonItems,
-      ),
+      contextMenuBuilder: (_, state) =>
+          AdaptiveTextSelectionToolbar.buttonItems(anchors: state.contextMenuAnchors, buttonItems: state.contextMenuButtonItems),
       onTap: onTap,
     );
   }

@@ -16,9 +16,9 @@ part 'main_controller.g.dart';
 
 class MainController extends _Base with _$MainController {
   Future reload() async => await load(() async {
-        setLoaderScreenLoading();
-        await _fetchBabies();
-      });
+    setLoaderScreenLoading();
+    await _fetchBabies();
+  });
 
   static const _updatePeriod = Duration(seconds: 15);
   Timer? _refreshTimer;

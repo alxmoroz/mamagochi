@@ -10,11 +10,7 @@ class EmailElement extends UriElement {
 class EmailParser extends UriParser {
   const EmailParser();
 
-  static final _emailRe = RegExp(
-    r'^(.*?)((mailto:)?[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z][A-Z]+)',
-    caseSensitive: false,
-    dotAll: true,
-  );
+  static final _emailRe = RegExp(r'^(.*?)((mailto:)?[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z][A-Z]+)', caseSensitive: false, dotAll: true);
 
   @override
   RegExp get re => _emailRe;

@@ -6,16 +6,7 @@ import 'colors.dart';
 import 'constants.dart';
 
 class MTCard extends StatelessWidget {
-  const MTCard({
-    super.key,
-    required this.child,
-    this.margin,
-    this.elevation,
-    this.radius,
-    this.padding,
-    this.borderSide,
-    this.color,
-  });
+  const MTCard({super.key, required this.child, this.margin, this.elevation, this.radius, this.padding, this.borderSide, this.color});
 
   final Widget child;
   final EdgeInsets? margin;
