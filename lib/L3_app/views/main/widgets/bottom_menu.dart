@@ -84,7 +84,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
         buttonSize: buttonSize,
         image: const MTImage('bed', height: 90),
         subtitle: hc.hasSleepEntriesFor24Hours ? SmallText(hc.lastSleep!.end.strTimeAgo) : null,
-        onTap: () => hc.startSleep(now),
+        onTap: () => hc.babyIsEating ? hc.stopBreastFeedAndStartSleep(now) : hc.startSleep(now),
       );
 
   static Widget _buttonStopFeed(HistoryController hc, dynamic baby, Size buttonSize) => _menuButton(

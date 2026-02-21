@@ -12,6 +12,8 @@
   "action_stop_feed_title_girl": "Finish feeding",
   "action_stop_sleep_title_boy": "Woke up",
   "action_stop_sleep_title_girl": "Woke up",
+  "action_ate_and_fell_asleep_title_boy": "Ate and fell asleep",
+  "action_ate_and_fell_asleep_title_girl": "Ate and fell asleep",
 
   "action_apply_title": "Apply",
   "action_back_title": "Back",

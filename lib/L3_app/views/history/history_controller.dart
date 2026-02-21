@@ -105,6 +105,16 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     );
   }
 
+  /// Завершить грудное кормление и сразу начать сон (одна кнопка в режиме кормления).
+  Future stopBreastFeedAndStartSleep(DateTime endFeedAndStartSleep) async {
+    final feed = lastOngoingBreastFeed!;
+    await load(() async {
+      await _editFeed(feed.copyWith(endDate: endFeedAndStartSleep));
+      await _startSleep(endFeedAndStartSleep);
+    });
+    showMTSnackbar(lastSleep!.ateAndFellAsleepTitle);
+  }
+
   Future editFeed(Feed feed) async {
     await load(() async {
       await _editFeed(feed);
@@ -199,9 +209,13 @@ abstract class _Base with Store {
   @computed
   Iterable<Feed> get _sortedFeedEntries => _feedEntries.sortedBy<DateTime>((e) => e.end);
 
+  /// Текущее грудное кормление: только записи с явным startDate (новый режим). Старые записи без startDate не считаются текущими.
   @computed
   Feed? get lastOngoingBreastFeed =>
-      _feedEntries.where((f) => f.type.isBreast && f.endDate == null).sortedBy<DateTime>((e) => e.created).lastOrNull;
+      _feedEntries
+          .where((f) => f.type.isBreast && f.endDate == null && f.startDate != null)
+          .sortedBy<DateTime>((e) => e.created)
+          .lastOrNull;
 
   @computed
   bool get babyIsEating => lastOngoingBreastFeed != null;

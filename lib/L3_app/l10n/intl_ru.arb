@@ -12,6 +12,8 @@
   "action_stop_feed_title_girl": "Закончила есть",
   "action_stop_sleep_title_boy": "Проснулся",
   "action_stop_sleep_title_girl": "Проснулась",
+  "action_ate_and_fell_asleep_title_boy": "Покушал и уснул",
+  "action_ate_and_fell_asleep_title_girl": "Покушала и уснула",
 
   "action_apply_title": "Применить",
   "action_back_title": "Назад",
