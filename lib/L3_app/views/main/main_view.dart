@@ -101,12 +101,7 @@ class _MainViewState extends State<_MainView> {
   Future _tapEditStartBreastFeed(HistoryController hc) async {
     final feed = hc.lastOngoingBreastFeed!;
     final startDate = feed.startDate ?? feed.created;
-    final date =
-        await MTDateTimePicker.show(
-          feed.editFeedStartDateTitle,
-          initialDate: startDate,
-        ) ??
-        startDate;
+    final date = await MTDateTimePicker.show(feed.editFeedStartDateTitle, initialDate: startDate) ?? startDate;
     await hc.editFeed(feed.copyWith(startDate: date));
   }
 
@@ -129,8 +124,8 @@ class _MainViewState extends State<_MainView> {
     final buttonSize = min(270.0, min(screen.width, screen.height) - 90 - 3 * P2);
 
     return MTPage(
-      bg1Color: hc!.babyIsSleeping ? b1StartGradientColor : null,
-      bg2Color: hc.babyIsSleeping ? b1EndGradientColor : null,
+      bg1Color: hc!.babyIsSleeping || hc.babyIsEating ? b1StartGradientColor : null,
+      bg2Color: hc.babyIsSleeping || hc.babyIsEating ? b1EndGradientColor : null,
       background: backgroundImage,
       key: widget.key,
       body: SafeArea(
@@ -171,34 +166,49 @@ class _MainViewState extends State<_MainView> {
                     ),
                   )
                 : hc.babyIsEating
-                    ? Align(
-                        alignment: Alignment.topRight,
-                        child: MTButton(
-                          minSize: Size(buttonSize, 90),
-                          constrained: false,
-                          color: b3Color,
-                          margin: const EdgeInsets.symmetric(horizontal: P2),
-                          type: MTButtonType.main,
-                          leading: const MTImage('time', height: 60),
-                          trailing: H2(
-                            feedDuration != null && feedDuration.inMinutes > 1
-                                ? loc.how_much_feeding(feedDurationStr!)
-                                : hc.lastOngoingBreastFeed?.feedJustNowTitle ?? '',
-                            maxLines: 2,
-                            color: f2Color,
-                          ),
-                          onTap: () => _tapEditStartBreastFeed(hc),
-                        ),
-                      )
-                    : const SizedBox(),
+                ? Align(
+                    alignment: Alignment.topRight,
+                    child: MTButton(
+                      minSize: Size(buttonSize, 90),
+                      constrained: false,
+                      color: b3Color,
+                      margin: const EdgeInsets.symmetric(horizontal: P2),
+                      type: MTButtonType.main,
+                      leading: const MTImage('time', height: 60),
+                      trailing: H2(
+                        feedDuration != null && feedDuration.inMinutes > 1
+                            ? loc.how_much_feeding(feedDurationStr!)
+                            : hc.lastOngoingBreastFeed?.feedJustNowTitle ?? '',
+                        maxLines: 2,
+                        color: f2Color,
+                      ),
+                      onTap: () => _tapEditStartBreastFeed(hc),
+                    ),
+                  )
+                : const SizedBox(),
 
             /// Картинка малыша
             Align(
               child: GestureDetector(
                 onTap: () => BabyProfileDialog.show(),
-                child: hc.babyIsSleeping ? baby!.imageSleep(size: 300) : baby!.image(size: 300),
+                child: hc.babyIsSleeping
+                    ? baby!.imageSleep(size: 300)
+                    : hc.babyIsEating
+                    ? baby!.imageBreastFeed(hc.lastOngoingBreastFeed!.type.isLeftBreast, size: 300)
+                    : baby!.image(size: 300),
               ),
             ),
+
+            /// Картинка груди слева или справа при кормлении
+            /// На смартфоне только в портрете, на планшете — в любой ориентации.
+            if (hc.babyIsEating && (isBigScreen(context) || MediaQuery.orientationOf(context) == Orientation.portrait))
+              Positioned(
+                left: hc.lastOngoingBreastFeed!.type.isLeftBreast ? -100 : null,
+                right: hc.lastOngoingBreastFeed!.type.isLeftBreast ? null : -100,
+                top: 0,
+                bottom: 0,
+                child: const Center(child: IgnorePointer(child: MTImage('breast', height: 200))),
+              ),
 
             /// Кнопки сна и кормления
             const Align(alignment: Alignment.bottomCenter, child: BottomMenu()),

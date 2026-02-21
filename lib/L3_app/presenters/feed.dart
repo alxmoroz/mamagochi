@@ -22,7 +22,7 @@ extension FeedPresenter on Feed {
       ? loc.edit_feed_baby_formula_title
       : loc.edit_feed_milk_bottle_title;
 
-  String get editFeedDateTimeTitle => Intl.message('edit_feed_date_title_${_baby.sex}');
+  String get editFeedDateTimeTitle => Intl.message('edit_feed_end_date_title_${_baby.sex}');
   String get editFeedStartDateTitle => Intl.message('edit_feed_start_date_title_${_baby.sex}');
   String get feedJustNowTitle => Intl.message('feed_just_now_title_${_baby.sex}');
   String get stopFeedActionTitle => Intl.message('action_stop_feed_title_${_baby.sex}');

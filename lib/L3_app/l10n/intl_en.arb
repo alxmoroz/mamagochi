@@ -5,9 +5,9 @@
 
   "action_add_feed_title_boy": "Fed",
   "action_add_feed_title_girl": "Fed",
-
   "action_start_sleep_title_boy": "Fell asleep",
   "action_start_sleep_title_girl": "Fell asleep",
+
   "action_stop_feed_title_boy": "Finish feeding",
   "action_stop_feed_title_girl": "Finish feeding",
   "action_stop_sleep_title_boy": "Woke up",
@@ -42,10 +42,10 @@
   "edit_sleep_end_date_title_boy": "What time did he wake up",
   "edit_sleep_end_date_title_girl": "What time did she wake up",
 
-  "edit_feed_date_title_boy": "What time did he fed",
-  "edit_feed_date_title_girl": "What time did she fed",
   "edit_feed_start_date_title_boy": "What time did he start feeding",
   "edit_feed_start_date_title_girl": "What time did she start feeding",
+  "edit_feed_end_date_title_boy": "What time did he fed",
+  "edit_feed_end_date_title_girl": "What time did she fed",
 
   "edit_feed_breast_title": "Breastfeeding",
   "edit_feed_milk_bottle_title": "Milk feeding",
