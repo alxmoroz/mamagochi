@@ -19,9 +19,19 @@ enum FeedingType {
 }
 
 class Feed extends AbstractEntry {
-  Feed({required super.created, super.startDate, super.endDate, required super.babyCreatedTime, required this.type, this.count});
+  Feed({
+    required super.created,
+    super.startDate,
+    super.endDate,
+    required super.babyCreatedTime,
+    required this.type,
+    this.count,
+    this.sleepCreated,
+  });
   final FeedingType type;
   int? count;
+  /// Привязка ко сну: created записи сна, во время которого было кормление (кормление «внутри сна»).
+  final DateTime? sleepCreated;
 
   bool get isStillFeeding => type.isBreast && endDate == null;
 
@@ -33,5 +43,16 @@ class Feed extends AbstractEntry {
     endDate: endDate ?? this.endDate,
     type: type ?? this.type,
     count: count ?? this.count,
+    sleepCreated: sleepCreated,
+  );
+
+  Feed withSleepCreated(DateTime? sleepCreated) => Feed(
+    created: created,
+    babyCreatedTime: babyCreatedTime,
+    startDate: startDate,
+    endDate: endDate,
+    type: type,
+    count: count,
+    sleepCreated: sleepCreated,
   );
 }
