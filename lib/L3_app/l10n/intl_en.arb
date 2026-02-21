@@ -58,6 +58,7 @@
 
   "history_title": "History",
   "history_empty_title": "There are no events yet",
+  "history_feed_trailing_still_feeding": "still feeding",
   "history_sleep_title": "Sleep",
   "history_sleep_trailing_still_sleep": "still sleeping",
 

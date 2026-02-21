@@ -75,7 +75,12 @@ class _HistoryView extends StatelessWidget {
                           : entry.shouldShowCount
                               ? SmallText(entry.feedCount)
                               : null,
-                      trailing: SmallText(entry.endTitle),
+                      trailing: SmallText(
+                        entry.type.isBreast && entry.isStillFeeding
+                            ? entry.historyStillFeedingTimeTitle
+                            : entry.historyStartEndTimeTitle,
+                        align: TextAlign.right,
+                      ),
                       bottomDivider: index < group.length - 1,
                       onTap: () => EditFeedDialog.show(entry),
                     )

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mamagochi/L3_app/presenters/feed.dart';
-import 'package:mamagochi/L3_app/presenters/sleep.dart';
 
 import '../../../L2_data/services/platform.dart';
 import '../../components/adaptive.dart';
@@ -16,17 +15,16 @@ import '../../components/constants.dart';
 import '../../components/datetime_picker.dart';
 import '../../components/images.dart';
 import '../../components/page.dart';
-import '../../components/text.dart';
 import '../../navigation/route.dart';
 import '../../navigation/router.dart';
 import '../../presenters/baby.dart';
-import '../../presenters/duration.dart';
 import '../_base/loader_screen.dart';
 import '../app/services.dart';
 import '../history/history_controller.dart';
 import '../history/history_view.dart';
 import 'widgets/baby_profile_dialog.dart';
 import 'widgets/bottom_menu.dart';
+import 'widgets/main_header_timers.dart';
 
 class MainRoute extends MTRoute {
   MainRoute()
@@ -115,11 +113,6 @@ class _MainViewState extends State<_MainView> {
   Widget _page(BuildContext context) {
     final hc = mainController.selectedBabyController?.historyController;
     final baby = mainController.selectedBabyController?.baby;
-    final sleepDuration = hc?.lastSleep?.durationFromStartToNow;
-    final sleepDurationStr = sleepDuration?.strInHoursAndMinutes;
-    final feedDuration = hc?.lastOngoingBreastFeed?.durationFromStartToNow;
-    final feedDurationStr = feedDuration?.strInHoursAndMinutes;
-
     final screen = screenSize(context);
     final buttonSize = min(270.0, min(screen.width, screen.height) - 90 - 3 * P2);
 
@@ -146,46 +139,13 @@ class _MainViewState extends State<_MainView> {
               ),
             ),
 
-            /// Кнопка таймера сна или кормления в заголовке (одна из двух)
-            hc.babyIsSleeping
-                ? Align(
-                    alignment: Alignment.topRight,
-                    child: MTButton(
-                      minSize: Size(buttonSize, 90),
-                      constrained: false,
-                      color: b3Color,
-                      margin: const EdgeInsets.symmetric(horizontal: P2),
-                      type: MTButtonType.main,
-                      leading: const MTImage('time', height: 60),
-                      trailing: H2(
-                        sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : hc.lastSleep?.sleepJustNowTitle ?? '',
-                        maxLines: 2,
-                        color: f2Color,
-                      ),
-                      onTap: () => _tapEditStartSleep(hc),
-                    ),
-                  )
-                : hc.babyIsEating
-                ? Align(
-                    alignment: Alignment.topRight,
-                    child: MTButton(
-                      minSize: Size(buttonSize, 90),
-                      constrained: false,
-                      color: b3Color,
-                      margin: const EdgeInsets.symmetric(horizontal: P2),
-                      type: MTButtonType.main,
-                      leading: const MTImage('time', height: 60),
-                      trailing: H2(
-                        feedDuration != null && feedDuration.inMinutes > 1
-                            ? loc.how_much_feeding(feedDurationStr!)
-                            : hc.lastOngoingBreastFeed?.feedJustNowTitle ?? '',
-                        maxLines: 2,
-                        color: f2Color,
-                      ),
-                      onTap: () => _tapEditStartBreastFeed(hc),
-                    ),
-                  )
-                : const SizedBox(),
+            /// Таймер сна или кормления в заголовке
+            MainHeaderTimer(
+              hc: hc,
+              buttonSize: buttonSize,
+              onEditStartSleep: () => _tapEditStartSleep(hc),
+              onEditStartBreastFeed: () => _tapEditStartBreastFeed(hc),
+            ),
 
             /// Картинка малыша
             Align(

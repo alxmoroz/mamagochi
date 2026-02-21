@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '/../L3_app/presenters/baby.dart';
 import '/../L3_app/presenters/duration.dart';
+import '/../L3_app/presenters/entry.dart';
 import '../../L1_domain/entities/baby.dart';
 import '../../L1_domain/entities/feed.dart';
 import '../components/images.dart';
@@ -70,6 +71,12 @@ extension FeedPresenter on Feed {
   String get historyBreastFeedDuration => type.isBreast
       ? (endDate == null ? durationFromStartToNow : duration).strInHoursMinutesAndSeconds
       : '';
+
+  String get stillFeedingTitle => Intl.message('history_feed_trailing_still_feeding');
+
+  /// Для истории: время начала и «ещё кушает» (по аналогии с historyStillSleepTimeTitle у сна).
+  String get historyStillFeedingTimeTitle =>
+      isStillFeeding && isMoreMinute ? '$startTitle\n$stillFeedingTitle' : stillFeedingTitle;
 
   bool get shouldShowCount => count != null && count! > 0;
   String get whatToEatTitle => Intl.message('what_to_eat_${type.name}');
