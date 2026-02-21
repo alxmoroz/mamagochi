@@ -31,4 +31,18 @@ extension DurationPresenter on Duration {
     }
     return result;
   }
+
+  /// Часы, минуты и секунды. При нулевых секундах используется strInHoursAndMinutes.
+  /// Иначе собирается строка из ненулевых частей: «1 ч», «1 ч 30 с», «15 мин 30 с», «1 ч 15 мин 30 с» и т.п.
+  String get strInHoursMinutesAndSeconds {
+    final totalSeconds = inSeconds;
+    if (totalSeconds == 0) return '';
+    final seconds = totalSeconds % 60;
+    if (seconds == 0) return strInHoursAndMinutes;
+
+    final hours = totalSeconds ~/ 3600;
+    final minutes = (totalSeconds % 3600) ~/ 60;
+    final parts = <String>[if (hours > 0) loc.time_hours(hours), if (minutes > 0) loc.time_minutes(minutes), loc.time_seconds(seconds)];
+    return parts.join(' ');
+  }
 }

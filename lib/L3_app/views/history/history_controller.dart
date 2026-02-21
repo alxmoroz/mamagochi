@@ -4,8 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 
-import '/../L3_app/presenters/duration.dart';
 import '/../L3_app/presenters/feed.dart';
+import '/../L3_app/presenters/sleep.dart';
 import '../../../L1_domain/entities/abstract_entry.dart';
 import '../../../L1_domain/entities/baby.dart';
 import '../../../L1_domain/entities/feed.dart';
@@ -38,7 +38,7 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     await load(() async {
       await _startSleep(startDate);
     });
-    showMTSnackbar(_baby.isBoy ? loc.action_start_sleep_title_boy : loc.action_start_sleep_title_girl);
+    showMTSnackbar(lastSleep!.startSleepActionTitle);
   }
 
   Future stopSleep(DateTime endDate) async {
@@ -46,10 +46,8 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await _editSleep(lastSleep!, endDate: endDate);
     });
 
-    final hc = mainController.selectedBabyController?.historyController;
-    final sleepDuration = hc!.lastSleep!.durationFromStartToEnd.strInHoursAndMinutes;
     showMTSnackbar(
-      _baby.isBoy ? loc.how_much_slept_boy(sleepDuration) : loc.how_much_slept_girl(sleepDuration),
+      lastSleep!.howMuchSleptTitle,
       titleAlign: TextAlign.start,
       trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
       onTap: () => EditSleepDialog.show(lastSleep!),
@@ -99,9 +97,8 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await _editFeed(feed.copyWith(endDate: endDate));
     });
     final finishedFeed = lastFeed!;
-    final feedDuration = finishedFeed.durationFromStartToEnd.strInHoursAndMinutes;
     showMTSnackbar(
-      '${finishedFeed.addFeedTitle} • $feedDuration',
+      finishedFeed.finishedBreastFeedSnackbarTitle,
       titleAlign: TextAlign.start,
       trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
       onTap: () => EditFeedDialog.show(finishedFeed),

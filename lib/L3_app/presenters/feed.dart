@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 import '/../L3_app/presenters/baby.dart';
+import '/../L3_app/presenters/duration.dart';
 import '../../L1_domain/entities/baby.dart';
 import '../../L1_domain/entities/feed.dart';
 import '../components/images.dart';
@@ -16,11 +17,27 @@ extension FeedPresenter on Feed {
     return type.isBottle && shouldShowCount ? '$baseTitle $feedCount' : baseTitle;
   }
 
-  String get editFeedTitle => type.isBreast == true
-      ? loc.edit_feed_breast_title
-      : type.isBabyFormula
-      ? loc.edit_feed_baby_formula_title
-      : loc.edit_feed_milk_bottle_title;
+  String get editFeedTitle {
+    if (type.isBreast) {
+      if (endDate == null || duration.inSeconds < 10) {
+        return loc.edit_feed_breast_title;
+      }
+      final durationStr = duration.strInHoursMinutesAndSeconds;
+      return _baby.isBoy ? loc.how_much_fed_boy(durationStr) : loc.how_much_fed_girl(durationStr);
+    }
+    return type.isBabyFormula
+        ? loc.edit_feed_baby_formula_title
+        : loc.edit_feed_milk_bottle_title;
+  }
+
+  /// Заголовок снэкбара при завершении кормления грудью: без длительности если < 10 с, иначе «Покушал/Покушала левую (правую) грудь {duration}».
+  String get finishedBreastFeedSnackbarTitle {
+    if (duration.inSeconds < 10) return addFeedTitle;
+    final durationStr = duration.strInHoursMinutesAndSeconds;
+    return _baby.isBoy
+        ? loc.how_much_fed_past_with_type_boy(whatToEatTitle, durationStr)
+        : loc.how_much_fed_past_with_type_girl(whatToEatTitle, durationStr);
+  }
 
   String get editFeedDateTimeTitle => Intl.message('edit_feed_end_date_title_${_baby.sex}');
   String get editFeedStartDateTitle => Intl.message('edit_feed_start_date_title_${_baby.sex}');
@@ -48,6 +65,11 @@ extension FeedPresenter on Feed {
       : loc.feed_type_milk;
 
   String get feedName => 'Кормление $type, $endDate, $count';
+
+  /// Длительность кормления грудью для истории (с секундами). Как у сна — для завершённого или текущего кормления.
+  String get historyBreastFeedDuration => type.isBreast
+      ? (endDate == null ? durationFromStartToNow : duration).strInHoursMinutesAndSeconds
+      : '';
 
   bool get shouldShowCount => count != null && count! > 0;
   String get whatToEatTitle => Intl.message('what_to_eat_${type.name}');
