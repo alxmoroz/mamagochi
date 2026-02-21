@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mamagochi/L3_app/presenters/feed.dart';
 import 'package:mamagochi/L3_app/presenters/sleep.dart';
 
 import '../../../L2_data/services/platform.dart';
@@ -97,6 +98,18 @@ class _MainViewState extends State<_MainView> {
     await hc.editLastSleep(startDate: date);
   }
 
+  Future _tapEditStartBreastFeed(HistoryController hc) async {
+    final feed = hc.lastOngoingBreastFeed!;
+    final startDate = feed.startDate ?? feed.created;
+    final date =
+        await MTDateTimePicker.show(
+          feed.editFeedStartDateTitle,
+          initialDate: startDate,
+        ) ??
+        startDate;
+    await hc.editFeed(feed.copyWith(startDate: date));
+  }
+
   Widget get backgroundImage {
     final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
     return isDark
@@ -109,6 +122,8 @@ class _MainViewState extends State<_MainView> {
     final baby = mainController.selectedBabyController?.baby;
     final sleepDuration = hc?.lastSleep?.durationFromStartToNow;
     final sleepDurationStr = sleepDuration?.strInHoursAndMinutes;
+    final feedDuration = hc?.lastOngoingBreastFeed?.durationFromStartToNow;
+    final feedDurationStr = feedDuration?.strInHoursAndMinutes;
 
     final screen = screenSize(context);
     final buttonSize = min(270.0, min(screen.width, screen.height) - 90 - 3 * P2);
@@ -136,7 +151,7 @@ class _MainViewState extends State<_MainView> {
               ),
             ),
 
-            /// Кнопка таймера сна в заголовке
+            /// Кнопка таймера сна или кормления в заголовке (одна из двух)
             hc.babyIsSleeping
                 ? Align(
                     alignment: Alignment.topRight,
@@ -155,7 +170,27 @@ class _MainViewState extends State<_MainView> {
                       onTap: () => _tapEditStartSleep(hc),
                     ),
                   )
-                : const SizedBox(),
+                : hc.babyIsEating
+                    ? Align(
+                        alignment: Alignment.topRight,
+                        child: MTButton(
+                          minSize: Size(buttonSize, 90),
+                          constrained: false,
+                          color: b3Color,
+                          margin: const EdgeInsets.symmetric(horizontal: P2),
+                          type: MTButtonType.main,
+                          leading: const MTImage('time', height: 60),
+                          trailing: H2(
+                            feedDuration != null && feedDuration.inMinutes > 1
+                                ? loc.how_much_feeding(feedDurationStr!)
+                                : hc.lastOngoingBreastFeed?.feedJustNowTitle ?? '',
+                            maxLines: 2,
+                            color: f2Color,
+                          ),
+                          onTap: () => _tapEditStartBreastFeed(hc),
+                        ),
+                      )
+                    : const SizedBox(),
 
             /// Картинка малыша
             Align(

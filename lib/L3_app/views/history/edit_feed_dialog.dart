@@ -27,6 +27,14 @@ class EditFeedDialog extends StatelessWidget {
 
   static Future show(Feed feed) async => await showMTDialog(EditFeedDialog._(EditFeedController(feed)));
 
+  Future _editStart() async {
+    final start = await MTDateTimePicker.show(
+      _fec.feed.editFeedStartDateTitle,
+      initialDate: _fec.feed.startDate ?? _fec.feed.created,
+    );
+    if (start != null) await _fec.setStart(start);
+  }
+
   Future _editEnd() async {
     final end = await MTDateTimePicker.show(_fec.feed.editFeedDateTimeTitle, initialDate: _fec.feed.endDate);
     if (end != null) _fec.setEnd(end);
@@ -88,7 +96,23 @@ class EditFeedDialog extends StatelessWidget {
               /// редактор количества (только для бутылочек)
               if (_fec.feed.type.isBottle) ...[FoodCountEditor(_fec.feed), const SizedBox(height: P2)],
 
-              /// редактор времени
+              /// время начала (только для грудного кормления)
+              if (_fec.feed.type.isBreast)
+                MTCard(
+                  margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
+                  radius: 40,
+                  elevation: 0,
+                  child: MTListTile(
+                    leading: const MTImage('time', height: 60),
+                    middle: BaseText(_fec.feed.editFeedStartDateTitle),
+                    subtitle: H2(_fec.feed.startDateTime),
+                    bottomDivider: false,
+                    onTap: _editStart,
+                  ),
+                ),
+              if (_fec.feed.type.isBreast) const SizedBox(height: P2),
+
+              /// редактор времени окончания
               MTCard(
                 margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
                 radius: 40,

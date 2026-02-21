@@ -35,6 +35,10 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
     hc.stopSleep(endDate);
   }
 
+  Future _stopBreastFeed(HistoryController hc) async {
+    hc.stopBreastFeed(now);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -77,20 +81,35 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
                           onTap: () => _startSleep(hc),
                         ),
                   const Spacer(),
-                  MTButton(
-                    minSize: buttonSize,
-                    constrained: false,
-                    color: b3Color,
-                    type: MTButtonType.main,
-                    middle: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        MTImage(hc.hasFeedEntriesFor24Hours ? hc.lastFeed!.feedImageName : 'bottle_baby_formula', height: 90),
-                        if (hc.hasFeedEntriesFor24Hours) SmallText(hc.lastFeed!.end.strTimeAgo),
-                      ],
-                    ),
-                    onTap: hc.addFeed,
-                  ),
+                  hc.babyIsEating
+                      ? MTButton(
+                          minSize: buttonSize,
+                          constrained: false,
+                          color: b3Color,
+                          type: MTButtonType.main,
+                          middle: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              baby.image(size: 90),
+                              SmallText(baby!.isBoy ? loc.action_stop_feed_title_boy : loc.action_stop_feed_title_girl),
+                            ],
+                          ),
+                          onTap: () => _stopBreastFeed(hc),
+                        )
+                      : MTButton(
+                          minSize: buttonSize,
+                          constrained: false,
+                          color: b3Color,
+                          type: MTButtonType.main,
+                          middle: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              MTImage(hc.hasFeedEntriesFor24Hours ? hc.lastFeed!.feedImageName : 'bottle_baby_formula', height: 90),
+                              if (hc.hasFeedEntriesFor24Hours) SmallText(hc.lastFeed!.end.strTimeAgo),
+                            ],
+                          ),
+                          onTap: hc.addFeed,
+                        ),
                   const SizedBox(width: P2),
                 ],
               )

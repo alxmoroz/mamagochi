@@ -8,6 +8,8 @@
 
   "action_start_sleep_title_boy": "Fell asleep",
   "action_start_sleep_title_girl": "Fell asleep",
+  "action_stop_feed_title_boy": "Finish feeding",
+  "action_stop_feed_title_girl": "Finish feeding",
   "action_stop_sleep_title_boy": "Woke up",
   "action_stop_sleep_title_girl": "Woke up",
 
@@ -42,6 +44,8 @@
 
   "edit_feed_date_title_boy": "What time did he fed",
   "edit_feed_date_title_girl": "What time did she fed",
+  "edit_feed_start_date_title_boy": "What time did he start feeding",
+  "edit_feed_start_date_title_girl": "What time did she start feeding",
 
   "edit_feed_breast_title": "Breastfeeding",
   "edit_feed_milk_bottle_title": "Milk feeding",
@@ -57,6 +61,7 @@
   "history_sleep_title": "Sleep",
   "history_sleep_trailing_still_sleep": "still sleeping",
 
+  "how_much_feeding": "Feeding for\n{duration}",
   "how_much_sleep": "Sleeps for\n{duration}",
   "how_much_slept_boy": "Slept for {duration}",
   "how_much_slept_girl": "Slept for {duration}",
@@ -91,6 +96,8 @@
   "sex_man": "Boy",
   "sex_woman": "Girl",
 
+  "feed_just_now_title_boy": "Just started\nfeeding",
+  "feed_just_now_title_girl": "Just started\nfeeding",
   "sleep_just_now_title_boy": "Just fell\nasleep",
   "sleep_just_now_title_girl": "Just fell\nasleep",
 

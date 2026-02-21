@@ -70,17 +70,42 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
   Future addFeed() async {
     final feedType = await FeedTypeDialog.show();
     if (feedType != null) {
-      await load(() async {
-        await _addFeed(feedType);
-      });
-      if (feedType.isBottle == true) await EditFeedDialog.show(lastFeed!);
-      showMTSnackbar(
-        lastFeed!.addFeedTitle,
-        titleAlign: TextAlign.start,
-        trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
-        onTap: () => EditFeedDialog.show(lastFeed!),
-      );
+      if (feedType.isBreast) {
+        await startBreastFeed(feedType);
+      } else {
+        await load(() async {
+          await _addFeed(feedType);
+        });
+        await EditFeedDialog.show(lastFeed!);
+        showMTSnackbar(
+          lastFeed!.addFeedTitle,
+          titleAlign: TextAlign.start,
+          trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
+          onTap: () => EditFeedDialog.show(lastFeed!),
+        );
+      }
     }
+  }
+
+  Future startBreastFeed(FeedingType type) async {
+    await load(() async {
+      await _startBreastFeed(type);
+    });
+  }
+
+  Future stopBreastFeed(DateTime endDate) async {
+    final feed = lastOngoingBreastFeed!;
+    await load(() async {
+      await _editFeed(feed.copyWith(endDate: endDate));
+    });
+    final finishedFeed = lastFeed!;
+    final feedDuration = finishedFeed.durationFromStartToEnd.strInHoursAndMinutes;
+    showMTSnackbar(
+      '${finishedFeed.addFeedTitle} • $feedDuration',
+      titleAlign: TextAlign.start,
+      trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
+      onTap: () => EditFeedDialog.show(finishedFeed),
+    );
   }
 
   Future editFeed(Feed feed) async {
@@ -149,6 +174,19 @@ abstract class _Base with Store {
   }
 
   @action
+  Future _startBreastFeed(FeedingType type) async {
+    final feed = Feed(
+      created: now,
+      startDate: now,
+      endDate: null,
+      babyCreatedTime: _baby.created,
+      type: type,
+    );
+    _feedEntries.add(feed);
+    await feedUC.edit(feed);
+  }
+
+  @action
   Future _editFeed(Feed feed) async {
     final index = _feedEntries.indexWhere((f) => f.created == feed.created);
     _feedEntries[index] = feed;
@@ -163,6 +201,13 @@ abstract class _Base with Store {
 
   @computed
   Iterable<Feed> get _sortedFeedEntries => _feedEntries.sortedBy<DateTime>((e) => e.end);
+
+  @computed
+  Feed? get lastOngoingBreastFeed =>
+      _feedEntries.where((f) => f.type.isBreast && f.endDate == null).sortedBy<DateTime>((e) => e.created).lastOrNull;
+
+  @computed
+  bool get babyIsEating => lastOngoingBreastFeed != null;
 
   /// общие
   @computed

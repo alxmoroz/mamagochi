@@ -23,6 +23,8 @@ class Feed extends AbstractEntry {
   final FeedingType type;
   int? count;
 
+  bool get isStillFeeding => type.isBreast && endDate == null;
+
   @override
   Feed copyWith({DateTime? startDate, DateTime? endDate, FeedingType? type, int? count}) => Feed(
     created: created,
