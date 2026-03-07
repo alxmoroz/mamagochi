@@ -13,6 +13,7 @@ import '../../components/button.dart';
 import '../../components/colors.dart';
 import '../../components/constants.dart';
 import '../../components/datetime_picker.dart';
+import '../../components/icons.dart';
 import '../../components/images.dart';
 import '../../components/page.dart';
 import '../../navigation/route.dart';
@@ -134,7 +135,7 @@ class _MainViewState extends State<_MainView> {
                 color: b3Color,
                 margin: const EdgeInsets.symmetric(horizontal: P2),
                 type: MTButtonType.main,
-                middle: const MTImage('menu', height: 60),
+                middle: const MTSvgIcon('menu', size: 60),
                 onTap: () => router.goHistory(hc),
               ),
             ),

@@ -177,4 +177,5 @@ const navbarColor = CupertinoDynamicColor.withBrightness(color: Color.fromARGB(0
 
 extension ResolvedColor on Color {
   Color resolve(BuildContext context) => CupertinoDynamicColor.resolve(this, context);
+  ColorFilter colorFilter(BuildContext context) => ColorFilter.mode(resolve(context), BlendMode.srcIn);
 }

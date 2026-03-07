@@ -5,7 +5,7 @@ import '../../../components/button.dart';
 import '../../../components/colors.dart';
 import '../../../components/constants.dart';
 import '../../../components/dialog.dart';
-import '../../../components/images.dart';
+import '../../../components/icons.dart';
 import '../../../components/text.dart';
 import '../../../presenters/baby.dart';
 import '../../app/services.dart';
@@ -72,7 +72,7 @@ class BabyProfileDialog extends StatelessWidget {
                           minSize: const Size.square(100),
                           color: b3Color,
                           type: MTButtonType.main,
-                          middle: const MTImage('close', height: 50),
+                          middle: const MTSvgIcon('close', size: 50),
                           onTap: Navigator.of(context).pop,
                         ),
                       ),

@@ -13,7 +13,7 @@ import '../../components/colors.dart';
 import '../../components/constants.dart';
 import '../../components/datetime_picker.dart';
 import '../../components/dialog.dart';
-import '../../components/images.dart';
+import '../../components/icons.dart';
 import '../../components/list_tile.dart';
 import '../../components/text.dart';
 import '../../components/toolbar.dart';
@@ -33,7 +33,7 @@ class EditFeedDialog extends StatelessWidget {
   }
 
   Future _editEnd() async {
-    final end = await MTDateTimePicker.show(_fec.feed.editFeedDateTimeTitle, initialDate: _fec.feed.endDate);
+    final end = await MTDateTimePicker.show(_fec.feed.editFeedEndFieldTitle, initialDate: _fec.feed.endDate);
     if (end != null) _fec.setEnd(end);
   }
 
@@ -106,7 +106,7 @@ class EditFeedDialog extends StatelessWidget {
                   radius: 40,
                   elevation: 0,
                   child: MTListTile(
-                    leading: const MTImage('time', height: 60),
+                    leading: const MTSvgIcon('bottle_fill', size: 60),
                     middle: BaseText(_fec.feed.editFeedStartDateTitle),
                     subtitle: H2(_fec.feed.startDateTime),
                     bottomDivider: false,
@@ -121,8 +121,8 @@ class EditFeedDialog extends StatelessWidget {
                 radius: 40,
                 elevation: 0,
                 child: MTListTile(
-                  leading: const MTImage('time', height: 60),
-                  middle: BaseText(_fec.feed.editFeedDateTimeTitle),
+                  leading: MTSvgIcon(_fec.feed.type.isBreast ? 'bottle_empty' : 'clock', size: 60),
+                  middle: BaseText(_fec.feed.editFeedEndFieldTitle),
                   subtitle: H2(_fec.feed.endDateTime),
                   bottomDivider: false,
                   onTap: _editEnd,

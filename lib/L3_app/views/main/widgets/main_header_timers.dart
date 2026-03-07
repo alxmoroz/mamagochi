@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../../../components/button.dart';
 import '../../../components/colors.dart';
 import '../../../components/constants.dart';
-import '../../../components/images.dart';
+import '../../../components/icons.dart';
 import '../../../components/text.dart';
 import '../../app/services.dart';
 import '../../history/history_controller.dart';
@@ -48,7 +48,7 @@ Widget _timerButton({required double buttonSize, required Widget trailing, requi
       color: b3Color,
       margin: const EdgeInsets.symmetric(horizontal: P2),
       type: MTButtonType.main,
-      leading: const MTImage('time', height: 60),
+      leading: const MTSvgIcon('clock', size: 60),
       trailing: trailing,
       onTap: onTap,
     );

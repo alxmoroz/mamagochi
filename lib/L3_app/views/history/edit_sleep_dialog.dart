@@ -6,7 +6,7 @@ import '/../L3_app/components/card.dart';
 import '/../L3_app/components/constants.dart';
 import '/../L3_app/components/datetime_picker.dart';
 import '/../L3_app/components/dialog.dart';
-import '/../L3_app/components/images.dart';
+import '/../L3_app/components/icons.dart';
 import '/../L3_app/components/list_tile.dart';
 import '/../L3_app/components/text.dart';
 import '/../L3_app/components/toolbar.dart';
@@ -76,7 +76,7 @@ class EditSleepDialog extends StatelessWidget {
                       radius: 40,
                       elevation: 0,
                       child: MTListTile(
-                        leading: const MTImage('eye_closed', height: 60),
+                        leading: const MTSvgIcon('eye_closed', size: 60),
                         middle: BaseText(_sc.sleep.startSleepActionTitle),
                         subtitle: H2(_sc.sleep.startDateTime),
                         bottomDivider: false,
@@ -88,7 +88,7 @@ class EditSleepDialog extends StatelessWidget {
                       radius: 40,
                       elevation: 0,
                       child: MTListTile(
-                        leading: const MTImage('eye', height: 60),
+                        leading: const MTSvgIcon('eye_open', size: 60),
                         middle: BaseText(_sc.sleep.stopSleepActionTitle),
                         subtitle: H2(_sc.sleep.endDateTime),
                         bottomDivider: false,

@@ -19,6 +19,7 @@ dependencies:
     sdk: flutter
   flutter_mobx: any
   flutter_slidable: any
+  flutter_svg: any
   get_it: any
   go_router: any
   hive: any
@@ -45,6 +46,7 @@ flutter:
     - assets/ca/
     - assets/fonts/
     - assets/images/
+    - assets/icons/
   fonts:
     - family: MontserratMamagochi
       fonts:

@@ -48,6 +48,8 @@
   "edit_feed_start_date_title_girl": "What time did she start feeding",
   "edit_feed_end_date_title_boy": "What time did he fed",
   "edit_feed_end_date_title_girl": "What time did she fed",
+  "edit_feed_time_title_boy": "What time did he eat",
+  "edit_feed_time_title_girl": "What time did she eat",
 
   "edit_feed_breast_title": "Breastfeeding",
   "edit_feed_milk_bottle_title": "Milk feeding",

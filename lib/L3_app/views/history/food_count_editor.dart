@@ -9,7 +9,7 @@ import '../../components/card.dart';
 import '../../components/colors.dart';
 import '../../components/constants.dart';
 import '../../components/field_data.dart';
-import '../../components/images.dart';
+import '../../components/icons.dart';
 import '../../components/text.dart';
 import '../../components/text_field.dart';
 import '../_base/edit_controller.dart';
@@ -139,7 +139,7 @@ class _FoodCountEditorState extends State<FoodCountEditor> {
   }
 
   Widget _buildButton(String icon, VoidCallback? onTap) =>
-      MTButton(type: MTButtonType.main, color: b3Color, middle: MTImage(icon, height: 30), minSize: const Size.square(60), uf: false, onTap: onTap);
+      MTButton(type: MTButtonType.main, color: b3Color, middle: MTSvgIcon(icon, size: 30), minSize: const Size.square(60), uf: false, onTap: onTap);
 
   Widget _buildTextField(BuildContext context) => Expanded(
     child: MTCard(

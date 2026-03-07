@@ -262,7 +262,7 @@ class MTPlusButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MTButton(
       type: type,
-      middle: PlusIcon(color: type == MTButtonType.main ? mainBtnTitleColor : mainColor),
+      middle: MTSvgIcon('plus', size: P4, color: type == MTButtonType.main ? mainBtnTitleColor : mainColor),
       margin: const EdgeInsets.only(right: P2),
       onTap: onTap,
     );

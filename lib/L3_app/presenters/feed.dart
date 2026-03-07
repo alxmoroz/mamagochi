@@ -42,6 +42,9 @@ extension FeedPresenter on Feed {
 
   String get editFeedDateTimeTitle => Intl.message('edit_feed_end_date_title_${_baby.sex}');
   String get editFeedStartDateTitle => Intl.message('edit_feed_start_date_title_${_baby.sex}');
+  /// Для бутылочки (смесь/молоко) — одно поле времени: «Во сколько покушал/покушала». Для груди — «Закончил(а) кушать».
+  String get editFeedTimeTitle => Intl.message('edit_feed_time_title_${_baby.sex}');
+  String get editFeedEndFieldTitle => type.isBreast ? editFeedDateTimeTitle : editFeedTimeTitle;
   String get feedJustNowTitle => Intl.message('feed_just_now_title_${_baby.sex}');
   String get stopFeedActionTitle => Intl.message('action_stop_feed_title_${_baby.sex}');
 
