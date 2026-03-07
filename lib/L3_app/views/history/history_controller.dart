@@ -127,7 +127,12 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await _editFeed(feed.copyWith(endDate: endFeedAndStartSleep));
       await _startSleep(endFeedAndStartSleep);
     });
-    showMTSnackbar(lastSleep!.ateAndFellAsleepTitle);
+    showMTSnackbar(
+      lastSleep!.ateAndFellAsleepTitle,
+      titleAlign: TextAlign.start,
+      trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
+      onTap: () => EditFeedDialog.show(lastFeed!),
+    );
   }
 
   Future editFeed(Feed feed) async {
