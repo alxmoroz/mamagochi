@@ -44,10 +44,10 @@
   "edit_sleep_end_date_title_boy": "Во сколько проснулся",
   "edit_sleep_end_date_title_girl": "Во сколько проснулась",
 
-  "edit_feed_end_date_title_boy": "Во сколько покушал",
-  "edit_feed_end_date_title_girl": "Во сколько покушала",
-  "edit_feed_start_date_title_boy": "Во сколько начал есть",
-  "edit_feed_start_date_title_girl": "Во сколько начала есть",
+  "edit_feed_start_date_title_boy": "Начал кушать",
+  "edit_feed_start_date_title_girl": "Начала кушать",
+  "edit_feed_end_date_title_boy": "Закончил кушать",
+  "edit_feed_end_date_title_girl": "Закончила кушать",
 
   "edit_feed_breast_title": "Кормление грудью",
   "edit_feed_milk_bottle_title": "Кормление молоком",
@@ -106,8 +106,8 @@
   "sex_man": "Мальчик",
   "sex_woman": "Девочка",
 
-  "feed_just_now_title_boy": "Только что\nначал есть",
-  "feed_just_now_title_girl": "Только что\nначала есть",
+  "feed_just_now_title_boy": "Только что\nначал кушать",
+  "feed_just_now_title_girl": "Только что\nначала кушать",
   "sleep_just_now_title_boy": "Только что\nуснул",
   "sleep_just_now_title_girl": "Только что\nуснула",
 

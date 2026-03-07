@@ -28,10 +28,7 @@ class EditFeedDialog extends StatelessWidget {
   static Future show(Feed feed) async => await showMTDialog(EditFeedDialog._(EditFeedController(feed)));
 
   Future _editStart() async {
-    final start = await MTDateTimePicker.show(
-      _fec.feed.editFeedStartDateTitle,
-      initialDate: _fec.feed.startDate ?? _fec.feed.created,
-    );
+    final start = await MTDateTimePicker.show(_fec.feed.editFeedStartDateTitle, initialDate: _fec.feed.startDate ?? _fec.feed.created);
     if (start != null) await _fec.setStart(start);
   }
 
@@ -40,12 +37,40 @@ class EditFeedDialog extends StatelessWidget {
     if (end != null) _fec.setEnd(end);
   }
 
+  Widget _breastTypeButton(BuildContext context, {required bool isLeft, required double size, required Size buttonSize}) {
+    final label = isLeft ? loc.feed_type_left_breast : loc.feed_type_right_breast;
+    final feedType = isLeft ? FeedingType.left_breast : FeedingType.right_breast;
+    final isSelected = isLeft ? _fec.feed.type.isLeftBreast : _fec.feed.type.isRightBreast;
+    // Подписи сильнее сдвинуты к центру (size / 2 вместо size / 3)
+    final labelPadding = EdgeInsets.only(left: isLeft ? size / 2 : 0, right: isLeft ? 0 : size / 2);
+    final labelAlignment = isLeft ? Alignment.centerRight : Alignment.centerLeft;
+    final labelWidget = isSelected ? BaseText(label, sizeScale: 20 / 18, weight: FontWeight.w600, color: mainColor) : BaseText(label);
+
+    return Positioned(
+      left: isLeft ? -size / 2 : null,
+      right: isLeft ? null : -size / 2,
+      top: 0,
+      child: MTButton(
+        minSize: buttonSize,
+        constrained: !isLeft,
+        color: b3Color,
+        type: isSelected ? MTButtonType.secondary : MTButtonType.main,
+        borderSide: isSelected ? BorderSide(color: mainColor.resolve(context), width: 3) : null,
+        middle: Padding(
+          padding: labelPadding,
+          child: Align(alignment: labelAlignment, child: labelWidget),
+        ),
+        onTap: () => _fec.setFeedType(feedType),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) {
         final screen = screenSize(context);
-        final size = min(180.0, min(screen.width, screen.height) / 2 - P3);
+        final size = min(320.0, min(screen.width, screen.height) - P3);
         final buttonSize = Size.square(size);
 
         return MTDialog(
@@ -60,31 +85,10 @@ class EditFeedDialog extends StatelessWidget {
                         SizedBox(
                           height: size + P2,
                           child: Stack(
+                            clipBehavior: Clip.none,
                             children: [
-                              /// левая грудь
-                              Positioned(
-                                left: P2,
-                                child: MTButton(
-                                  minSize: buttonSize,
-                                  color: b3Color,
-                                  type: _fec.feed.type.isLeftBreast ? MTButtonType.secondary : MTButtonType.main,
-                                  middle: BaseText(loc.feed_type_left_breast),
-                                  onTap: () => _fec.setFeedType(FeedingType.left_breast),
-                                ),
-                              ),
-
-                              /// правая грудь
-                              Positioned(
-                                right: P2,
-                                child: MTButton(
-                                  minSize: buttonSize,
-                                  constrained: false,
-                                  color: b3Color,
-                                  type: _fec.feed.type.isRightBreast ? MTButtonType.secondary : MTButtonType.main,
-                                  middle: BaseText(loc.feed_type_right_breast),
-                                  onTap: () => _fec.setFeedType(FeedingType.right_breast),
-                                ),
-                              ),
+                              _breastTypeButton(context, isLeft: true, size: size, buttonSize: buttonSize),
+                              _breastTypeButton(context, isLeft: false, size: size, buttonSize: buttonSize),
                             ],
                           ),
                         ),
