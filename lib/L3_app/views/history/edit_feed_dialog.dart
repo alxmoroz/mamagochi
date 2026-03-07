@@ -52,7 +52,6 @@ class EditFeedDialog extends StatelessWidget {
       top: 0,
       child: MTButton(
         minSize: buttonSize,
-        constrained: !isLeft,
         color: b3Color,
         type: isSelected ? MTButtonType.secondary : MTButtonType.main,
         borderSide: isSelected ? BorderSide(color: mainColor.resolve(context), width: 3) : null,

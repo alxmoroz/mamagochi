@@ -71,14 +71,12 @@ class _HistoryView extends StatelessWidget {
                       leading: entry.feedImage(size: P10),
                       titleText: entry.feedTypeName,
                       subtitle: entry.type.isBreast
-                          ? SmallText(entry.historyBreastFeedDuration)
+                          ? (entry.isMoreMinute ? SmallText(entry.historyBreastFeedDuration) : null)
                           : entry.shouldShowCount
-                              ? SmallText(entry.feedCount)
-                              : null,
+                          ? SmallText(entry.feedCount)
+                          : null,
                       trailing: SmallText(
-                        entry.type.isBreast && entry.isStillFeeding
-                            ? entry.historyStillFeedingTimeTitle
-                            : entry.historyStartEndTimeTitle,
+                        entry.type.isBreast && entry.isStillFeeding ? entry.historyStillFeedingTimeTitle : entry.historyStartEndTimeTitle,
                         align: TextAlign.right,
                       ),
                       bottomDivider: index < group.length - 1,
