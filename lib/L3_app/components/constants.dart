@@ -40,6 +40,9 @@ const double BOTTOM_BAR_ZONE_HEIGHT = 200;
 /// Сдвиг подсказки кормления вниз (в пикселях) от расчётной позиции; можно подобрать под устройство.
 const double HINT_BUBBLE_SHIFT_DOWN = 24;
 
+/// Приближённая высота пузырька подсказки (для расчёта top в overlay).
+const double HINT_BUBBLE_APPROX_HEIGHT = 160.0;
+
 const DEF_TAPPABLE_ICON_SIZE = kIsWeb ? P5 : P6;
 
 const double SCR_XXS_WIDTH = 290;

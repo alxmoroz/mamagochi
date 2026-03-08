@@ -15,6 +15,12 @@ double bottomBarButtonSize(Size screen) =>
 /// Высота зоны боттом-бара для позиционирования подсказки: кнопки + вертикальные отступы.
 double bottomBarZoneHeight(Size screen) => bottomBarButtonSize(screen) + 2 * P2;
 
+/// Суммарная высота снизу экрана (safe area + зона бара). В портрете — SafeArea minimum P5, в ландшафте — только фактический padding.
+double bottomBarTotalHeight(Size screen, EdgeInsets padding, bool isLandscape) {
+  final effectiveBottomInset = isLandscape ? padding.bottom : max(padding.bottom, P5);
+  return effectiveBottomInset + bottomBarZoneHeight(screen);
+}
+
 bool isBigScreen(BuildContext context) {
   final size = screenSize(context);
   return size.height > SCR_S_HEIGHT && size.width > SCR_M_WIDTH;
