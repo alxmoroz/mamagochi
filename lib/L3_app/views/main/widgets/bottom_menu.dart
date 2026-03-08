@@ -1,7 +1,5 @@
 // Copyright (c) 2024. Alexandr Moroz
 
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -33,8 +31,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
         if (hc == null) return const SizedBox();
 
         final baby = mainController.selectedBabyController!.baby;
-        final screen = screenSize(context);
-        final buttonSize = Size.square(min(180.0, min(screen.width, screen.height) / 2 - P3));
+        final buttonSize = Size.square(bottomBarButtonSize(screenSize(context)));
 
         /// Левая кнопка: сон — либо «Проснулся», либо «Сон» + последнее время
         final sleepButton = hc.babyIsSleeping ? _buttonStopSleep(hc, baby, buttonSize) : _buttonStartSleep(hc, buttonSize);

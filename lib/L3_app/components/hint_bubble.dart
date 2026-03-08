@@ -43,7 +43,7 @@ class HintBubble extends StatelessWidget {
                 onTap: onDismiss,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: P2),
-                  child: BaseText(loc.ok, color: mainColor, weight: FontWeight.w600),
+                  child: H1(loc.ok, color: mainColor),
                 ),
               ),
             ],

@@ -8,6 +8,13 @@ import 'constants.dart';
 
 Size screenSize(BuildContext context) => MediaQuery.sizeOf(context);
 
+/// Сторона кнопки боттом-бара (один источник истины для BottomMenu и подсказки над баром).
+double bottomBarButtonSize(Size screen) =>
+    min(180.0, min(screen.width, screen.height) / 2 - P3);
+
+/// Высота зоны боттом-бара для позиционирования подсказки: кнопки + вертикальные отступы.
+double bottomBarZoneHeight(Size screen) => bottomBarButtonSize(screen) + 2 * P2;
+
 bool isBigScreen(BuildContext context) {
   final size = screenSize(context);
   return size.height > SCR_S_HEIGHT && size.width > SCR_M_WIDTH;
