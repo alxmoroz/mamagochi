@@ -56,8 +56,6 @@ class _MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<_MainView> {
-  final _stopFeedButtonKey = GlobalKey();
-
   AppLifecycleListener? _appstateListener;
   AppLifecycleState? _currentLifecycleState;
 
@@ -177,11 +175,11 @@ class _MainViewState extends State<_MainView> {
             /// Кнопки сна и кормления
             Align(
               alignment: Alignment.bottomCenter,
-              child: BottomMenu(stopFeedButtonKey: _stopFeedButtonKey),
+              child: BottomMenu(),
             ),
 
-            /// Подсказка-пузырёк над кнопкой «Закончил кушать» (Overlay, один раз)
-            BreastFeedHintLayer(stopFeedButtonKey: _stopFeedButtonKey),
+            /// Подсказка-пузырёк над боттом-баром (Overlay, один раз; позиция по MediaQuery + BOTTOM_BAR_ZONE_HEIGHT)
+            BreastFeedHintLayer(),
           ],
         ),
       ),
