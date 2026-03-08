@@ -59,6 +59,8 @@
   "feed_type_left_breast": "Left",
   "feed_type_baby_formula": "Baby formula",
   "feed_type_milk": "Milk",
+  "breast_feed_hint_title": "Yay! Feeding timer!",
+  "breast_feed_hint_body": "Tap the button below when baby finishes eating",
 
   "history_title": "History",
   "history_empty_title": "There are no events yet",

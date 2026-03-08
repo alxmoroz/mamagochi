@@ -73,6 +73,10 @@ abstract class _LocalSettingsControllerBase with Store {
   @action
   Future deleteUTM() async => settings = await localSettingsUC.setString(ALSStringCode.UTM_QUERY, null);
 
+  @action
+  Future markBreastFeedHintShown() async =>
+      settings = await localSettingsUC.setString(ALSStringCode.BREAST_FEED_HINT_DISMISSED, 'true');
+
   /// Токен регистрации
   // @computed
   // String? get registrationToken => settings.getString(ALSStringCode.REGISTRATION_TOKEN);

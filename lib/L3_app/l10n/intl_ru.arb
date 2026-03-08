@@ -59,6 +59,8 @@
   "feed_type_left_breast": "Левая",
   "feed_type_baby_formula": "Смесь",
   "feed_type_milk": "Молоко",
+  "breast_feed_hint_title": "Ура! Таймер кормления!",
+  "breast_feed_hint_body": "Нажми кнопку ниже, когда малыш закончит кушать",
 
   "history_title": "История",
   "history_empty_title": "Записей пока нет",

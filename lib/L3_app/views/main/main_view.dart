@@ -23,6 +23,7 @@ import '../_base/loader_screen.dart';
 import '../app/services.dart';
 import '../history/history_controller.dart';
 import '../history/history_view.dart';
+import 'breast_feed_hint_layer.dart';
 import 'widgets/baby_profile_dialog.dart';
 import 'widgets/bottom_menu.dart';
 import 'widgets/main_header_timers.dart';
@@ -55,6 +56,8 @@ class _MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<_MainView> {
+  final _stopFeedButtonKey = GlobalKey();
+
   AppLifecycleListener? _appstateListener;
   AppLifecycleState? _currentLifecycleState;
 
@@ -172,7 +175,13 @@ class _MainViewState extends State<_MainView> {
               ),
 
             /// Кнопки сна и кормления
-            const Align(alignment: Alignment.bottomCenter, child: BottomMenu()),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: BottomMenu(stopFeedButtonKey: _stopFeedButtonKey),
+            ),
+
+            /// Подсказка-пузырёк над кнопкой «Закончил кушать» (Overlay, один раз)
+            BreastFeedHintLayer(stopFeedButtonKey: _stopFeedButtonKey),
           ],
         ),
       ),

@@ -20,7 +20,9 @@ import '../../app/services.dart';
 import '../../history/history_controller.dart';
 
 class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
-  const BottomMenu({super.key});
+  const BottomMenu({super.key, this.stopFeedButtonKey});
+
+  final GlobalKey? stopFeedButtonKey;
 
   @override
   Size get preferredSize => const Size.fromHeight(250);
@@ -41,13 +43,16 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
 
         /// Правая кнопка: кормление — либо «Завершить кормление», либо «Добавить кормление» + последнее время
         final feedButton = hc.babyIsEating ? _buttonStopFeed(hc, baby, buttonSize) : _buttonAddFeed(hc, buttonSize);
+        final wrappedFeedButton = stopFeedButtonKey != null && hc.babyIsEating
+            ? KeyedSubtree(key: stopFeedButtonKey, child: feedButton)
+            : feedButton;
 
         return Row(
           children: [
             const SizedBox(width: P2),
             sleepButton,
             const Spacer(),
-            feedButton,
+            wrappedFeedButton,
             const SizedBox(width: P2),
           ],
         );
