@@ -96,7 +96,7 @@ class _MainViewState extends State<_MainView> {
         ) ??
         startDate;
     await hc.editLastSleep(startDate: date);
-    if (mounted) setState(() {});
+    if (mounted) WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) setState(() {}); });
   }
 
   Future _tapEditStartBreastFeed(HistoryController hc) async {
@@ -104,7 +104,7 @@ class _MainViewState extends State<_MainView> {
     final startDate = feed.startDate ?? feed.created;
     final date = await MTDateTimePicker.show(feed.editFeedStartDateTitle, initialDate: startDate) ?? startDate;
     await hc.editFeed(feed.copyWith(startDate: date));
-    if (mounted) setState(() {});
+    if (mounted) WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) setState(() {}); });
   }
 
   Widget get backgroundImage {

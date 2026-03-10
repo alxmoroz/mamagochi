@@ -60,7 +60,9 @@ mixin _PeriodicRefreshMixin<T extends StatefulWidget> on State<T> {
   @override
   void initState() {
     super.initState();
-    _ticker = Timer.periodic(refreshInterval, (_) => setState(() {}));
+    _ticker = Timer.periodic(refreshInterval, (_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) setState(() {}); });
+    });
   }
 
   @override
