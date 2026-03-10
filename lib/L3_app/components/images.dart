@@ -6,8 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 
 String _assetPath(String name, BuildContext context) {
-  final dark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
-  return 'assets/images/$name${dark ? '_dark' : ''}.png';
+  // final dark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+  return 'assets/images/$name.png'; // было: $name${dark ? '_dark' : ''}.png'
 }
 
 double _defaultImageHeight(BuildContext context) => min(200, max(120, MediaQuery.sizeOf(context).height / 3.5));
@@ -20,11 +20,7 @@ class MTSvgImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      'assets/images/$name.svg',
-      width: width,
-      height: height,
-    );
+    return SvgPicture.asset('assets/images/$name.svg', width: width, height: height);
   }
 }
 
