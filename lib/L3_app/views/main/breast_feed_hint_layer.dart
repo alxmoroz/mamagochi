@@ -70,6 +70,7 @@ class _BreastFeedHintLayerState extends State<BreastFeedHintLayer> {
         final screenSize = MediaQuery.sizeOf(ctx);
         final padding = MediaQuery.paddingOf(ctx);
         final isLandscape = MediaQuery.orientationOf(ctx) == Orientation.landscape;
+        final useLandscapeHorizontal = isLandscape || (isBigScreen(ctx) && !isLandscape);
         final bottomTotal = bottomBarTotalHeight(screenSize, padding, isLandscape);
         final bubbleWidth = min(
           isLandscape ? SCR_S_WIDTH : SCR_XS_WIDTH,
@@ -77,7 +78,7 @@ class _BreastFeedHintLayerState extends State<BreastFeedHintLayer> {
         );
         final top = (screenSize.height - bottomTotal - HINT_BUBBLE_APPROX_HEIGHT - P2 + HINT_BUBBLE_SHIFT_DOWN)
             .clamp(P3, screenSize.height - HINT_BUBBLE_APPROX_HEIGHT - P3);
-        final position = _hintPosition(screenSize, padding, isLandscape, bubbleWidth);
+        final position = _hintPosition(screenSize, padding, useLandscapeHorizontal, bubbleWidth);
 
         return Stack(
           children: [

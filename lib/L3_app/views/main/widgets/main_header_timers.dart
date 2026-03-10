@@ -9,20 +9,17 @@ import '../../../components/colors.dart';
 import '../../../components/constants.dart';
 import '../../../components/icons.dart';
 import '../../../components/text.dart';
-import '../../app/services.dart';
-import '../../history/history_controller.dart';
 import '../../../presenters/duration.dart';
 import '../../../presenters/sleep.dart';
+import '../../app/services.dart';
+import '../../history/history_controller.dart';
+
+const _kSleepTimerInterval = Duration(seconds: 10);
+const _kFeedingTimerInterval = Duration(seconds: 1);
 
 /// Таймер сна или кормления в правом верхнем углу главного экрана. Показывает один из двух в зависимости от состояния.
 class MainHeaderTimer extends StatelessWidget {
-  const MainHeaderTimer({
-    super.key,
-    required this.hc,
-    required this.buttonSize,
-    required this.onEditStartSleep,
-    required this.onEditStartBreastFeed,
-  });
+  const MainHeaderTimer({super.key, required this.hc, required this.buttonSize, required this.onEditStartSleep, required this.onEditStartBreastFeed});
 
   final HistoryController hc;
   final double buttonSize;
@@ -34,34 +31,40 @@ class MainHeaderTimer extends StatelessWidget {
     final child = hc.babyIsSleeping
         ? _SleepTimerButton(hc: hc, buttonSize: buttonSize, onTap: onEditStartSleep)
         : hc.babyIsEating
-            ? _FeedingTimerButton(hc: hc, buttonSize: buttonSize, onTap: onEditStartBreastFeed)
-            : null;
+        ? _FeedingTimerButton(hc: hc, buttonSize: buttonSize, onTap: onEditStartBreastFeed)
+        : null;
     if (child == null) return const SizedBox();
     return Align(alignment: Alignment.topRight, child: child);
   }
 }
 
-Widget _timerButton({required double buttonSize, required Widget trailing, required VoidCallback onTap}) =>
-    MTButton(
-      minSize: Size(buttonSize, 90),
-      constrained: false,
-      color: b3Color,
-      margin: const EdgeInsets.symmetric(horizontal: P2),
-      type: MTButtonType.main,
-      leading: const MTSvgIcon('clock', size: 60),
-      trailing: trailing,
-      onTap: onTap,
-    );
+Widget _timerButton({required double buttonSize, required Widget trailing, required VoidCallback onTap}) => MTButton(
+  minSize: Size(buttonSize, 90),
+  constrained: false,
+  color: b3Color,
+  margin: const EdgeInsets.symmetric(horizontal: P2),
+  type: MTButtonType.main,
+  leading: const MTSvgIcon('clock', size: 60),
+  trailing: trailing,
+  onTap: onTap,
+);
 
 mixin _PeriodicRefreshMixin<T extends StatefulWidget> on State<T> {
   Timer? _ticker;
   Duration get refreshInterval;
+  bool get deferSetStateToNextFrame => true;
 
   @override
   void initState() {
     super.initState();
     _ticker = Timer.periodic(refreshInterval, (_) {
-      WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) setState(() {}); });
+      if (deferSetStateToNextFrame) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) setState(() {});
+        });
+      } else {
+        if (mounted) setState(() {});
+      }
     });
   }
 
@@ -84,7 +87,7 @@ class _SleepTimerButton extends StatefulWidget {
 
 class _SleepTimerButtonState extends State<_SleepTimerButton> with _PeriodicRefreshMixin<_SleepTimerButton> {
   @override
-  Duration get refreshInterval => const Duration(seconds: 15);
+  Duration get refreshInterval => _kSleepTimerInterval;
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +116,10 @@ class _FeedingTimerButton extends StatefulWidget {
 
 class _FeedingTimerButtonState extends State<_FeedingTimerButton> with _PeriodicRefreshMixin<_FeedingTimerButton> {
   @override
-  Duration get refreshInterval => const Duration(seconds: 1);
+  Duration get refreshInterval => _kFeedingTimerInterval;
+
+  @override
+  bool get deferSetStateToNextFrame => false;
 
   @override
   Widget build(BuildContext context) {
