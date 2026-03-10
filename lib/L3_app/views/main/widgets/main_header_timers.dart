@@ -53,23 +53,48 @@ Widget _timerButton({required double buttonSize, required Widget trailing, requi
       onTap: onTap,
     );
 
-class _SleepTimerButton extends StatelessWidget {
+mixin _PeriodicRefreshMixin<T extends StatefulWidget> on State<T> {
+  Timer? _ticker;
+  Duration get refreshInterval;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = Timer.periodic(refreshInterval, (_) => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+}
+
+class _SleepTimerButton extends StatefulWidget {
   const _SleepTimerButton({required this.hc, required this.buttonSize, required this.onTap});
   final HistoryController hc;
   final double buttonSize;
   final VoidCallback onTap;
 
   @override
+  State<_SleepTimerButton> createState() => _SleepTimerButtonState();
+}
+
+class _SleepTimerButtonState extends State<_SleepTimerButton> with _PeriodicRefreshMixin<_SleepTimerButton> {
+  @override
+  Duration get refreshInterval => const Duration(seconds: 15);
+
+  @override
   Widget build(BuildContext context) {
-    final sleepDuration = hc.lastSleep?.durationFromStartToNow;
+    final sleepDuration = widget.hc.lastSleep?.durationFromStartToNow;
     final sleepDurationStr = sleepDuration?.strInHoursAndMinutes;
     final text = sleepDuration != null && sleepDuration.inMinutes > 1
         ? loc.how_much_sleep(sleepDurationStr!)
-        : hc.lastSleep?.sleepJustNowTitle ?? '';
+        : widget.hc.lastSleep?.sleepJustNowTitle ?? '';
     return _timerButton(
-      buttonSize: buttonSize,
+      buttonSize: widget.buttonSize,
       trailing: H2(text, maxLines: 2, color: f2Color),
-      onTap: onTap,
+      onTap: widget.onTap,
     );
   }
 }
@@ -84,20 +109,9 @@ class _FeedingTimerButton extends StatefulWidget {
   State<_FeedingTimerButton> createState() => _FeedingTimerButtonState();
 }
 
-class _FeedingTimerButtonState extends State<_FeedingTimerButton> {
-  Timer? _ticker;
-
+class _FeedingTimerButtonState extends State<_FeedingTimerButton> with _PeriodicRefreshMixin<_FeedingTimerButton> {
   @override
-  void initState() {
-    super.initState();
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) => setState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _ticker?.cancel();
-    super.dispose();
-  }
+  Duration get refreshInterval => const Duration(seconds: 1);
 
   @override
   Widget build(BuildContext context) {
