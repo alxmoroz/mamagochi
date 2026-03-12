@@ -33,7 +33,7 @@ class Feed extends AbstractEntry {
   /// Привязка ко сну: created записи сна, во время которого было кормление (кормление «внутри сна»).
   final DateTime? sleepCreated;
 
-  bool get isStillFeeding => type.isBreast && endDate == null;
+  bool get isStillFeeding => type.isBreast && endDate == null && startDate != null;
 
   @override
   Feed copyWith({DateTime? startDate, DateTime? endDate, FeedingType? type, int? count}) => Feed(

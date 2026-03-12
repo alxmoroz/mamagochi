@@ -234,7 +234,7 @@ abstract class _Base with Store {
   /// Текущее грудное кормление: только записи с явным startDate (новый режим). Старые записи без startDate не считаются текущими.
   @computed
   Feed? get lastOngoingBreastFeed =>
-      _feedEntries.where((f) => f.type.isBreast && f.endDate == null && f.startDate != null).sortedBy<DateTime>((e) => e.created).lastOrNull;
+      _feedEntries.where((f) => f.isStillFeeding).sortedBy<DateTime>((e) => e.created).lastOrNull;
 
   @computed
   bool get babyIsEating => lastOngoingBreastFeed != null;
