@@ -1,7 +1,7 @@
 name: mamagochi
 description: Mamagochi
 
-version: 1.4.99+99
+version: 1.5.101+101
 
 environment:
   sdk: ^3.10.0
