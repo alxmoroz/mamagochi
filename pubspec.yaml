@@ -61,8 +61,6 @@ flutter:
 flutter_launcher_icons:
   ios: true
   android: true
-  web:
-    generate: true
   image_path: scripts/ios_icon_raw.png
 
 flutter_intl:
