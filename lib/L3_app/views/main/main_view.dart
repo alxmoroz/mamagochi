@@ -175,13 +175,13 @@ class _MainViewState extends State<_MainView> {
               ),
 
             /// Кнопки сна и кормления
-            Align(
+            const Align(
               alignment: Alignment.bottomCenter,
               child: BottomMenu(),
             ),
 
             /// Подсказка-пузырёк над боттом-баром (Overlay, один раз; позиция по MediaQuery + BOTTOM_BAR_ZONE_HEIGHT)
-            BreastFeedHintLayer(),
+            const BreastFeedHintLayer(),
           ],
         ),
       ),
