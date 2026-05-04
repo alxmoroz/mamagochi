@@ -4,11 +4,29 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'circle.dart';
 import 'colors.dart';
 import 'constants.dart';
 import 'painters.dart';
+
+class MTSvgIcon extends StatelessWidget {
+  const MTSvgIcon(this.name, {this.color, this.size = P5, super.key});
+  final String name;
+  final double size;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      'assets/icons/$name.svg',
+      width: size,
+      height: size,
+      colorFilter: color?.colorFilter(context),
+    );
+  }
+}
 
 class MTIcon extends StatelessWidget {
   const MTIcon(this.iconData, {super.key, this.color = mainColor, this.size = P4, this.solid = false, this.circled = false});

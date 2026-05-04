@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mamagochi/L3_app/presenters/sleep.dart';
+import 'package:mamagochi/L3_app/presenters/feed.dart';
 
 import '../../../L2_data/services/platform.dart';
 import '../../components/adaptive.dart';
@@ -13,19 +13,20 @@ import '../../components/button.dart';
 import '../../components/colors.dart';
 import '../../components/constants.dart';
 import '../../components/datetime_picker.dart';
+import '../../components/icons.dart';
 import '../../components/images.dart';
 import '../../components/page.dart';
-import '../../components/text.dart';
 import '../../navigation/route.dart';
 import '../../navigation/router.dart';
 import '../../presenters/baby.dart';
-import '../../presenters/duration.dart';
 import '../_base/loader_screen.dart';
 import '../app/services.dart';
 import '../history/history_controller.dart';
 import '../history/history_view.dart';
+import 'breast_feed_hint_layer.dart';
 import 'widgets/baby_profile_dialog.dart';
 import 'widgets/bottom_menu.dart';
+import 'widgets/main_header_timers.dart';
 
 class MainRoute extends MTRoute {
   MainRoute()
@@ -95,6 +96,15 @@ class _MainViewState extends State<_MainView> {
         ) ??
         startDate;
     await hc.editLastSleep(startDate: date);
+    if (mounted) WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) setState(() {}); });
+  }
+
+  Future _tapEditStartBreastFeed(HistoryController hc) async {
+    final feed = hc.lastOngoingBreastFeed!;
+    final startDate = feed.startDate ?? feed.created;
+    final date = await MTDateTimePicker.show(feed.editFeedStartDateTitle, initialDate: startDate) ?? startDate;
+    await hc.editFeed(feed.copyWith(startDate: date));
+    if (mounted) WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) setState(() {}); });
   }
 
   Widget get backgroundImage {
@@ -107,15 +117,12 @@ class _MainViewState extends State<_MainView> {
   Widget _page(BuildContext context) {
     final hc = mainController.selectedBabyController?.historyController;
     final baby = mainController.selectedBabyController?.baby;
-    final sleepDuration = hc?.lastSleep?.durationFromStartToNow;
-    final sleepDurationStr = sleepDuration?.strInHoursAndMinutes;
-
     final screen = screenSize(context);
     final buttonSize = min(270.0, min(screen.width, screen.height) - 90 - 3 * P2);
 
     return MTPage(
-      bg1Color: hc!.babyIsSleeping ? b1StartGradientColor : null,
-      bg2Color: hc.babyIsSleeping ? b1EndGradientColor : null,
+      bg1Color: hc!.babyIsSleeping || hc.babyIsEating ? b1StartGradientColor : null,
+      bg2Color: hc.babyIsSleeping || hc.babyIsEating ? b1EndGradientColor : null,
       background: backgroundImage,
       key: widget.key,
       body: SafeArea(
@@ -131,42 +138,50 @@ class _MainViewState extends State<_MainView> {
                 color: b3Color,
                 margin: const EdgeInsets.symmetric(horizontal: P2),
                 type: MTButtonType.main,
-                middle: const MTImage('menu', height: 60),
+                middle: const MTSvgIcon('menu', size: 60),
                 onTap: () => router.goHistory(hc),
               ),
             ),
 
-            /// Кнопка таймера сна в заголовке
-            hc.babyIsSleeping
-                ? Align(
-                    alignment: Alignment.topRight,
-                    child: MTButton(
-                      minSize: Size(buttonSize, 90),
-                      constrained: false,
-                      color: b3Color,
-                      margin: const EdgeInsets.symmetric(horizontal: P2),
-                      type: MTButtonType.main,
-                      leading: const MTImage('time', height: 60),
-                      trailing: H2(
-                        sleepDuration!.inMinutes > 1 ? loc.how_much_sleep(sleepDurationStr!) : hc.lastSleep?.sleepJustNowTitle ?? '',
-                        maxLines: 2,
-                        color: f2Color,
-                      ),
-                      onTap: () => _tapEditStartSleep(hc),
-                    ),
-                  )
-                : const SizedBox(),
+            /// Таймер сна или кормления в заголовке
+            MainHeaderTimer(
+              hc: hc,
+              buttonSize: buttonSize,
+              onEditStartSleep: () => _tapEditStartSleep(hc),
+              onEditStartBreastFeed: () => _tapEditStartBreastFeed(hc),
+            ),
 
             /// Картинка малыша
             Align(
               child: GestureDetector(
                 onTap: () => BabyProfileDialog.show(),
-                child: hc.babyIsSleeping ? baby!.imageSleep(size: 300) : baby!.image(size: 300),
+                child: hc.babyIsSleeping
+                    ? baby!.imageSleep(size: 300)
+                    : hc.babyIsEating
+                    ? baby!.imageBreastFeed(hc.lastOngoingBreastFeed!.type.isLeftBreast, size: 300)
+                    : baby!.image(size: 300),
               ),
             ),
 
+            /// Картинка груди слева или справа при кормлении
+            /// На смартфоне только в портрете, на планшете — в любой ориентации.
+            if (hc.babyIsEating && (isBigScreen(context) || MediaQuery.orientationOf(context) == Orientation.portrait))
+              Positioned(
+                left: hc.lastOngoingBreastFeed!.type.isLeftBreast ? -100 : null,
+                right: hc.lastOngoingBreastFeed!.type.isLeftBreast ? null : -100,
+                top: 0,
+                bottom: 0,
+                child: const Center(child: IgnorePointer(child: MTImage('breast', height: 200))),
+              ),
+
             /// Кнопки сна и кормления
-            const Align(alignment: Alignment.bottomCenter, child: BottomMenu()),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: BottomMenu(),
+            ),
+
+            /// Подсказка-пузырёк над боттом-баром (Overlay, один раз; позиция по MediaQuery + BOTTOM_BAR_ZONE_HEIGHT)
+            BreastFeedHintLayer(),
           ],
         ),
       ),

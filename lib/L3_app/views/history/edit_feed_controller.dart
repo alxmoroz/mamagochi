@@ -18,6 +18,11 @@ class EditFeedController extends _Base with _$EditFeedController {
 
   HistoryController get _hc => mainController.selectedBabyController!.historyController;
 
+  Future setStart(DateTime start) async {
+    await _hc.editFeed(feed.copyWith(startDate: start));
+    _setStart(start);
+  }
+
   Future setEnd(DateTime end) async {
     await _hc.editFeed(feed.copyWith(endDate: end));
     _setEnd(end);
@@ -32,6 +37,9 @@ class EditFeedController extends _Base with _$EditFeedController {
 abstract class _Base extends EditController with Store {
   @observable
   late Feed feed;
+
+  @action
+  void _setStart(DateTime value) => feed = feed.copyWith(startDate: value);
 
   @action
   void _setEnd(DateTime value) => feed = feed.copyWith(endDate: value);

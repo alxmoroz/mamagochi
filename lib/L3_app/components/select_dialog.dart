@@ -82,7 +82,7 @@ class _MTSelectDialog<T extends RPersistable> extends StatelessWidget {
       parentPageTitle: parentPageTitle,
       trailing: onReset != null && selectedId != null
           ? MTButton.icon(
-              const DeleteIcon(),
+              const MTSvgIcon('delete'),
               onTap: () {
                 Navigator.of(context).pop();
                 onReset!();

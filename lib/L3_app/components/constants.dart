@@ -33,6 +33,16 @@ const DEF_BTN_BORDER_RADIUS = MIN_BTN_HEIGHT / 2;
 const DEF_BORDER_WIDTH = P_3;
 const DEF_BAR_HEIGHT = P8;
 const MIN_BTN_HEIGHT = P8;
+
+/// Высота зоны боттом-бара (один источник истины для BottomMenu.preferredSize и позиции подсказки над баром).
+const double BOTTOM_BAR_ZONE_HEIGHT = 200;
+
+/// Сдвиг подсказки кормления вниз (в пикселях) от расчётной позиции; можно подобрать под устройство.
+const double HINT_BUBBLE_SHIFT_DOWN = 24;
+
+/// Приближённая высота пузырька подсказки (для расчёта top в overlay).
+const double HINT_BUBBLE_APPROX_HEIGHT = 160.0;
+
 const DEF_TAPPABLE_ICON_SIZE = kIsWeb ? P5 : P6;
 
 const double SCR_XXS_WIDTH = 290;

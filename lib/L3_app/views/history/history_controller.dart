@@ -4,8 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 
-import '/../L3_app/presenters/duration.dart';
 import '/../L3_app/presenters/feed.dart';
+import '/../L3_app/presenters/sleep.dart';
 import '../../../L1_domain/entities/abstract_entry.dart';
 import '../../../L1_domain/entities/baby.dart';
 import '../../../L1_domain/entities/feed.dart';
@@ -38,7 +38,7 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     await load(() async {
       await _startSleep(startDate);
     });
-    showMTSnackbar(_baby.isBoy ? loc.action_start_sleep_title_boy : loc.action_start_sleep_title_girl);
+    showMTSnackbar(lastSleep!.startSleepActionTitle);
   }
 
   Future stopSleep(DateTime endDate) async {
@@ -46,10 +46,8 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await _editSleep(lastSleep!, endDate: endDate);
     });
 
-    final hc = mainController.selectedBabyController?.historyController;
-    final sleepDuration = hc!.lastSleep!.durationFromStartToEnd.strInHoursAndMinutes;
     showMTSnackbar(
-      _baby.isBoy ? loc.how_much_slept_boy(sleepDuration) : loc.how_much_slept_girl(sleepDuration),
+      lastSleep!.howMuchSleptTitle,
       titleAlign: TextAlign.start,
       trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
       onTap: () => EditSleepDialog.show(lastSleep!),
@@ -69,11 +67,30 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
   /// кормление
   Future addFeed() async {
     final feedType = await FeedTypeDialog.show();
-    if (feedType != null) {
+    if (feedType == null) return;
+
+    final duringSleep = babyIsSleeping;
+    final sleepCreated = duringSleep ? lastSleep!.created : null;
+
+    if (feedType.isBreast) {
+      if (duringSleep) {
+        await load(() async {
+          await _addBreastFeedDuringSleep(feedType, sleepCreated!);
+        });
+        showMTSnackbar(
+          lastFeed!.addFeedTitle,
+          titleAlign: TextAlign.start,
+          trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
+          onTap: () => EditFeedDialog.show(lastFeed!),
+        );
+      } else {
+        await startBreastFeed(feedType);
+      }
+    } else {
       await load(() async {
-        await _addFeed(feedType);
+        await _addFeed(feedType, sleepCreated: sleepCreated);
       });
-      if (feedType.isBottle == true) await EditFeedDialog.show(lastFeed!);
+      await EditFeedDialog.show(lastFeed!);
       showMTSnackbar(
         lastFeed!.addFeedTitle,
         titleAlign: TextAlign.start,
@@ -81,6 +98,41 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
         onTap: () => EditFeedDialog.show(lastFeed!),
       );
     }
+  }
+
+  Future startBreastFeed(FeedingType type) async {
+    await load(() async {
+      await _startBreastFeed(type);
+    });
+  }
+
+  Future stopBreastFeed(DateTime endDate) async {
+    final feed = lastOngoingBreastFeed!;
+    await load(() async {
+      await _editFeed(feed.copyWith(endDate: endDate));
+    });
+    final finishedFeed = lastFeed!;
+    showMTSnackbar(
+      finishedFeed.finishedBreastFeedSnackbarTitle,
+      titleAlign: TextAlign.start,
+      trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
+      onTap: () => EditFeedDialog.show(finishedFeed),
+    );
+  }
+
+  /// Завершить грудное кормление и сразу начать сон (одна кнопка в режиме кормления).
+  Future stopBreastFeedAndStartSleep(DateTime endFeedAndStartSleep) async {
+    final feed = lastOngoingBreastFeed!;
+    await load(() async {
+      await _editFeed(feed.copyWith(endDate: endFeedAndStartSleep));
+      await _startSleep(endFeedAndStartSleep);
+    });
+    showMTSnackbar(
+      lastSleep!.ateAndFellAsleepTitle,
+      titleAlign: TextAlign.start,
+      trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
+      onTap: () => EditFeedDialog.show(lastFeed!),
+    );
   }
 
   Future editFeed(Feed feed) async {
@@ -142,8 +194,23 @@ abstract class _Base with Store {
   Future _fetchFeedEntries() async => _feedEntries = ObservableList.of(await feedUC.entries(_baby));
 
   @action
-  Future _addFeed(FeedingType type) async {
-    final feed = Feed(created: now, babyCreatedTime: _baby.created, type: type);
+  Future _addFeed(FeedingType type, {DateTime? sleepCreated}) async {
+    final feed = Feed(created: now, babyCreatedTime: _baby.created, type: type, sleepCreated: sleepCreated);
+    _feedEntries.add(feed);
+    await feedUC.edit(feed);
+  }
+
+  /// Грудное кормление «внутри сна»: запись сразу с endDate (таймер не запускается), привязка ко сну.
+  @action
+  Future _addBreastFeedDuringSleep(FeedingType type, DateTime sleepCreated) async {
+    final feed = Feed(created: now, startDate: now, endDate: now, babyCreatedTime: _baby.created, type: type, sleepCreated: sleepCreated);
+    _feedEntries.add(feed);
+    await feedUC.edit(feed);
+  }
+
+  @action
+  Future _startBreastFeed(FeedingType type) async {
+    final feed = Feed(created: now, startDate: now, endDate: null, babyCreatedTime: _baby.created, type: type);
     _feedEntries.add(feed);
     await feedUC.edit(feed);
   }
@@ -164,6 +231,14 @@ abstract class _Base with Store {
   @computed
   Iterable<Feed> get _sortedFeedEntries => _feedEntries.sortedBy<DateTime>((e) => e.end);
 
+  /// Текущее грудное кормление: только записи с явным startDate (новый режим). Старые записи без startDate не считаются текущими.
+  @computed
+  Feed? get lastOngoingBreastFeed =>
+      _feedEntries.where((f) => f.isStillFeeding).sortedBy<DateTime>((e) => e.created).lastOrNull;
+
+  @computed
+  bool get babyIsEating => lastOngoingBreastFeed != null;
+
   /// общие
   @computed
   Iterable<AbstractEntry> get _entries => [..._feedEntries, ..._sleepEntries];
@@ -183,6 +258,13 @@ abstract class _Base with Store {
       _feedEntries.remove(entry);
       await feedUC.delete(entry);
     } else if (entry is Sleep) {
+      final sleepCreated = entry.created;
+
+      /// Если есть кормления внутри сна, то удаляем привязку ко сну, записи кормлений остаются
+      final feedsToUnlink = _feedEntries.where((f) => f.sleepCreated == sleepCreated).toList();
+      for (final feed in feedsToUnlink) {
+        await _editFeed(feed.withSleepCreated(null));
+      }
       _sleepEntries.remove(entry);
       await sleepUC.delete(entry);
     }

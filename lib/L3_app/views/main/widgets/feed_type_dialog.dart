@@ -7,6 +7,7 @@ import '../../../../L1_domain/entities/feed.dart';
 import '../../../components/button.dart';
 import '../../../components/colors.dart';
 import '../../../components/dialog.dart';
+import '../../../components/icons.dart';
 import '../../../components/images.dart';
 import '../../../components/text.dart';
 import '../../_base/loader_screen.dart';
@@ -69,7 +70,7 @@ class FeedTypeDialog extends StatelessWidget {
                                         minSize: const Size.square(100),
                                         color: b3Color,
                                         type: MTButtonType.main,
-                                        middle: const MTImage('close', height: 50),
+                                        middle: const MTSvgIcon('close', size: 50),
                                         onTap: Navigator.of(context).pop,
                                       )
                                     : const SizedBox(height: _closeButtonMargin),

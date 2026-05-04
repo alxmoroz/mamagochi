@@ -11,6 +11,9 @@ class MTCloseDialogButton extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) =>
-      MTButton.icon(const CloseIcon(), onTap: onTap ?? () => Navigator.of(context).pop(), padding: const EdgeInsets.all(P2));
+  Widget build(BuildContext context) => MTButton.icon(
+    const MTSvgIcon('close', size: P4),
+    onTap: onTap ?? () => Navigator.of(context).pop(),
+    padding: const EdgeInsets.all(P2),
+  );
 }

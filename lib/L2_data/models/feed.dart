@@ -29,6 +29,9 @@ class FeedHO extends BaseModel<Feed> {
   @HiveField(5)
   int? count;
 
+  @HiveField(6)
+  DateTime? sleepCreated;
+
   @override
   Feed toEntity() => Feed(
     created: created ?? now,
@@ -37,6 +40,7 @@ class FeedHO extends BaseModel<Feed> {
     babyCreatedTime: babyCreatedTime ?? now,
     type: FeedingType.fromString(type),
     count: count,
+    sleepCreated: sleepCreated,
   );
 
   @override
@@ -47,6 +51,7 @@ class FeedHO extends BaseModel<Feed> {
     babyCreatedTime = entity.babyCreatedTime;
     type = entity.type.name;
     count = entity.count;
+    sleepCreated = entity.sleepCreated;
     await save();
     return this;
   }

@@ -26,6 +26,7 @@ extension SleepPresenter on Sleep {
 
   String get startSleepActionTitle => Intl.message('action_start_sleep_title_${_baby.sex}');
   String get stopSleepActionTitle => Intl.message('action_stop_sleep_title_${_baby.sex}');
+  String get ateAndFellAsleepTitle => Intl.message('action_ate_and_fell_asleep_title_${_baby.sex}');
 
   String get sleepJustNowTitle => Intl.message('sleep_just_now_title_${_baby.sex}');
   String get stillSleepTitle => Intl.message('history_sleep_trailing_still_sleep');
