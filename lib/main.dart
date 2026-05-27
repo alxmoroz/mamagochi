@@ -70,6 +70,17 @@ class App extends StatelessWidget {
                 supportedLocales: S.delegate.supportedLocales,
                 routerConfig: router,
                 onGenerateTitle: (_) => loc.app_title,
+                builder: (context, child) {
+                  final minimizeOnBack = Platform.isAndroid && !router.canPop();
+                  return PopScope(
+                    canPop: !minimizeOnBack,
+                    onPopInvokedWithResult: (didPop, _) async {
+                      if (didPop || !minimizeOnBack) return;
+                      await const MethodChannel('team.moroz.mamagochi/navigation').invokeMethod('moveTaskToBack');
+                    },
+                    child: child ?? const SizedBox(),
+                  );
+                },
               ),
             )
           : const MTBackgroundWrapper(Center(child: MTCircularProgress(size: P10))),
