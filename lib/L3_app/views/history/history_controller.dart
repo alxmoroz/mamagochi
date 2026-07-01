@@ -165,16 +165,29 @@ abstract class _Base with Store {
   @computed
   Sleep? get lastSleep => _sortedSleepEntries.lastOrNull;
 
+  /// Загружает записи сна из БД, не затирая актуальные данные в памяти.
+  ///
+  /// Фоновый [reload] (каждые 15 с с главного экрана) может совпасть с сохранением:
+  /// запись уже обновлена в [_sleepEntries], но в БД ещё старая версия (или запись
+  /// ещё не успела туда попасть). Без этой защиты список полностью заменялся данными
+  /// из БД — в истории и на главной снова показывались старые значения.
   @action
   Future _fetchSleepEntries() async {
     final persisted = await sleepUC.entries(_baby);
+
+    // Для каждой записи из БД: если в памяти уже есть запись с тем же created —
+    // берём локальную версию (она новее: правка в диалоге или сон в процессе сохранения).
     final merged = [
       for (final p in persisted)
         _sleepEntries.firstWhereOrNull((s) => s.created.isAtSameMomentAs(p.created)) ?? p,
     ];
+
+    // Текущий сон (endDate == null), которого ещё нет в БД: только что нажали «Сон»,
+    // [_startSleep] добавил запись в память, а await sleepUC.edit ещё не завершился.
     final pendingOngoing = _sleepEntries
         .where((s) => s.isStillSleeping)
         .where((s) => !merged.any((p) => p.created.isAtSameMomentAs(s.created)));
+
     _sleepEntries = ObservableList.of([...merged, ...pendingOngoing]);
   }
 
@@ -206,13 +219,27 @@ abstract class _Base with Store {
   @observable
   ObservableList<Feed> _feedEntries = ObservableList();
 
+  /// Загружает записи кормления из БД, не затирая актуальные данные в памяти.
+  ///
+  /// Та же гонка, что и у сна: [reload] читает БД, пока [_editFeed] / [_startBreastFeed]
+  /// ещё пишут изменения. Без merge локальная правка (время, тип, количество) могла
+  /// исчезнуть из списка до следующего успешного reload.
   @action
   Future _fetchFeedEntries() async {
     final persisted = await feedUC.entries(_baby);
+
+    // Для каждой записи из БД: при совпадении created — приоритет у версии в памяти.
+    final merged = [
+      for (final p in persisted)
+        _feedEntries.firstWhereOrNull((f) => f.created.isAtSameMomentAs(p.created)) ?? p,
+    ];
+
+    // Грудное кормление с таймером (endDate == null), ещё не попавшее в БД.
     final pendingOngoing = _feedEntries
         .where((f) => f.isStillFeeding)
-        .where((f) => !persisted.any((p) => p.created.isAtSameMomentAs(f.created)));
-    _feedEntries = ObservableList.of([...persisted, ...pendingOngoing]);
+        .where((f) => !merged.any((p) => p.created.isAtSameMomentAs(f.created)));
+
+    _feedEntries = ObservableList.of([...merged, ...pendingOngoing]);
   }
 
   @action
