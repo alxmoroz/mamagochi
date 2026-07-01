@@ -77,6 +77,10 @@ abstract class _LocalSettingsControllerBase with Store {
   Future markBreastFeedHintShown() async =>
       settings = await localSettingsUC.setString(ALSStringCode.BREAST_FEED_HINT_DISMISSED, 'true');
 
+  @action
+  Future markSleepHintShown() async =>
+      settings = await localSettingsUC.setString(ALSStringCode.SLEEP_HINT_DISMISSED, 'true');
+
   /// Токен регистрации
   // @computed
   // String? get registrationToken => settings.getString(ALSStringCode.REGISTRATION_TOKEN);

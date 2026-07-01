@@ -7,6 +7,7 @@ import 'package:mobx/mobx.dart';
 import '/../L3_app/presenters/feed.dart';
 import '/../L3_app/presenters/sleep.dart';
 import '../../../L1_domain/entities/abstract_entry.dart';
+import '../../../L1_domain/entities/app_local_settings.dart';
 import '../../../L1_domain/entities/baby.dart';
 import '../../../L1_domain/entities/feed.dart';
 import '../../../L1_domain/entities/sleep.dart';
@@ -30,6 +31,7 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     await load(() async {
       await _fetchSleepEntries();
       await _fetchFeedEntries();
+      await _migrateSleepHintIfNeeded();
     });
   }
 
@@ -153,6 +155,13 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await _deleteEntry(entry);
     });
   }
+
+  /// Старым пользователям с завершёнными снами в истории подсказку не показываем.
+  Future _migrateSleepHintIfNeeded() async {
+    if (localSettingsController.settings.getString(ALSStringCode.SLEEP_HINT_DISMISSED) == 'true') return;
+    if (!hasCompletedSleepEntries) return;
+    await localSettingsController.markSleepHintShown();
+  }
 }
 
 abstract class _Base with Store {
@@ -208,6 +217,10 @@ abstract class _Base with Store {
 
   @computed
   bool get babyIsSleeping => lastSleep != null && lastSleep!.isStillSleeping;
+
+  /// Есть хотя бы один завершённый сон (endDate != null).
+  @computed
+  bool get hasCompletedSleepEntries => _sleepEntries.any((s) => !s.isStillSleeping);
 
   @computed
   bool get hasSleepEntriesFor24Hours => lastSleep != null && now.difference(lastSleep!.end).inHours < 24;

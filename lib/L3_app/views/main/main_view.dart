@@ -23,7 +23,7 @@ import '../_base/loader_screen.dart';
 import '../app/services.dart';
 import '../history/history_controller.dart';
 import '../history/history_view.dart';
-import 'breast_feed_hint_layer.dart';
+import 'widgets/bottom_bar_hint_layer.dart';
 import 'widgets/baby_profile_dialog.dart';
 import 'widgets/bottom_menu.dart';
 import 'widgets/main_header_timers.dart';
@@ -186,8 +186,8 @@ class _MainViewState extends State<_MainView> {
                   child: BottomMenu(),
                 ),
 
-                /// Подсказка-пузырёк над боттом-баром (Overlay, один раз; позиция по MediaQuery + BOTTOM_BAR_ZONE_HEIGHT)
-                const BreastFeedHintLayer(),
+                /// Подсказки-пузырьки над боттом-баром (сон — слева, кормление — справа)
+                const MainBottomBarHintLayers(),
               ],
             ),
           ),

@@ -9,6 +9,7 @@ class ALSDateCode {
 class ALSStringCode {
   static const UTM_QUERY = 'UTM_QUERY';
   static const BREAST_FEED_HINT_DISMISSED = 'BREAST_FEED_HINT_DISMISSED';
+  static const SLEEP_HINT_DISMISSED = 'SLEEP_HINT_DISMISSED';
 }
 
 class AppLocalSettings extends LocalPersistable {
