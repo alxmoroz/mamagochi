@@ -26,6 +26,7 @@ part 'history_controller.g.dart';
 class HistoryController extends _Base with Loadable, _$HistoryController {
   HistoryController(Baby baby) {
     _baby = baby;
+    stopLoading();
   }
   Future reload() async {
     await load(() async {

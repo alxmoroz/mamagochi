@@ -56,7 +56,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
     required Size buttonSize,
     required Widget image,
     Widget? subtitle,
-    VoidCallback? onTap,
+    required VoidCallback onTap,
   }) =>
       MTButton(
         minSize: buttonSize,
@@ -95,6 +95,6 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
         buttonSize: buttonSize,
         image: MTImage(hc.hasFeedEntriesFor24Hours ? hc.lastFeed!.feedImageName : 'bottle_baby_formula', height: 90),
         subtitle: hc.hasFeedEntriesFor24Hours ? SmallText(hc.lastFeed!.end.strTimeAgo) : null,
-        onTap: hc.loading ? null : () => hc.addFeed(),
+        onTap: () => hc.addFeed(),
       );
 }

@@ -33,8 +33,9 @@ class MainController extends _Base with _$MainController {
     if (babiesControllers.isEmpty) {
       _addBaby();
       await router.pushOnboarding(selectedBabyController!);
+      await selectedBabyController!.historyController.reload();
     } else {
-      selectBaby(babiesControllers.first);
+      await selectBaby(babiesControllers.first);
     }
 
     // обновляем историю записей по выбранному сейчас ребенку
