@@ -66,6 +66,8 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
 
   /// кормление
   Future addFeed() async {
+    if (loading) return;
+
     final feedType = await FeedTypeDialog.show();
     if (feedType == null) return;
 
@@ -73,6 +75,8 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     final sleepCreated = duringSleep ? lastSleep!.created : null;
 
     if (feedType.isBreast) {
+      if (!duringSleep && babyIsEating) return;
+
       if (duringSleep) {
         await load(() async {
           await _addBreastFeedDuringSleep(feedType, sleepCreated!);
@@ -101,6 +105,8 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
   }
 
   Future startBreastFeed(FeedingType type) async {
+    if (babyIsEating) return;
+
     await load(() async {
       await _startBreastFeed(type);
     });
@@ -160,7 +166,17 @@ abstract class _Base with Store {
   Sleep? get lastSleep => _sortedSleepEntries.lastOrNull;
 
   @action
-  Future _fetchSleepEntries() async => _sleepEntries = ObservableList.of(await sleepUC.entries(_baby));
+  Future _fetchSleepEntries() async {
+    final persisted = await sleepUC.entries(_baby);
+    final merged = [
+      for (final p in persisted)
+        _sleepEntries.firstWhereOrNull((s) => s.created.isAtSameMomentAs(p.created)) ?? p,
+    ];
+    final pendingOngoing = _sleepEntries
+        .where((s) => s.isStillSleeping)
+        .where((s) => !merged.any((p) => p.created.isAtSameMomentAs(s.created)));
+    _sleepEntries = ObservableList.of([...merged, ...pendingOngoing]);
+  }
 
   @action
   Future _startSleep(DateTime startDate) async {
@@ -191,7 +207,13 @@ abstract class _Base with Store {
   ObservableList<Feed> _feedEntries = ObservableList();
 
   @action
-  Future _fetchFeedEntries() async => _feedEntries = ObservableList.of(await feedUC.entries(_baby));
+  Future _fetchFeedEntries() async {
+    final persisted = await feedUC.entries(_baby);
+    final pendingOngoing = _feedEntries
+        .where((f) => f.isStillFeeding)
+        .where((f) => !persisted.any((p) => p.created.isAtSameMomentAs(f.created)));
+    _feedEntries = ObservableList.of([...persisted, ...pendingOngoing]);
+  }
 
   @action
   Future _addFeed(FeedingType type, {DateTime? sleepCreated}) async {
@@ -210,6 +232,8 @@ abstract class _Base with Store {
 
   @action
   Future _startBreastFeed(FeedingType type) async {
+    if (lastOngoingBreastFeed != null) return;
+
     final feed = Feed(created: now, startDate: now, endDate: null, babyCreatedTime: _baby.created, type: type);
     _feedEntries.add(feed);
     await feedUC.edit(feed);

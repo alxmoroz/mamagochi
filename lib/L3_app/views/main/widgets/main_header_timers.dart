@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../../components/button.dart';
 import '../../../components/colors.dart';
@@ -28,13 +29,17 @@ class MainHeaderTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final child = hc.babyIsSleeping
-        ? _SleepTimerButton(hc: hc, buttonSize: buttonSize, onTap: onEditStartSleep)
-        : hc.babyIsEating
-        ? _FeedingTimerButton(hc: hc, buttonSize: buttonSize, onTap: onEditStartBreastFeed)
-        : null;
-    if (child == null) return const SizedBox();
-    return Align(alignment: Alignment.topRight, child: child);
+    return Observer(
+      builder: (_) {
+        final child = hc.babyIsSleeping
+            ? _SleepTimerButton(hc: hc, buttonSize: buttonSize, onTap: onEditStartSleep)
+            : hc.babyIsEating
+            ? _FeedingTimerButton(hc: hc, buttonSize: buttonSize, onTap: onEditStartBreastFeed)
+            : null;
+        if (child == null) return const SizedBox();
+        return Align(alignment: Alignment.topRight, child: child);
+      },
+    );
   }
 }
 

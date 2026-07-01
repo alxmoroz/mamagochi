@@ -120,71 +120,79 @@ class _MainViewState extends State<_MainView> {
     final screen = screenSize(context);
     final buttonSize = min(270.0, min(screen.width, screen.height) - 90 - 3 * P2);
 
-    return MTPage(
-      bg1Color: hc!.babyIsSleeping || hc.babyIsEating ? b1StartGradientColor : null,
-      bg2Color: hc.babyIsSleeping || hc.babyIsEating ? b1EndGradientColor : null,
-      background: backgroundImage,
-      key: widget.key,
-      body: SafeArea(
-        minimum: const EdgeInsets.symmetric(vertical: P5),
-        child: Stack(
-          children: [
-            /// Кнопка меню
-            Align(
-              alignment: Alignment.topLeft,
-              child: MTButton(
-                minSize: const Size(90, 90),
-                constrained: false,
-                color: b3Color,
-                margin: const EdgeInsets.symmetric(horizontal: P2),
-                type: MTButtonType.main,
-                middle: const MTSvgIcon('menu', size: 60),
-                onTap: () => router.goHistory(hc),
-              ),
+    return Observer(
+      builder: (_) {
+        final isSleeping = hc!.babyIsSleeping;
+        final isEating = hc.babyIsEating;
+        final ongoingFeed = hc.lastOngoingBreastFeed;
+
+        return MTPage(
+          bg1Color: isSleeping || isEating ? b1StartGradientColor : null,
+          bg2Color: isSleeping || isEating ? b1EndGradientColor : null,
+          background: backgroundImage,
+          key: widget.key,
+          body: SafeArea(
+            minimum: const EdgeInsets.symmetric(vertical: P5),
+            child: Stack(
+              children: [
+                /// Кнопка меню
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: MTButton(
+                    minSize: const Size(90, 90),
+                    constrained: false,
+                    color: b3Color,
+                    margin: const EdgeInsets.symmetric(horizontal: P2),
+                    type: MTButtonType.main,
+                    middle: const MTSvgIcon('menu', size: 60),
+                    onTap: () => router.goHistory(hc),
+                  ),
+                ),
+
+                /// Таймер сна или кормления в заголовке
+                MainHeaderTimer(
+                  hc: hc,
+                  buttonSize: buttonSize,
+                  onEditStartSleep: () => _tapEditStartSleep(hc),
+                  onEditStartBreastFeed: () => _tapEditStartBreastFeed(hc),
+                ),
+
+                /// Картинка малыша
+                Align(
+                  child: GestureDetector(
+                    onTap: () => BabyProfileDialog.show(),
+                    child: isSleeping
+                        ? baby!.imageSleep(size: 300)
+                        : isEating
+                        ? baby!.imageBreastFeed(ongoingFeed!.type.isLeftBreast, size: 300)
+                        : baby!.image(size: 300),
+                  ),
+                ),
+
+                /// Картинка груди слева или справа при кормлении
+                /// На смартфоне только в портрете, на планшете — в любой ориентации.
+                if (isEating && (isBigScreen(context) || MediaQuery.orientationOf(context) == Orientation.portrait))
+                  Positioned(
+                    left: ongoingFeed!.type.isLeftBreast ? -100 : null,
+                    right: ongoingFeed.type.isLeftBreast ? null : -100,
+                    top: 0,
+                    bottom: 0,
+                    child: const Center(child: IgnorePointer(child: MTImage('breast', height: 200))),
+                  ),
+
+                /// Кнопки сна и кормления
+                const Align(
+                  alignment: Alignment.bottomCenter,
+                  child: BottomMenu(),
+                ),
+
+                /// Подсказка-пузырёк над боттом-баром (Overlay, один раз; позиция по MediaQuery + BOTTOM_BAR_ZONE_HEIGHT)
+                const BreastFeedHintLayer(),
+              ],
             ),
-
-            /// Таймер сна или кормления в заголовке
-            MainHeaderTimer(
-              hc: hc,
-              buttonSize: buttonSize,
-              onEditStartSleep: () => _tapEditStartSleep(hc),
-              onEditStartBreastFeed: () => _tapEditStartBreastFeed(hc),
-            ),
-
-            /// Картинка малыша
-            Align(
-              child: GestureDetector(
-                onTap: () => BabyProfileDialog.show(),
-                child: hc.babyIsSleeping
-                    ? baby!.imageSleep(size: 300)
-                    : hc.babyIsEating
-                    ? baby!.imageBreastFeed(hc.lastOngoingBreastFeed!.type.isLeftBreast, size: 300)
-                    : baby!.image(size: 300),
-              ),
-            ),
-
-            /// Картинка груди слева или справа при кормлении
-            /// На смартфоне только в портрете, на планшете — в любой ориентации.
-            if (hc.babyIsEating && (isBigScreen(context) || MediaQuery.orientationOf(context) == Orientation.portrait))
-              Positioned(
-                left: hc.lastOngoingBreastFeed!.type.isLeftBreast ? -100 : null,
-                right: hc.lastOngoingBreastFeed!.type.isLeftBreast ? null : -100,
-                top: 0,
-                bottom: 0,
-                child: const Center(child: IgnorePointer(child: MTImage('breast', height: 200))),
-              ),
-
-            /// Кнопки сна и кормления
-            const Align(
-              alignment: Alignment.bottomCenter,
-              child: BottomMenu(),
-            ),
-
-            /// Подсказка-пузырёк над боттом-баром (Overlay, один раз; позиция по MediaQuery + BOTTOM_BAR_ZONE_HEIGHT)
-            const BreastFeedHintLayer(),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
