@@ -23,6 +23,7 @@ import '../../presenters/sleep.dart';
 import '../app/services.dart';
 import 'edit_feed_dialog.dart';
 import 'edit_sleep_dialog.dart';
+import 'day_summary.dart';
 import 'history_controller.dart';
 
 class HistoryRoute extends MTRoute {
@@ -70,33 +71,31 @@ class _HistoryView extends StatelessWidget {
     );
   }
 
-  Widget _sleepSummaryCard(DateTime date) {
+  Widget _sleepSummaryCard(DaySummary summary) {
     return _summaryCard(
       title: loc.history_sleep_title,
       rows: [
-        _summaryRow('eye_closed', _hc.sleepDurationForDay(date).strInHoursAndMinutes),
-        _summaryRow('eye_open', _hc.awakeDurationForDay(date).strInHoursAndMinutes),
+        _summaryRow('eye_closed', summary.sleepDuration.strInHoursAndMinutes),
+        _summaryRow('eye_open', summary.awakeDuration.strInHoursAndMinutes),
       ],
     );
   }
 
-  Widget _feedSummaryCard(DateTime date) {
+  Widget _feedSummaryCard(DaySummary summary) {
     final rows = <Widget>[];
-    if (_hc.hasBreastFeedEntriesForDay(date)) {
-      rows.add(_summaryRow('breast', _hc.breastFeedDurationForDay(date).strInHoursAndMinutes));
+    if (summary.showBreastRow) {
+      rows.add(_summaryRow('breast', summary.breastDuration.strInHoursAndMinutes));
     }
-    if (_hc.hasBottleFeedEntriesForDay(date)) {
-      final count = _hc.bottleCountForDay(date);
-      rows.add(_summaryRow('bottle_empty', '$count\u00A0${loc.milliliters}'));
+    if (summary.showBottleRow) {
+      rows.add(_summaryRow('bottle_empty', '${summary.bottleCountMl}\u00A0${loc.milliliters}'));
     }
 
     return _summaryCard(title: loc.history_feeds_title, rows: rows);
   }
 
   Widget _daySummaryCards(DateTime date) {
-    final showSleep = _hc.hasSleepEntriesForDay(date);
-    final showFeed = _hc.hasFeedEntriesForDay(date);
-    if (!showSleep && !showFeed) return const SizedBox.shrink();
+    final summary = _hc.daySummaryFor(date);
+    if (!summary.showSleepCard && !summary.showFeedCard) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(P3, P2, P3, P2),
@@ -108,9 +107,9 @@ class _HistoryView extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (showSleep) SizedBox(width: cardWidth, child: _sleepSummaryCard(date)),
-                if (showSleep && showFeed) const SizedBox(width: P2),
-                if (showFeed) SizedBox(width: cardWidth, child: _feedSummaryCard(date)),
+                if (summary.showSleepCard) SizedBox(width: cardWidth, child: _sleepSummaryCard(summary)),
+                if (summary.showSleepCard && summary.showFeedCard) const SizedBox(width: P2),
+                if (summary.showFeedCard) SizedBox(width: cardWidth, child: _feedSummaryCard(summary)),
               ],
             ),
           );
