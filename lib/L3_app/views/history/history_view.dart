@@ -128,14 +128,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
   bool _showsEntry(DateTime date, AbstractEntry entry) =>
       _showsFilterEntries(date, _filterForEntry(entry));
 
-  bool _hasVisibleSuccessor(DateTime date, List<AbstractEntry> entries, int index) {
-    for (var i = index + 1; i < entries.length; i++) {
-      if (_showsEntry(date, entries[i])) return true;
-    }
-    return false;
-  }
-
-  Widget _animatedEntryTile(DateTime date, AbstractEntry entry, bool showBottomDivider, BuildContext context) {
+  Widget _animatedEntryTile(DateTime date, AbstractEntry entry, BuildContext context) {
     final animation = _revealAnimation(date, _filterForEntry(entry));
 
     return ClipRect(
@@ -146,14 +139,13 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
           heightFactor: animation.value.clamp(0.0, 1.0),
           child: child,
         ),
-        child: _entryTile(entry, showBottomDivider, context),
+        child: _entryTile(entry, context),
       ),
     );
   }
 
   Widget _summaryCard({
     required BuildContext context,
-    required String title,
     required List<Widget> rows,
     required bool selected,
     required VoidCallback onTap,
@@ -163,14 +155,21 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
       child: MTCard(
         radius: P3,
         elevation: buttonElevation,
-        padding: const EdgeInsets.symmetric(horizontal: P3, vertical: P2),
-        borderSide: selected ? BorderSide(color: mainColor.resolve(context), width: 2) : null,
+        padding: const EdgeInsets.all(P2),
+        borderSide: selected ? BorderSide(color: mainColor.resolve(context), width: 3) : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            BaseText.medium(title, color: selected ? mainColor : f3Color, maxLines: 1, align: TextAlign.center),
-            ...rows,
-            const Spacer(),
+            Expanded(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: rows,
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(top: P),
               child: Center(
@@ -188,9 +187,9 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
     );
   }
 
-  Widget _summaryRow(String iconName, String text) {
+  Widget _summaryRow(String iconName, String text, {bool isFirst = false}) {
     return Padding(
-      padding: const EdgeInsets.only(top: P),
+      padding: EdgeInsets.only(top: isFirst ? 0 : P),
       child: Row(
         children: [
           MTSvgIcon(iconName, size: P5),
@@ -204,11 +203,10 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
   Widget _sleepSummaryCard(BuildContext context, DateTime date, DaySummary summary) {
     return _summaryCard(
       context: context,
-      title: loc.history_sleep_title,
       selected: _isSelected(date, _HistoryDayFilter.sleep),
       onTap: () => _toggleDayFilter(date, _HistoryDayFilter.sleep),
       rows: [
-        _summaryRow('eye_closed', summary.sleepDuration.strInHoursAndMinutes),
+        _summaryRow('eye_closed', summary.sleepDuration.strInHoursAndMinutes, isFirst: true),
         _summaryRow('eye_open', summary.awakeDuration.strInHoursAndMinutes),
       ],
     );
@@ -217,15 +215,14 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
   Widget _feedSummaryCard(BuildContext context, DateTime date, DaySummary summary) {
     final rows = <Widget>[];
     if (summary.showBreastRow) {
-      rows.add(_summaryRow('breast', summary.breastDuration.strInHoursAndMinutes));
+      rows.add(_summaryRow('breast', summary.breastDuration.strInHoursAndMinutes, isFirst: rows.isEmpty));
     }
     if (summary.showBottleRow) {
-      rows.add(_summaryRow('bottle_empty', '${summary.bottleCountMl}\u00A0${loc.milliliters}'));
+      rows.add(_summaryRow('bottle_empty', '${summary.bottleCountMl}\u00A0${loc.milliliters}', isFirst: rows.isEmpty));
     }
 
     return _summaryCard(
       context: context,
-      title: loc.history_feeds_title,
       selected: _isSelected(date, _HistoryDayFilter.feed),
       onTap: () => _toggleDayFilter(date, _HistoryDayFilter.feed),
       rows: rows,
@@ -237,7 +234,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
     if (!summary.showSleepCard && !summary.showFeedCard) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(P3, P2, P3, P2),
+      padding: const EdgeInsets.fromLTRB(P3, 0, P3, P2),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final cardWidth = (constraints.maxWidth - P2) / 2;
@@ -257,66 +254,95 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
     );
   }
 
-  Widget _entryTile(AbstractEntry entry, bool showBottomDivider, BuildContext context) {
-    final isStillSleep = entry is Sleep && entry.isStillSleeping;
+  Widget _entryTimeTrailing(String text) {
+    final newlineIndex = text.indexOf('\n');
+    if (newlineIndex < 0) return SmallText(text, align: TextAlign.right);
 
-    return Slidable(
-      key: ObjectKey(entry),
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        dismissible: DismissiblePane(onDismissed: () {}, confirmDismiss: () async => await _delete(entry)),
-        children: [
-          CustomSlidableAction(
-            onPressed: (_) async => await _delete(entry),
-            backgroundColor: dangerColor.resolve(context),
-            child: const DeleteIcon(color: whiteColor, size: P6),
-          ),
-        ],
-      ),
-      child: entry is Feed
-          ? MTListTile(
-              leading: entry.feedImage(size: P10),
-              titleText: entry.feedTypeName,
-              subtitle: entry.type.isBreast
-                  ? (entry.isMoreMinute ? SmallText(entry.historyBreastFeedDuration) : null)
-                  : entry.shouldShowCount
-                  ? SmallText(entry.feedCount)
-                  : null,
-              trailing: SmallText(
-                entry.type.isBreast && entry.isStillFeeding ? entry.historyStillFeedingTimeTitle : entry.historyStartEndTimeTitle,
-                align: TextAlign.right,
-              ),
-              bottomDivider: showBottomDivider,
-              onTap: () => EditFeedDialog.show(entry),
-            )
-          : entry is Sleep
-          ? MTListTile(
-              leading: entry.sleepImage(size: P10),
-              titleText: entry.isMoreMinute ? loc.history_sleep_title : '',
-              subtitle: SmallText(entry.isMoreMinute ? entry.sleepDuration : ''),
-              trailing: SmallText(isStillSleep ? entry.historyStillSleepTimeTitle : entry.historyStartEndTimeTitle, align: TextAlign.right),
-              bottomDivider: showBottomDivider,
-              onTap: () => EditSleepDialog.show(entry),
-            )
-          : const SizedBox(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SmallText(text.substring(0, newlineIndex), color: f3Color, align: TextAlign.right),
+        SmallText(text.substring(newlineIndex + 1), align: TextAlign.right),
+      ],
     );
   }
 
-  Widget _dayEntries(DateTime date, Iterable<AbstractEntry> group, BuildContext context) {
+  Widget _entryTile(AbstractEntry entry, BuildContext context) {
+    final isStillSleep = entry is Sleep && entry.isStillSleeping;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(P3, 0, P3, P2),
+      child: Slidable(
+        key: ObjectKey(entry),
+        endActionPane: ActionPane(
+          motion: const ScrollMotion(),
+          dismissible: DismissiblePane(onDismissed: () {}, confirmDismiss: () async => await _delete(entry)),
+          children: [
+            CustomSlidableAction(
+              onPressed: (_) async => await _delete(entry),
+              backgroundColor: dangerColor.resolve(context),
+              child: const DeleteIcon(color: whiteColor, size: P6),
+            ),
+          ],
+        ),
+        child: MTCard(
+          radius: P3,
+          elevation: buttonElevation,
+          child: entry is Feed
+              ? MTListTile(
+                  padding: const EdgeInsets.symmetric(horizontal: P3, vertical: P2),
+                  leading: entry.feedImage(size: P10),
+                  titleText: entry.feedTypeName,
+                  subtitle: entry.type.isBreast
+                      ? (entry.isMoreMinute ? SmallText(entry.historyBreastFeedDuration) : null)
+                      : entry.shouldShowCount
+                      ? SmallText(entry.feedCount)
+                      : null,
+                  trailing: _entryTimeTrailing(
+                    entry.type.isBreast && entry.isStillFeeding ? entry.historyStillFeedingTimeTitle : entry.historyStartEndTimeTitle,
+                  ),
+                  bottomDivider: false,
+                  onTap: () => EditFeedDialog.show(entry),
+                )
+              : entry is Sleep
+              ? MTListTile(
+                  padding: const EdgeInsets.symmetric(horizontal: P3, vertical: P2),
+                  leading: entry.sleepImage(size: P10),
+                  titleText: entry.isMoreMinute ? loc.history_sleep_title : '',
+                  subtitle: SmallText(entry.isMoreMinute ? entry.sleepDuration : ''),
+                  trailing: _entryTimeTrailing(isStillSleep ? entry.historyStillSleepTimeTitle : entry.historyStartEndTimeTitle),
+                  bottomDivider: false,
+                  onTap: () => EditSleepDialog.show(entry),
+                )
+              : const SizedBox(),
+        ),
+      ),
+    );
+  }
+
+  Widget _dayDateTitle(DateTime date, {required bool isFirst}) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(P3, isFirst ? P2 : P, P3, P2),
+      child: SmallText.medium(date.strMedium, color: f1Color),
+    );
+  }
+
+  Widget _dayEntries(DateTime date, Iterable<AbstractEntry> group, BuildContext context, {required bool isFirst}) {
     final entries = group.toList();
     final entryTiles = <Widget>[];
 
     for (var i = 0; i < entries.length; i++) {
       final entry = entries[i];
       if (!_showsEntry(date, entry)) continue;
-      entryTiles.add(_animatedEntryTile(date, entry, _hasVisibleSuccessor(date, entries, i), context));
+      entryTiles.add(_animatedEntryTile(date, entry, context));
     }
 
     return ListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: [
-        MTListGroupTitle(titleText: date.strMedium),
+        _dayDateTitle(date, isFirst: isFirst),
         _daySummaryCards(context, date),
         ...entryTiles,
       ],
@@ -334,7 +360,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
                 itemBuilder: (_, index) {
                   final date = _hc.groupedEntries.keys.elementAt(index);
                   final group = _hc.groupedEntries[date];
-                  return group != null ? _dayEntries(date, group, context) : const SizedBox();
+                  return group != null ? _dayEntries(date, group, context, isFirst: index == 0) : const SizedBox();
                 },
               )
             : Center(
