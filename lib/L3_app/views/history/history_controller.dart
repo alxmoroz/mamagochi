@@ -317,6 +317,110 @@ abstract class _Base with Store {
   @computed
   bool get hasEntries => _entries.isNotEmpty;
 
+  /// Суммарное время сна внутри календарного дня [date] (от 00:00:00 до полуночи следующего дня).
+  Duration sleepDurationForDay(DateTime date) {
+    final (dayStart, dayEndExclusive) = _dayBounds(date);
+
+    return _sleepEntries.fold(Duration.zero, (total, sleep) {
+      final overlap = _sleepOverlapWithDay(sleep, dayStart, dayEndExclusive);
+      return overlap == null ? total : total + overlap;
+    });
+  }
+
+  /// Есть хотя бы одна запись сна, пересекающаяся с календарным днём [date].
+  bool hasSleepEntriesForDay(DateTime date) {
+    final (dayStart, dayEndExclusive) = _dayBounds(date);
+    return _sleepEntries.any((sleep) => _sleepIntersectsDay(sleep, dayStart, dayEndExclusive));
+  }
+
+  /// Время бодрствования: для прошлых дней — 24 ч минус сон; для сегодня — текущее время минус сон.
+  Duration awakeDurationForDay(DateTime date) {
+    final sleep = sleepDurationForDay(date);
+    final dayElapsed = date.isToday ? now.difference(date.date) : const Duration(hours: 24);
+    final awake = dayElapsed - sleep;
+    return awake.isNegative ? Duration.zero : awake;
+  }
+
+  (DateTime dayStart, DateTime dayEndExclusive) _dayBounds(DateTime date) {
+    final dayStart = date.date;
+    return (dayStart, dayStart.add(const Duration(days: 1)));
+  }
+
+  bool _sleepIntersectsDay(Sleep sleep, DateTime dayStart, DateTime dayEndExclusive) {
+    final sleepStart = sleep.start;
+    final sleepEnd = sleep.isStillSleeping ? now : sleep.end;
+    return !sleepEnd.isBefore(dayStart) && sleepStart.isBefore(dayEndExclusive);
+  }
+
+  Duration? _sleepOverlapWithDay(Sleep sleep, DateTime dayStart, DateTime dayEndExclusive) {
+    if (!_sleepIntersectsDay(sleep, dayStart, dayEndExclusive)) return null;
+
+    final sleepStart = sleep.start;
+    final sleepEnd = sleep.isStillSleeping ? now : sleep.end;
+
+    final overlapStart = sleepStart.isAfter(dayStart) ? sleepStart : dayStart;
+    final overlapEnd = sleepEnd.isBefore(dayEndExclusive) ? sleepEnd : dayEndExclusive;
+
+    if (!overlapStart.isBefore(overlapEnd)) return Duration.zero;
+    return overlapEnd.difference(overlapStart);
+  }
+
+  /// Есть хотя бы одна запись кормления внутри календарного дня [date].
+  bool hasFeedEntriesForDay(DateTime date) {
+    final (dayStart, dayEndExclusive) = _dayBounds(date);
+    return _feedEntries.any(
+      (feed) => _bottleFeedBelongsToDay(feed, date) || _breastFeedIntersectsDay(feed, dayStart, dayEndExclusive),
+    );
+  }
+
+  bool hasBreastFeedEntriesForDay(DateTime date) {
+    final (dayStart, dayEndExclusive) = _dayBounds(date);
+    return _feedEntries.any((feed) => _breastFeedIntersectsDay(feed, dayStart, dayEndExclusive));
+  }
+
+  bool hasBottleFeedEntriesForDay(DateTime date) {
+    return _feedEntries.any((feed) => _bottleFeedBelongsToDay(feed, date));
+  }
+
+  /// Суммарное время грудного кормления внутри календарного дня [date].
+  Duration breastFeedDurationForDay(DateTime date) {
+    final (dayStart, dayEndExclusive) = _dayBounds(date);
+
+    return _feedEntries.where((f) => f.type.isBreast).fold(Duration.zero, (total, feed) {
+      final overlap = _breastFeedOverlapWithDay(feed, dayStart, dayEndExclusive);
+      return overlap == null ? total : total + overlap;
+    });
+  }
+
+  /// Суммарный объём кормлений из бутылочки за календарный день [date] (мл).
+  int bottleCountForDay(DateTime date) {
+    return _feedEntries.where((f) => _bottleFeedBelongsToDay(f, date)).fold(0, (sum, f) => sum + (f.count ?? 0));
+  }
+
+  /// Бутылочка — точечная запись, день определяется по [Feed.end], как в [groupedEntries].
+  bool _bottleFeedBelongsToDay(Feed feed, DateTime date) => feed.type.isBottle && feed.end.date == date.date;
+
+  bool _breastFeedIntersectsDay(Feed feed, DateTime dayStart, DateTime dayEndExclusive) {
+    if (!feed.type.isBreast) return false;
+
+    final feedStart = feed.start;
+    final feedEnd = feed.isStillFeeding ? now : feed.end;
+    return !feedEnd.isBefore(dayStart) && feedStart.isBefore(dayEndExclusive);
+  }
+
+  Duration? _breastFeedOverlapWithDay(Feed feed, DateTime dayStart, DateTime dayEndExclusive) {
+    if (!_breastFeedIntersectsDay(feed, dayStart, dayEndExclusive)) return null;
+
+    final feedStart = feed.start;
+    final feedEnd = feed.isStillFeeding ? now : feed.end;
+
+    final overlapStart = feedStart.isAfter(dayStart) ? feedStart : dayStart;
+    final overlapEnd = feedEnd.isBefore(dayEndExclusive) ? feedEnd : dayEndExclusive;
+
+    if (!overlapStart.isBefore(overlapEnd)) return Duration.zero;
+    return overlapEnd.difference(overlapStart);
+  }
+
   @action
   Future _deleteEntry(AbstractEntry entry) async {
     if (entry is Feed) {

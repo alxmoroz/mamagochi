@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../L1_domain/entities/abstract_entry.dart';
 import '../../../L1_domain/entities/feed.dart';
 import '../../../L1_domain/entities/sleep.dart';
+import '../../components/card.dart';
 import '../../components/colors.dart';
 import '../../components/constants.dart';
 import '../../components/icons.dart';
@@ -15,6 +16,7 @@ import '../../components/text.dart';
 import '../../components/toolbar.dart';
 import '../../navigation/route.dart';
 import '../../presenters/date.dart';
+import '../../presenters/duration.dart';
 import '../../presenters/entry.dart';
 import '../../presenters/feed.dart';
 import '../../presenters/sleep.dart';
@@ -39,12 +41,91 @@ class _HistoryView extends StatelessWidget {
     return false;
   }
 
+  Widget _summaryCard({required String title, required List<Widget> rows}) {
+    return MTCard(
+      radius: P3,
+      elevation: buttonElevation,
+      padding: const EdgeInsets.symmetric(horizontal: P3, vertical: P2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          BaseText.medium(title, color: f3Color, maxLines: 1, align: TextAlign.center),
+          ...rows,
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _summaryRow(String iconName, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(top: P),
+      child: Row(
+        children: [
+          MTSvgIcon(iconName, size: P5),
+          const SizedBox(width: P),
+          Flexible(child: SmallText.medium(text)),
+        ],
+      ),
+    );
+  }
+
+  Widget _sleepSummaryCard(DateTime date) {
+    return _summaryCard(
+      title: loc.history_sleep_title,
+      rows: [
+        _summaryRow('eye_closed', _hc.sleepDurationForDay(date).strInHoursAndMinutes),
+        _summaryRow('eye_open', _hc.awakeDurationForDay(date).strInHoursAndMinutes),
+      ],
+    );
+  }
+
+  Widget _feedSummaryCard(DateTime date) {
+    final rows = <Widget>[];
+    if (_hc.hasBreastFeedEntriesForDay(date)) {
+      rows.add(_summaryRow('breast', _hc.breastFeedDurationForDay(date).strInHoursAndMinutes));
+    }
+    if (_hc.hasBottleFeedEntriesForDay(date)) {
+      final count = _hc.bottleCountForDay(date);
+      rows.add(_summaryRow('bottle_empty', '$count\u00A0${loc.milliliters}'));
+    }
+
+    return _summaryCard(title: loc.history_feeds_title, rows: rows);
+  }
+
+  Widget _daySummaryCards(DateTime date) {
+    final showSleep = _hc.hasSleepEntriesForDay(date);
+    final showFeed = _hc.hasFeedEntriesForDay(date);
+    if (!showSleep && !showFeed) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(P3, P2, P3, P2),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final cardWidth = (constraints.maxWidth - P2) / 2;
+
+          return IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (showSleep) SizedBox(width: cardWidth, child: _sleepSummaryCard(date)),
+                if (showSleep && showFeed) const SizedBox(width: P2),
+                if (showFeed) SizedBox(width: cardWidth, child: _feedSummaryCard(date)),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _dayEntries(DateTime date, Iterable<AbstractEntry> group, BuildContext context) {
     return ListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: [
         MTListGroupTitle(titleText: date.strMedium),
+        _daySummaryCards(date),
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
