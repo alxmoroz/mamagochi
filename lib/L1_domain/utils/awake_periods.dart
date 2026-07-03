@@ -20,59 +20,73 @@ bool dayHasSleep(DateTime date, Iterable<Sleep> sleeps, DateTime at) {
   return sleeps.any((sleep) => sleepIntersectsDay(sleep, dayStart, dayEndExclusive, at));
 }
 
-/// Промежутки бодрствования между снами и после последнего завершённого сна.
-List<AwakePeriod> calculateAwakePeriods(Iterable<Sleep> sleeps, DateTime referenceTime) {
-  final sorted = sleeps.toList()..sort((a, b) => a.start.compareTo(b.start));
-  final periods = <AwakePeriod>[];
+List<(DateTime start, DateTime end)> _sleepIntervalsInDay(
+  DateTime date,
+  Iterable<Sleep> sleeps,
+  DateTime referenceTime,
+) {
+  final (dayStart, dayEndExclusive) = dayBounds(date);
+  final intervals = <(DateTime, DateTime)>[];
 
-  for (var i = 0; i < sorted.length; i++) {
-    final sleep = sorted[i];
-    if (sleep.isStillSleeping) continue;
+  for (final sleep in sleeps) {
+    if (!sleepIntersectsDay(sleep, dayStart, dayEndExclusive, referenceTime)) continue;
 
-    final wakeStart = sleep.end;
-    final DateTime? wakeEnd;
-    final bool isOngoing;
-
-    if (i + 1 < sorted.length) {
-      wakeEnd = sorted[i + 1].start;
-      isOngoing = false;
-    } else {
-      wakeEnd = null;
-      isOngoing = true;
-    }
-
-    final wakeEndOrNow = wakeEnd ?? referenceTime;
-    if (!wakeStart.isBefore(wakeEndOrNow)) continue;
-
-    periods.add(AwakePeriod(start: wakeStart, end: wakeEnd, isOngoing: isOngoing));
+    final sleepEnd = sleep.isStillSleeping ? referenceTime : sleep.end;
+    final start = sleep.start.isAfter(dayStart) ? sleep.start : dayStart;
+    final end = sleepEnd.isBefore(dayEndExclusive) ? sleepEnd : dayEndExclusive;
+    if (start.isBefore(end)) intervals.add((start, end));
   }
 
-  return periods;
+  intervals.sort((a, b) => a.$1.compareTo(b.$1));
+  return _mergeIntervals(intervals);
 }
 
-AwakePeriod? clipAwakePeriodToDay(AwakePeriod period, DateTime date, DateTime referenceTime) {
-  final (dayStart, dayEndExclusive) = dayBounds(date);
-  final periodEnd = period.isOngoing ? referenceTime : period.end!;
+List<(DateTime start, DateTime end)> _mergeIntervals(List<(DateTime start, DateTime end)> intervals) {
+  if (intervals.isEmpty) return intervals;
 
-  final overlapStart = period.start.isAfter(dayStart) ? period.start : dayStart;
-  final overlapEnd = periodEnd.isBefore(dayEndExclusive) ? periodEnd : dayEndExclusive;
-  if (!overlapStart.isBefore(overlapEnd)) return null;
-
-  final isOngoing = period.isOngoing && overlapEnd.isAtSameMomentAs(periodEnd);
-
-  return AwakePeriod(
-    start: overlapStart,
-    end: isOngoing ? null : overlapEnd,
-    isOngoing: isOngoing,
-  );
+  final merged = <(DateTime, DateTime)>[intervals.first];
+  for (var i = 1; i < intervals.length; i++) {
+    final (start, end) = intervals[i];
+    final last = merged.last;
+    if (!start.isAfter(last.$2)) {
+      if (end.isAfter(last.$2)) {
+        merged[merged.length - 1] = (last.$1, end);
+      }
+    } else {
+      merged.add((start, end));
+    }
+  }
+  return merged;
 }
 
 List<AwakePeriod> awakePeriodsForDay(DateTime date, Iterable<Sleep> sleeps, DateTime referenceTime) {
   if (!dayHasSleep(date, sleeps, referenceTime)) return const [];
 
-  return calculateAwakePeriods(sleeps, referenceTime)
-      .map((period) => clipAwakePeriodToDay(period, date, referenceTime))
-      .whereType<AwakePeriod>()
-      .where((period) => period.isMoreMinute)
-      .toList();
+  final (dayStart, dayEndExclusive) = dayBounds(date);
+  final isToday = date.date == referenceTime.date;
+  final dayEndEffective = isToday ? referenceTime : dayEndExclusive;
+  if (!dayStart.isBefore(dayEndEffective)) return const [];
+
+  final sleepIntervals = _sleepIntervalsInDay(date, sleeps, referenceTime);
+  final periods = <AwakePeriod>[];
+  var cursor = dayStart;
+
+  for (final (sleepStart, sleepEnd) in sleepIntervals) {
+    if (cursor.isBefore(sleepStart)) {
+      periods.add(AwakePeriod(start: cursor, end: sleepStart, isOngoing: false));
+    }
+    if (sleepEnd.isAfter(cursor)) cursor = sleepEnd;
+  }
+
+  if (cursor.isBefore(dayEndEffective)) {
+    periods.add(
+      AwakePeriod(
+        start: cursor,
+        end: isToday ? null : dayEndEffective,
+        isOngoing: isToday,
+      ),
+    );
+  }
+
+  return periods.where((period) => period.isMoreMinute).toList();
 }
