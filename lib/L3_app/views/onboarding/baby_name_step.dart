@@ -35,7 +35,7 @@ class BabyNameStep extends StatelessWidget {
               align: TextAlign.center,
               padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
             ),
-            Center(child: _bc.baby.image()),
+            Center(child: _bc.baby.face()),
             MTAdaptive.s(
               child: MTTextField(
                 maxLines: 1,

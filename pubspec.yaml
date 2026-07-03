@@ -35,6 +35,8 @@ dev_dependencies:
   flutter_launcher_icons: any
   flutter_lints: any
   flutter_native_splash: any
+  flutter_test:
+    sdk: flutter
   hive_generator: any
   intl_utils: any
   mobx_codegen: any
@@ -46,6 +48,7 @@ flutter:
     - assets/ca/
     - assets/fonts/
     - assets/images/
+    - assets/images/baby_face/
     - assets/icons/
   fonts:
     - family: MontserratMamagochi

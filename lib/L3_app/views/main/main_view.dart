@@ -161,11 +161,7 @@ class _MainViewState extends State<_MainView> {
                 Align(
                   child: GestureDetector(
                     onTap: () => BabyProfileDialog.show(),
-                    child: isSleeping
-                        ? baby!.imageSleep(size: 300)
-                        : isEating
-                        ? baby!.imageBreastFeed(ongoingFeed!.type.isLeftBreast, size: 300)
-                        : baby!.image(size: 300),
+                    child: baby!.faceForHistory(hc, size: 300),
                   ),
                 ),
 

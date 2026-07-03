@@ -4,18 +4,37 @@ import 'package:intl/intl.dart';
 import '/../L1_domain/entities/baby.dart';
 import '../components/images.dart';
 import '../views/app/services.dart';
+import '../views/baby_face/baby_face_config.dart';
+import '../views/baby_face/baby_face_mode.dart';
+import '../views/baby_face/baby_face_widget.dart';
+import '../views/history/history_controller.dart';
 
 extension BabyPresenter on Baby? {
   String get sex => this?.isBoy == true ? 'boy' : 'girl';
 
-  Widget image({double? size}) => MTImage(this?.isOlderNineMonths == true ? '${sex}_with_teeth' : sex, height: size, width: size);
+  Widget face({double? size, BabyFaceMode mode = BabyFaceMode.awake}) {
+    final baby = this;
+    if (baby == null) return MTImage('no_info', height: size, width: size);
+    return BabyFaceWidget(config: BabyFaceConfig.forBaby(baby, mode), size: size);
+  }
 
-  Widget imageSleep({double? size}) => MTImage('${sex}_sleep', height: size, width: size);
+  Widget faceSleep({double? size}) => face(size: size, mode: BabyFaceMode.sleep);
 
-  /// Имя изображения для режима кормления грудью: левая или правая грудь.
-  String breastFeedImageName(bool isLeftBreast) => '${sex}_tongue_${isLeftBreast ? 'left' : 'right'}';
+  Widget faceBreastFeed(bool isLeftBreast, {double? size}) =>
+      face(size: size, mode: isLeftBreast ? BabyFaceMode.feedingLeft : BabyFaceMode.feedingRight);
 
-  Widget imageBreastFeed(bool isLeftBreast, {double? size}) => MTImage(breastFeedImageName(isLeftBreast), height: size, width: size);
+  Widget faceForHistory(HistoryController hc, {double? size}) {
+    final baby = this;
+    if (baby == null) return MTImage('no_info', height: size, width: size);
+
+    final mode = hc.babyIsSleeping
+        ? BabyFaceMode.sleep
+        : hc.babyIsEating
+        ? (hc.lastOngoingBreastFeed!.type.isLeftBreast ? BabyFaceMode.feedingLeft : BabyFaceMode.feedingRight)
+        : BabyFaceMode.awake;
+
+    return BabyFaceWidget(config: BabyFaceConfig.forBaby(baby, mode), size: size);
+  }
 
   String? get formattedDateOfBirth => this?.dateOfBirth != null ? DateFormat.yMMMMd().format(this!.dateOfBirth!) : null;
 }

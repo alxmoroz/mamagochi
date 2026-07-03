@@ -27,7 +27,7 @@ class HelloBabyStep extends StatelessWidget {
             padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
           ),
           const SizedBox(height: P3),
-          Center(child: _bc.baby.image()),
+          Center(child: _bc.baby.face()),
           // const SizedBox(height: P3),
           const SizedBox(height: P3),
           MTButton.main(

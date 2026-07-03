@@ -2,13 +2,17 @@
 
 import 'package:flutter/cupertino.dart';
 
+import '../../../../L1_domain/entities/baby.dart';
+import '../../../../L1_domain/utils/dates.dart';
 import '../../components/button.dart';
 import '../../components/colors.dart';
 import '../../components/constants.dart';
-import '../../components/images.dart';
 import '../../components/text.dart';
 import '../app/services.dart';
 import '../baby/baby_controller.dart';
+import '../baby_face/baby_face_config.dart';
+import '../baby_face/baby_face_mode.dart';
+import '../baby_face/baby_face_widget.dart';
 
 class BoyOrGirlStep extends StatelessWidget {
   const BoyOrGirlStep(this._bc, {super.key});
@@ -42,7 +46,16 @@ class BoyOrGirlStep extends StatelessWidget {
                   constrained: false,
                   color: b3Color,
                   type: MTButtonType.main,
-                  middle: Column(mainAxisSize: MainAxisSize.min, children: [const MTImage('boy', height: 180), SmallText.medium(loc.sex_man)]),
+                  middle: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      BabyFaceWidget(
+                        config: BabyFaceConfig.forBaby(Baby(created: now, isBoy: true), BabyFaceMode.awake),
+                        size: 180,
+                      ),
+                      SmallText.medium(loc.sex_man),
+                    ],
+                  ),
                   onTap: () => _setBoyOrGirl(isBoy: true),
                 ),
                 MTButton(
@@ -50,7 +63,16 @@ class BoyOrGirlStep extends StatelessWidget {
                   constrained: false,
                   color: b3Color,
                   type: MTButtonType.main,
-                  middle: Column(mainAxisSize: MainAxisSize.min, children: [const MTImage('girl', height: 180), SmallText.medium(loc.sex_woman)]),
+                  middle: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      BabyFaceWidget(
+                        config: BabyFaceConfig.forBaby(Baby(created: now, isBoy: false), BabyFaceMode.awake),
+                        size: 180,
+                      ),
+                      SmallText.medium(loc.sex_woman),
+                    ],
+                  ),
                   onTap: () => _setBoyOrGirl(isBoy: false),
                 ),
               ],

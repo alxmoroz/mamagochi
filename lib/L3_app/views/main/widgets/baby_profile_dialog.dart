@@ -51,7 +51,7 @@ class BabyProfileDialog extends StatelessWidget {
                         if (_baby.formattedDateOfBirth != null && !isLandscape) SizedBox(height: spacingLarge),
 
                         /// Картинка малыша
-                        _baby.image(size: 200),
+                        _baby.face(size: 200),
                         if (!isLandscape) SizedBox(height: spacingLarge),
 
                         /// Возраст малыша
