@@ -325,6 +325,17 @@ abstract class _Base with Store {
     referenceTime: now,
   );
 
+  DaySummary daySummaryAfterRemoving(DateTime date, AbstractEntry entry) => DaySummary.calculate(
+    date: date,
+    sleepEntries: entry is Sleep
+        ? _sleepEntries.where((s) => !s.created.isAtSameMomentAs(entry.created))
+        : _sleepEntries,
+    feedEntries: entry is Feed
+        ? _feedEntries.where((f) => !f.created.isAtSameMomentAs(entry.created))
+        : _feedEntries,
+    referenceTime: now,
+  );
+
   @action
   Future _deleteEntry(AbstractEntry entry) async {
     if (entry is Feed) {

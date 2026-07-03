@@ -48,8 +48,18 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
   final _expandedByDay = <DateTime, Set<_HistoryDayFilter>>{};
   final _filterAnimations = <DateTime, Map<_HistoryDayFilter, AnimationController>>{};
   final _filterRevealAnimations = <DateTime, Map<_HistoryDayFilter, Animation<double>>>{};
+  final _deletingEntries = <AbstractEntry>{};
+  final _entryDeleteAnimations = <DateTime, AnimationController>{};
+  final _retainedDays = <DateTime>{};
+  final _dayHideAnimations = <DateTime, AnimationController>{};
+  final _summaryHideAnimations = <DateTime, Map<_HistoryDayFilter, AnimationController>>{};
 
   HistoryController get _hc => widget._hc;
+
+  List<DateTime> get _visibleDays {
+    final days = {..._hc.groupedEntries.keys, ..._retainedDays};
+    return days.toList()..sort((a, b) => b.compareTo(a));
+  }
 
   @override
   void dispose() {
@@ -58,7 +68,57 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
         controller.dispose();
       }
     }
+    for (final controller in _entryDeleteAnimations.values) {
+      controller.dispose();
+    }
+    for (final controller in _dayHideAnimations.values) {
+      controller.dispose();
+    }
+    for (final dayAnimations in _summaryHideAnimations.values) {
+      for (final controller in dayAnimations.values) {
+        controller.dispose();
+      }
+    }
     super.dispose();
+  }
+
+  AnimationController _trackedController(
+    Map<DateTime, AnimationController> storage,
+    DateTime key, {
+    double initialValue = 1,
+  }) {
+    return storage.putIfAbsent(key, () {
+      final controller = AnimationController(
+        vsync: this,
+        duration: KB_RELATED_ANIMATION_DURATION,
+        reverseDuration: KB_RELATED_ANIMATION_DURATION,
+        value: initialValue,
+      );
+      controller.addListener(() {
+        if (mounted) setState(() {});
+      });
+      return controller;
+    });
+  }
+
+  AnimationController _trackedFilterController(
+    Map<DateTime, Map<_HistoryDayFilter, AnimationController>> storage,
+    DateTime day,
+    _HistoryDayFilter filter, {
+    double initialValue = 1,
+  }) {
+    return storage.putIfAbsent(day, () => {}).putIfAbsent(filter, () {
+      final controller = AnimationController(
+        vsync: this,
+        duration: KB_RELATED_ANIMATION_DURATION,
+        reverseDuration: KB_RELATED_ANIMATION_DURATION,
+        value: initialValue,
+      );
+      controller.addListener(() {
+        if (mounted) setState(() {});
+      });
+      return controller;
+    });
   }
 
   AnimationController _animationFor(DateTime date, _HistoryDayFilter filter) {
@@ -88,9 +148,74 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
     );
   }
 
-  Future<bool> _delete(AbstractEntry entry) async {
+  AnimationController _deleteAnimationFor(AbstractEntry entry) =>
+      _trackedController(_entryDeleteAnimations, entry.created);
+
+  AnimationController _dayHideAnimationFor(DateTime day) => _trackedController(_dayHideAnimations, day);
+
+  AnimationController _summaryHideAnimationFor(DateTime day, _HistoryDayFilter filter) =>
+      _trackedFilterController(_summaryHideAnimations, day, filter);
+
+  Future<bool> _animateDelete(AbstractEntry entry) async {
+    final day = entry.end.date;
+    final summaryBefore = _hc.daySummaryFor(day);
+    final summaryAfter = _hc.daySummaryAfterRemoving(day, entry);
+    final isLastEntryOfDay = (_hc.groupedEntries[day]?.length ?? 0) == 1;
+
+    setState(() => _deletingEntries.add(entry));
+    await _deleteAnimationFor(entry).reverse();
+    if (!mounted) return false;
+
+    if (summaryBefore.showSleepCard && !summaryAfter.showSleepCard) {
+      await _summaryHideAnimationFor(day, _HistoryDayFilter.sleep).reverse();
+    }
+    if (!mounted) return false;
+
+    if (summaryBefore.showFeedCard && !summaryAfter.showFeedCard) {
+      await _summaryHideAnimationFor(day, _HistoryDayFilter.feed).reverse();
+    }
+    if (!mounted) return false;
+
+    if (isLastEntryOfDay) {
+      setState(() => _retainedDays.add(day));
+      await _dayHideAnimationFor(day).reverse();
+    }
+    if (!mounted) return false;
+
     await _hc.deleteEntry(entry);
-    return false;
+
+    if (!mounted) return false;
+    setState(() {
+      _deletingEntries.remove(entry);
+      _retainedDays.remove(day);
+      _entryDeleteAnimations.remove(entry.created)?.dispose();
+      _syncExpandedFilters(day, summaryAfter);
+    });
+    return true;
+  }
+
+  void _syncExpandedFilters(DateTime day, DaySummary summary) {
+    if (!summary.showSleepCard) {
+      _expandedByDay[day]?.remove(_HistoryDayFilter.sleep);
+      _filterAnimations[day]?[_HistoryDayFilter.sleep]?.dispose();
+      _filterAnimations[day]?.remove(_HistoryDayFilter.sleep);
+      _filterRevealAnimations[day]?.remove(_HistoryDayFilter.sleep);
+      _summaryHideAnimations[day]?[_HistoryDayFilter.sleep]?.dispose();
+      _summaryHideAnimations[day]?.remove(_HistoryDayFilter.sleep);
+    }
+    if (!summary.showFeedCard) {
+      _expandedByDay[day]?.remove(_HistoryDayFilter.feed);
+      _filterAnimations[day]?[_HistoryDayFilter.feed]?.dispose();
+      _filterAnimations[day]?.remove(_HistoryDayFilter.feed);
+      _filterRevealAnimations[day]?.remove(_HistoryDayFilter.feed);
+      _summaryHideAnimations[day]?[_HistoryDayFilter.feed]?.dispose();
+      _summaryHideAnimations[day]?.remove(_HistoryDayFilter.feed);
+    }
+    if (_expandedByDay[day]?.isEmpty ?? false) _expandedByDay.remove(day);
+    if (_filterAnimations[day]?.isEmpty ?? false) _filterAnimations.remove(day);
+    if (_filterRevealAnimations[day]?.isEmpty ?? false) _filterRevealAnimations.remove(day);
+    if (_summaryHideAnimations[day]?.isEmpty ?? false) _summaryHideAnimations.remove(day);
+    _dayHideAnimations.remove(day)?.dispose();
   }
 
   void _toggleDayFilter(DateTime date, _HistoryDayFilter filter) {
@@ -125,22 +250,42 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
   _HistoryDayFilter _filterForEntry(AbstractEntry entry) =>
       entry is Sleep ? _HistoryDayFilter.sleep : _HistoryDayFilter.feed;
 
-  bool _showsEntry(DateTime date, AbstractEntry entry) =>
-      _showsFilterEntries(date, _filterForEntry(entry));
+  bool _showsEntry(DateTime date, AbstractEntry entry) {
+    if (_deletingEntries.contains(entry)) return true;
+    return _showsFilterEntries(date, _filterForEntry(entry));
+  }
 
-  Widget _animatedEntryTile(DateTime date, AbstractEntry entry, BuildContext context) {
-    final animation = _revealAnimation(date, _filterForEntry(entry));
-
+  Widget _collapseOnAnimation({
+    required Animation<double> animation,
+    required Widget child,
+  }) {
     return ClipRect(
       child: AnimatedBuilder(
         animation: animation,
-        builder: (context, child) => Align(
+        builder: (context, animatedChild) => Align(
           alignment: Alignment.topCenter,
           heightFactor: animation.value.clamp(0.0, 1.0),
-          child: child,
+          child: animatedChild,
         ),
-        child: _entryTile(entry, context),
+        child: child,
       ),
+    );
+  }
+
+  Widget _animatedEntryTile(DateTime date, AbstractEntry entry, BuildContext context) {
+    final isDeleting = _deletingEntries.contains(entry);
+    final animation = isDeleting ? _deleteAnimationFor(entry) : _revealAnimation(date, _filterForEntry(entry));
+
+    return _collapseOnAnimation(
+      animation: animation,
+      child: _entryTile(entry, context),
+    );
+  }
+
+  Widget _animatedSummaryCard(DateTime date, _HistoryDayFilter filter, Widget card) {
+    return _collapseOnAnimation(
+      animation: _summaryHideAnimationFor(date, filter),
+      child: card,
     );
   }
 
@@ -159,16 +304,12 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
         borderSide: selected ? BorderSide(color: mainColor.resolve(context), width: 3) : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: rows,
-                ),
-              ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: rows,
             ),
             Padding(
               padding: const EdgeInsets.only(top: P),
@@ -243,9 +384,17 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (summary.showSleepCard) SizedBox(width: cardWidth, child: _sleepSummaryCard(context, date, summary)),
+                if (summary.showSleepCard)
+                  SizedBox(
+                    width: cardWidth,
+                    child: _animatedSummaryCard(date, _HistoryDayFilter.sleep, _sleepSummaryCard(context, date, summary)),
+                  ),
                 if (summary.showSleepCard && summary.showFeedCard) const SizedBox(width: P2),
-                if (summary.showFeedCard) SizedBox(width: cardWidth, child: _feedSummaryCard(context, date, summary)),
+                if (summary.showFeedCard)
+                  SizedBox(
+                    width: cardWidth,
+                    child: _animatedSummaryCard(date, _HistoryDayFilter.feed, _feedSummaryCard(context, date, summary)),
+                  ),
               ],
             ),
           );
@@ -273,19 +422,9 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(P3, 0, P3, P2),
-      child: Slidable(
-        key: ObjectKey(entry),
-        endActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          dismissible: DismissiblePane(onDismissed: () {}, confirmDismiss: () async => await _delete(entry)),
-          children: [
-            CustomSlidableAction(
-              onPressed: (_) async => await _delete(entry),
-              backgroundColor: dangerColor.resolve(context),
-              child: const DeleteIcon(color: whiteColor, size: P6),
-            ),
-          ],
-        ),
+      child: _HistoryEntrySlidable(
+        entry: entry,
+        onDelete: () => _animateDelete(entry),
         child: MTCard(
           radius: P3,
           elevation: buttonElevation,
@@ -338,7 +477,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
       entryTiles.add(_animatedEntryTile(date, entry, context));
     }
 
-    return ListView(
+    final content = ListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: [
@@ -346,6 +485,11 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
         _daySummaryCards(context, date),
         ...entryTiles,
       ],
+    );
+
+    return _collapseOnAnimation(
+      animation: _dayHideAnimationFor(date.date),
+      child: content,
     );
   }
 
@@ -356,11 +500,11 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
         navBar: MTNavBar(pageTitle: loc.history_title),
         body: _hc.hasEntries
             ? ListView.builder(
-                itemCount: _hc.groupedEntries.keys.length,
+                itemCount: _visibleDays.length,
                 itemBuilder: (_, index) {
-                  final date = _hc.groupedEntries.keys.elementAt(index);
-                  final group = _hc.groupedEntries[date];
-                  return group != null ? _dayEntries(date, group, context, isFirst: index == 0) : const SizedBox();
+                  final date = _visibleDays[index];
+                  final group = _hc.groupedEntries[date] ?? const <AbstractEntry>[];
+                  return _dayEntries(date, group, context, isFirst: index == 0);
                 },
               )
             : Center(
@@ -373,6 +517,98 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
                 ),
               ),
       ),
+    );
+  }
+}
+
+/// Свайп-удаление: квадратная [MTCard] с корзиной. Высоту карточки записи
+/// измеряем, чтобы задать сторону кнопки и [ActionPane.extentRatio].
+class _HistoryEntrySlidable extends StatefulWidget {
+  const _HistoryEntrySlidable({required this.entry, required this.onDelete, required this.child});
+
+  final AbstractEntry entry;
+  final Future<bool> Function() onDelete;
+  final Widget child;
+
+  @override
+  State<_HistoryEntrySlidable> createState() => _HistoryEntrySlidableState();
+}
+
+class _HistoryEntrySlidableState extends State<_HistoryEntrySlidable> {
+  final _childKey = GlobalKey();
+  double? _childHeight;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(_measure);
+  }
+
+  @override
+  void didUpdateWidget(covariant _HistoryEntrySlidable oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance.addPostFrameCallback(_measure);
+  }
+
+  void _measure([_]) {
+    if (!mounted) return;
+    final height = _childKey.currentContext?.size?.height;
+    if (height != null && height != _childHeight) {
+      setState(() => _childHeight = height);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final side = _childHeight;
+        final extentRatio = side == null ? 0.3 : ((P2 + side) / constraints.maxWidth).clamp(0.12, 0.5);
+
+        return Slidable(
+          key: ObjectKey(widget.entry),
+          endActionPane: ActionPane(
+            extentRatio: extentRatio,
+            motion: const ScrollMotion(),
+            dismissible: DismissiblePane(
+              onDismissed: () {},
+              confirmDismiss: () async {
+                await widget.onDelete();
+                return false;
+              },
+            ),
+            children: [
+              CustomSlidableAction(
+                backgroundColor: Colors.transparent,
+                padding: EdgeInsets.zero,
+                borderRadius: BorderRadius.circular(P3),
+                onPressed: (_) => widget.onDelete(),
+                child: LayoutBuilder(
+                  builder: (context, actionConstraints) {
+                    final dimension = actionConstraints.maxHeight;
+                    return Padding(
+                      padding: const EdgeInsets.only(left: P2),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: SizedBox.square(
+                          dimension: dimension,
+                          child: MTCard(
+                            radius: P3,
+                            elevation: buttonElevation,
+                            color: dangerColor,
+                            child: const Center(child: DeleteIcon(color: whiteColor, size: P6)),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          child: KeyedSubtree(key: _childKey, child: widget.child),
+        );
+      },
     );
   }
 }
