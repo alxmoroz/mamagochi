@@ -531,8 +531,8 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
   }
 }
 
-/// Свайп-удаление: квадратная [MTCard] с корзиной. Высоту карточки записи
-/// измеряем, чтобы задать сторону кнопки и [ActionPane.extentRatio].
+/// Свайп-удаление: [MTCard] с корзиной. Высоту карточки записи измеряем,
+/// чтобы задать минимальную ширину панели и [ActionPane.extentRatio].
 class _HistoryEntrySlidable extends StatefulWidget {
   const _HistoryEntrySlidable({required this.entry, required this.onDelete, required this.child});
 
@@ -595,19 +595,16 @@ class _HistoryEntrySlidableState extends State<_HistoryEntrySlidable> {
                 onPressed: (_) => widget.onDelete(),
                 child: LayoutBuilder(
                   builder: (context, actionConstraints) {
-                    final dimension = actionConstraints.maxHeight;
                     return Padding(
                       padding: const EdgeInsets.only(left: P2),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: SizedBox.square(
-                          dimension: dimension,
-                          child: MTCard(
-                            radius: P3,
-                            elevation: buttonElevation,
-                            color: dangerColor,
-                            child: const Center(child: DeleteIcon(color: whiteColor, size: P6)),
-                          ),
+                      child: SizedBox(
+                        width: actionConstraints.maxWidth,
+                        height: actionConstraints.maxHeight,
+                        child: MTCard(
+                          radius: P3,
+                          elevation: buttonElevation,
+                          color: dangerColor,
+                          child: const Center(child: DeleteIcon(color: whiteColor, size: P6)),
                         ),
                       ),
                     );

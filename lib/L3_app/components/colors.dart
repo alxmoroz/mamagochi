@@ -22,9 +22,9 @@ const _b0G = 140;
 const _b0B = 190;
 
 /// темная тема
-const _b3R_d = 54;
-const _b3G_d = 60;
-const _b3B_d = 86;
+const _b3R_d = 80;
+const _b3G_d = 86;
+const _b3B_d = 114;
 
 const _b2R_d = 43;
 const _b2G_d = 48;
@@ -57,17 +57,17 @@ const _f1G = _f2G - _fDC;
 const _f1B = _f2B - _fDC;
 
 /// темная тема
-const _f3R_d = _b3R_d + 38;
-const _f3G_d = _b3G_d + 38;
-const _f3B_d = _b3B_d + 26;
+const _f1R_d = 208;
+const _f1G_d = 214;
+const _f1B_d = 228;
 
-const _f2R_d = _f3R_d + _fDC;
-const _f2G_d = _f3G_d + _fDC;
-const _f2B_d = _f3B_d + _fDC;
+const _f2R_d = 176;
+const _f2G_d = 182;
+const _f2B_d = 197;
 
-const _f1R_d = _f2R_d + _fDC;
-const _f1G_d = _f2G_d + _fDC;
-const _f1B_d = _f2B_d + _fDC;
+const _f3R_d = 114;
+const _f3G_d = 120;
+const _f3B_d = 132;
 
 /// Белый - черный
 const bwColor = CupertinoDynamicColor.withBrightness(
