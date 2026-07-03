@@ -73,6 +73,8 @@
 
   "how_much_feeding": "Feeding for\n{duration}",
   "how_much_sleep": "Sleeps for\n{duration}",
+  "timer_feeding_label": "Feeding",
+  "timer_sleep_label": "Sleeps",
   "how_much_fed_boy": "Fed for {duration}",
   "how_much_fed_girl": "Fed for {duration}",
   "how_much_fed_past_boy": "Fed for {duration}",

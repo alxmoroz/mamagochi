@@ -74,6 +74,8 @@
 
   "how_much_feeding": "Кушает\n{duration}",
   "how_much_sleep": "Спит\n{duration}",
+  "timer_feeding_label": "Кушает",
+  "timer_sleep_label": "Спит",
   "how_much_fed_boy": "Кушал {duration}",
   "how_much_fed_girl": "Кушала {duration}",
   "how_much_fed_past_boy": "Покушал {duration}",

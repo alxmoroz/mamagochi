@@ -37,7 +37,7 @@ class MainHeaderTimer extends StatelessWidget {
             ? _FeedingTimerButton(hc: hc, buttonSize: buttonSize, onTap: onEditStartBreastFeed)
             : null;
         if (child == null) return const SizedBox();
-        return Align(alignment: Alignment.topRight, child: child);
+        return Positioned(top: 0, right: 0, child: child);
       },
     );
   }
@@ -48,11 +48,32 @@ Widget _timerButton({required double buttonSize, required Widget trailing, requi
   constrained: false,
   color: b3Color,
   margin: const EdgeInsets.symmetric(horizontal: P2),
+  padding: const EdgeInsets.symmetric(horizontal: P3),
   type: MTButtonType.main,
-  leading: const MTSvgIcon('clock', size: 60),
-  trailing: trailing,
+  middle: SizedBox(
+    width: buttonSize - 2 * P3,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const MTSvgIcon('clock', size: 60),
+        const SizedBox(width: P2),
+        Expanded(child: trailing),
+      ],
+    ),
+  ),
   onTap: onTap,
 );
+
+Widget _timerDurationText({required String label, required String duration}) => Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    SmallText.medium(label, align: TextAlign.start, color: f2Color),
+    H1(duration, align: TextAlign.start, maxLines: 1),
+  ],
+);
+
+Widget _timerPlainText(String text) => SmallText.medium(text, align: TextAlign.start, color: f2Color, maxLines: 2);
 
 mixin _PeriodicRefreshMixin<T extends StatefulWidget> on State<T> {
   Timer? _ticker;
@@ -99,11 +120,13 @@ class _SleepTimerButtonState extends State<_SleepTimerButton> with _PeriodicRefr
     final sleepDuration = widget.hc.lastSleep?.durationFromStartToNow;
     final sleepDurationStr = sleepDuration?.strInHoursAndMinutes;
     final text = sleepDuration != null && sleepDuration.inMinutes > 1
-        ? loc.how_much_sleep(sleepDurationStr!)
+        ? null
         : widget.hc.lastSleep?.sleepJustNowTitle ?? '';
     return _timerButton(
       buttonSize: widget.buttonSize,
-      trailing: H2(text, maxLines: 2, color: f2Color),
+      trailing: text != null
+          ? _timerPlainText(text)
+          : _timerDurationText(label: loc.timer_sleep_label, duration: sleepDurationStr!),
       onTap: widget.onTap,
     );
   }
@@ -133,7 +156,7 @@ class _FeedingTimerButtonState extends State<_FeedingTimerButton> with _Periodic
     final displayStr = durationStr.isEmpty ? loc.time_seconds(0) : durationStr;
     return _timerButton(
       buttonSize: widget.buttonSize,
-      trailing: H2(loc.how_much_feeding(displayStr), maxLines: 2, color: f2Color),
+      trailing: _timerDurationText(label: loc.timer_feeding_label, duration: displayStr),
       onTap: widget.onTap,
     );
   }
