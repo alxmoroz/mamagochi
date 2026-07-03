@@ -12,6 +12,7 @@ import '../../../L1_domain/entities/baby.dart';
 import '../../../L1_domain/entities/feed.dart';
 import '../../../L1_domain/entities/sleep.dart';
 import '../../../L1_domain/utils/dates.dart';
+import '../../../L1_domain/utils/awake_periods.dart';
 import '../../components/colors.dart';
 import '../../components/snackbar_dialog.dart';
 import '../../components/text.dart';
@@ -21,6 +22,7 @@ import '../main/widgets/feed_type_dialog.dart';
 import 'edit_feed_dialog.dart';
 import 'edit_sleep_dialog.dart';
 import 'day_summary.dart';
+import 'history_day_item.dart';
 
 part 'history_controller.g.dart';
 
@@ -326,6 +328,18 @@ abstract class _Base with Store {
   Map<DateTime, Iterable<AbstractEntry>> get groupedEntries {
     final sorted = _entries.sortedBy<DateTime>((e) => e.end).reversed;
     return sorted.groupListsBy((e) => e.end.date);
+  }
+
+  List<HistoryDayItem> dayItemsFor(DateTime date) {
+    final entries = groupedEntries[date.date] ?? const <AbstractEntry>[];
+    final items = <HistoryDayItem>[for (final entry in entries) HistoryEntryItem(entry)];
+
+    for (final period in awakePeriodsForDay(date.date, _sleepEntries, now)) {
+      items.add(HistoryAwakeItem(period));
+    }
+
+    items.sort((a, b) => b.sortTime.compareTo(a.sortTime));
+    return items;
   }
 
   @computed

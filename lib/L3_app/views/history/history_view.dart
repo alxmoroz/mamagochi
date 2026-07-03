@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../L1_domain/entities/abstract_entry.dart';
+import '../../../L1_domain/entities/awake_period.dart';
 import '../../../L1_domain/entities/feed.dart';
 import '../../../L1_domain/entities/sleep.dart';
 import '../../../L1_domain/utils/dates.dart';
@@ -16,6 +17,7 @@ import '../../components/page.dart';
 import '../../components/text.dart';
 import '../../components/toolbar.dart';
 import '../../navigation/route.dart';
+import '../../presenters/awake_period.dart';
 import '../../presenters/date.dart';
 import '../../presenters/duration.dart';
 import '../../presenters/entry.dart';
@@ -26,6 +28,7 @@ import 'day_summary.dart';
 import 'edit_feed_dialog.dart';
 import 'edit_sleep_dialog.dart';
 import 'history_controller.dart';
+import 'history_day_item.dart';
 
 enum _HistoryDayFilter { sleep, feed }
 
@@ -264,6 +267,8 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
     return _showsFilterEntries(date, _filterForEntry(entry));
   }
 
+  bool _showsAwakePeriod(DateTime date) => _showsFilterEntries(date, _HistoryDayFilter.sleep);
+
   /// Сжатие по heightFactor — как при закрытии карточки сводки.
   Widget _collapseOnAnimation({
     required Animation<double> animation,
@@ -278,6 +283,28 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
           child: animatedChild,
         ),
         child: child,
+      ),
+    );
+  }
+
+  Widget _animatedAwakeTile(DateTime date, AwakePeriod period) {
+    return _collapseOnAnimation(
+      animation: _revealAnimation(date, _HistoryDayFilter.sleep),
+      child: _awakeTile(period),
+    );
+  }
+
+  Widget _awakeTile(AwakePeriod period) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(P3, 0, P3, P2),
+      child: MTListTile(
+        color: Colors.transparent,
+        padding: const EdgeInsets.symmetric(horizontal: P3, vertical: P2),
+        leading: period.awakeImage(size: P10),
+        titleText: period.historyTitle,
+        subtitle: period.isMoreMinute ? SmallText(period.historyDuration) : null,
+        trailing: _entryTimeTrailing(period.historyTrailingTimeTitle),
+        bottomDivider: false,
       ),
     );
   }
@@ -477,14 +504,19 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
     );
   }
 
-  Widget _dayEntries(DateTime date, Iterable<AbstractEntry> group, BuildContext context, {required bool isFirst}) {
-    final entries = group.toList();
+  Widget _dayEntries(DateTime date, BuildContext context, {required bool isFirst}) {
+    final items = _hc.dayItemsFor(date);
     final entryTiles = <Widget>[];
 
-    for (var i = 0; i < entries.length; i++) {
-      final entry = entries[i];
-      if (!_showsEntry(date, entry)) continue;
-      entryTiles.add(_animatedEntryTile(date, entry, context));
+    for (final item in items) {
+      switch (item) {
+        case HistoryEntryItem(:final entry):
+          if (!_showsEntry(date, entry)) continue;
+          entryTiles.add(_animatedEntryTile(date, entry, context));
+        case HistoryAwakeItem(:final period):
+          if (!_showsAwakePeriod(date)) continue;
+          entryTiles.add(_animatedAwakeTile(date, period));
+      }
     }
 
     final content = ListView(
@@ -513,8 +545,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
                 itemCount: _visibleDays.length,
                 itemBuilder: (_, index) {
                   final date = _visibleDays[index];
-                  final group = _hc.groupedEntries[date] ?? const <AbstractEntry>[];
-                  return _dayEntries(date, group, context, isFirst: index == 0);
+                  return _dayEntries(date, context, isFirst: index == 0);
                 },
               )
             : Center(

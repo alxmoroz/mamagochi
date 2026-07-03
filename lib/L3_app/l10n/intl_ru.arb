@@ -71,6 +71,15 @@
   "history_feed_trailing_still_feeding": "ещё кушает",
   "history_sleep_title": "Сон",
   "history_sleep_trailing_still_sleep": "ещё спит",
+  "history_awake_title": "Бодрствование",
+  "history_awake_since": "с {time}",
+  "@history_awake_since": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
 
   "how_much_feeding": "Кушает\n{duration}",
   "how_much_sleep": "Спит\n{duration}",
