@@ -82,28 +82,33 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       if (!duringSleep && babyIsEating) return;
 
       if (duringSleep) {
+        Feed? addedFeed;
         await load(() async {
-          await _addBreastFeedDuringSleep(feedType, sleepCreated!);
+          addedFeed = await _addBreastFeedDuringSleep(feedType, sleepCreated!);
         });
+        final feed = _feedAt(addedFeed!);
         showMTSnackbar(
-          lastFeed!.addFeedTitle,
+          feed.addFeedTitle,
           titleAlign: TextAlign.start,
           trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
-          onTap: () => EditFeedDialog.show(lastFeed!),
+          onTap: () => EditFeedDialog.show(feed),
         );
       } else {
         await startBreastFeed(feedType);
       }
     } else {
+      Feed? addedFeed;
       await load(() async {
-        await _addFeed(feedType, sleepCreated: sleepCreated);
+        addedFeed = await _addFeed(feedType, sleepCreated: sleepCreated);
       });
-      await EditFeedDialog.show(lastFeed!);
+      await EditFeedDialog.show(addedFeed!);
+      // После редактора — актуальная запись по created, не lastFeed (сортировка по end).
+      final feed = _feedAt(addedFeed!);
       showMTSnackbar(
-        lastFeed!.addFeedTitle,
+        feed.addFeedTitle,
         titleAlign: TextAlign.start,
         trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
-        onTap: () => EditFeedDialog.show(lastFeed!),
+        onTap: () => EditFeedDialog.show(feed),
       );
     }
   }
@@ -121,7 +126,7 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     await load(() async {
       await _editFeed(feed.copyWith(endDate: endDate));
     });
-    final finishedFeed = lastFeed!;
+    final finishedFeed = _feedAt(feed);
     showMTSnackbar(
       finishedFeed.finishedBreastFeedSnackbarTitle,
       titleAlign: TextAlign.start,
@@ -137,11 +142,12 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await _editFeed(feed.copyWith(endDate: endFeedAndStartSleep));
       await _startSleep(endFeedAndStartSleep);
     });
+    final finishedFeed = _feedAt(feed);
     showMTSnackbar(
       lastSleep!.ateAndFellAsleepTitle,
       titleAlign: TextAlign.start,
       trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
-      onTap: () => EditFeedDialog.show(lastFeed!),
+      onTap: () => EditFeedDialog.show(finishedFeed),
     );
   }
 
@@ -258,18 +264,20 @@ abstract class _Base with Store {
   }
 
   @action
-  Future _addFeed(FeedingType type, {DateTime? sleepCreated}) async {
+  Future<Feed> _addFeed(FeedingType type, {DateTime? sleepCreated}) async {
     final feed = Feed(created: now, babyCreatedTime: _baby.created, type: type, sleepCreated: sleepCreated);
     _feedEntries.add(feed);
     await feedUC.edit(feed);
+    return feed;
   }
 
   /// Грудное кормление «внутри сна»: запись сразу с endDate (таймер не запускается), привязка ко сну.
   @action
-  Future _addBreastFeedDuringSleep(FeedingType type, DateTime sleepCreated) async {
+  Future<Feed> _addBreastFeedDuringSleep(FeedingType type, DateTime sleepCreated) async {
     final feed = Feed(created: now, startDate: now, endDate: now, babyCreatedTime: _baby.created, type: type, sleepCreated: sleepCreated);
     _feedEntries.add(feed);
     await feedUC.edit(feed);
+    return feed;
   }
 
   @action
@@ -288,9 +296,14 @@ abstract class _Base with Store {
     await feedUC.edit(feed);
   }
 
+  Feed _feedAt(Feed feed) =>
+      // created не меняется при редактировании — стабильный ключ записи.
+      _feedEntries.firstWhere((f) => f.created.isAtSameMomentAs(feed.created));
+
   @computed
   bool get hasFeedEntriesFor24Hours => lastFeed != null && now.difference(lastFeed!.end).inHours < 24;
 
+  /// Последняя запись по времени окончания; для снэкбара после добавления не подходит.
   @computed
   Feed? get lastFeed => _sortedFeedEntries.lastOrNull;
 
@@ -325,6 +338,7 @@ abstract class _Base with Store {
     referenceTime: now,
   );
 
+  /// Сводка дня, если запись удалить — для анимации скрытия карточек в истории.
   DaySummary daySummaryAfterRemoving(DateTime date, AbstractEntry entry) => DaySummary.calculate(
     date: date,
     sleepEntries: entry is Sleep

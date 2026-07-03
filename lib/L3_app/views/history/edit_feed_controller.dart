@@ -32,9 +32,15 @@ class EditFeedController extends _Base with _$EditFeedController {
     await _hc.editFeed(feed.copyWith(type: type));
     _setFeedType(type);
   }
+
+  Future setCount(int count) async {
+    await _hc.editFeed(feed.copyWith(count: count));
+    _setCount(count);
+  }
 }
 
 abstract class _Base extends EditController with Store {
+  /// Актуальная запись: каждый setter пишет в БД и обновляет [feed], иначе поля затирают друг друга.
   @observable
   late Feed feed;
 
@@ -46,4 +52,7 @@ abstract class _Base extends EditController with Store {
 
   @action
   void _setFeedType(FeedingType value) => feed = feed.copyWith(type: value);
+
+  @action
+  void _setCount(int value) => feed = feed.copyWith(count: value);
 }

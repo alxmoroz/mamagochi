@@ -45,17 +45,21 @@ class _HistoryView extends StatefulWidget {
 }
 
 class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixin {
+  /// Сон и кормления одного дня могут быть раскрыты одновременно.
   final _expandedByDay = <DateTime, Set<_HistoryDayFilter>>{};
   final _filterAnimations = <DateTime, Map<_HistoryDayFilter, AnimationController>>{};
   final _filterRevealAnimations = <DateTime, Map<_HistoryDayFilter, Animation<double>>>{};
+  /// Запись остаётся на экране до конца анимации схлопывания.
   final _deletingEntries = <AbstractEntry>{};
   final _entryDeleteAnimations = <DateTime, AnimationController>{};
+  /// День остаётся в списке до конца анимации скрытия, если удалена последняя запись.
   final _retainedDays = <DateTime>{};
   final _dayHideAnimations = <DateTime, AnimationController>{};
   final _summaryHideAnimations = <DateTime, Map<_HistoryDayFilter, AnimationController>>{};
 
   HistoryController get _hc => widget._hc;
 
+  /// Дни из данных + удерживаемые для анимации исчезновения.
   List<DateTime> get _visibleDays {
     final days = {..._hc.groupedEntries.keys, ..._retainedDays};
     return days.toList()..sort((a, b) => b.compareTo(a));
@@ -162,6 +166,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
     final summaryAfter = _hc.daySummaryAfterRemoving(day, entry);
     final isLastEntryOfDay = (_hc.groupedEntries[day]?.length ?? 0) == 1;
 
+    // 1. запись → 2. карточка сводки (если пропадёт) → 3. весь день (если последняя запись) → удаление из БД.
     setState(() => _deletingEntries.add(entry));
     await _deleteAnimationFor(entry).reverse();
     if (!mounted) return false;
@@ -195,6 +200,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
   }
 
   void _syncExpandedFilters(DateTime day, DaySummary summary) {
+    // После удаления последней записи типа — убрать раскрытие и освободить контроллеры.
     if (!summary.showSleepCard) {
       _expandedByDay[day]?.remove(_HistoryDayFilter.sleep);
       _filterAnimations[day]?[_HistoryDayFilter.sleep]?.dispose();
@@ -231,6 +237,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
       setState(() {
         _expandedByDay.putIfAbsent(day, () => {}).add(filter);
       });
+      // Сначала вставить виджеты в дерево, затем запустить анимацию раскрытия.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         animation.forward(from: 0);
@@ -244,6 +251,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
 
   bool _showsFilterEntries(DateTime date, _HistoryDayFilter filter) {
     if (_isFilterExpanded(date, filter)) return true;
+    // Показывать записи и во время анимации закрытия (value > 0).
     return (_filterAnimations[date.date]?[filter]?.value ?? 0) > 0;
   }
 
@@ -251,10 +259,12 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
       entry is Sleep ? _HistoryDayFilter.sleep : _HistoryDayFilter.feed;
 
   bool _showsEntry(DateTime date, AbstractEntry entry) {
+    // Удаляемая запись видна, даже если фильтр уже снят.
     if (_deletingEntries.contains(entry)) return true;
     return _showsFilterEntries(date, _filterForEntry(entry));
   }
 
+  /// Сжатие по heightFactor — как при закрытии карточки сводки.
   Widget _collapseOnAnimation({
     required Animation<double> animation,
     required Widget child,

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../L1_domain/entities/feed.dart';
 import '../../components/button.dart';
 import '../../components/card.dart';
 import '../../components/colors.dart';
@@ -13,8 +12,7 @@ import '../../components/icons.dart';
 import '../../components/text.dart';
 import '../../components/text_field.dart';
 import '../_base/edit_controller.dart';
-import '../app/services.dart';
-import 'history_controller.dart';
+import 'edit_feed_controller.dart';
 
 const int _countStep = 10;
 const int _maxCount = 9999;
@@ -44,12 +42,12 @@ class _LeadingZerosFormatter extends TextInputFormatter {
 }
 
 class _FoodCountEditorController extends EditController {
-  _FoodCountEditorController({required this.feed}) {
-    initState(fds: [MTFieldData(0, text: feed.count?.toString() ?? '')]);
+  /// [fec] — единый источник записи; нельзя сохранять [Feed] на момент открытия диалога.
+  _FoodCountEditorController({required EditFeedController fec}) : _fec = fec {
+    initState(fds: [MTFieldData(0, text: fec.feed.count?.toString() ?? '')]);
   }
 
-  final Feed feed;
-  HistoryController get _hc => mainController.selectedBabyController!.historyController;
+  final EditFeedController _fec;
   Timer? _debounceTimer;
 
   // Обновляет количество с задержкой (debounce)
@@ -61,7 +59,7 @@ class _FoodCountEditorController extends EditController {
   void _saveCount(String value) {
     final countText = value.trim();
     final count = countText.isEmpty ? 0 : (int.tryParse(countText) ?? 0);
-    _hc.editFeed(feed.copyWith(count: _clampCount(count)));
+    _fec.setCount(_clampCount(count));
   }
 
   void incrementCount() {
@@ -95,7 +93,7 @@ class _FoodCountEditorController extends EditController {
 
   // Обновляет количество кормления и синхронизирует с полем ввода
   void _updateCount(int newCount) {
-    _hc.editFeed(feed.copyWith(count: newCount));
+    _fec.setCount(newCount);
     if (newCount == 0) {
       teController(0)?.text = '';
     } else {
@@ -111,8 +109,8 @@ class _FoodCountEditorController extends EditController {
 }
 
 class FoodCountEditor extends StatefulWidget {
-  const FoodCountEditor(this.feed, {super.key});
-  final Feed feed;
+  const FoodCountEditor(this._fec, {super.key});
+  final EditFeedController _fec;
 
   @override
   State<FoodCountEditor> createState() => _FoodCountEditorState();
@@ -124,7 +122,7 @@ class _FoodCountEditorState extends State<FoodCountEditor> {
   @override
   void initState() {
     super.initState();
-    _controller = _FoodCountEditorController(feed: widget.feed);
+    _controller = _FoodCountEditorController(fec: widget._fec);
     _controller.teController(0)?.addListener(_onTextChanged);
   }
 

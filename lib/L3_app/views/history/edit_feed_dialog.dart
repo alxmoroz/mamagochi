@@ -97,7 +97,7 @@ class EditFeedDialog extends StatelessWidget {
               const SizedBox(height: P2),
 
               /// редактор количества (только для бутылочек)
-              if (_fec.feed.type.isBottle) ...[FoodCountEditor(_fec.feed), const SizedBox(height: P2)],
+              if (_fec.feed.type.isBottle) ...[FoodCountEditor(_fec), const SizedBox(height: P2)],
 
               /// время начала (только для грудного кормления)
               if (_fec.feed.type.isBreast)
