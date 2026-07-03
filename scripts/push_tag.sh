@@ -10,8 +10,8 @@ sed -i.bak "s/^\(version:.*[.]\).*$/\1$build_number+$build_number/" pubspec.yaml
 
 version=$(grep 'version: ' pubspec.yaml | sed "s/^[^0-9]*\(.*[.]\).*/\1$build_number/")
 
-bash ./scripts/build_full.sh
-bash ./scripts/build_web.sh
+bash ./scripts/build.sh
+#bash ./scripts/build_web.sh
 
 git commit -a -m "Bump version to $version"
 
