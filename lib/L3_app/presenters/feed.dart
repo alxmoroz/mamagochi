@@ -20,10 +20,10 @@ extension FeedPresenter on Feed {
 
   String get editFeedTitle {
     if (type.isBreast) {
-      if (endDate == null || duration.inSeconds < 10) {
+      if (endDate == null || duration.inMinutes < 1) {
         return loc.edit_feed_breast_title;
       }
-      final durationStr = duration.strInHoursMinutesAndSeconds;
+      final durationStr = duration.strInHoursAndMinutes;
       return _baby.isBoy ? loc.how_much_fed_boy(durationStr) : loc.how_much_fed_girl(durationStr);
     }
     return type.isBabyFormula
@@ -31,10 +31,10 @@ extension FeedPresenter on Feed {
         : loc.edit_feed_milk_bottle_title;
   }
 
-  /// Заголовок снэкбара при завершении кормления грудью: без длительности если < 10 с, иначе «Покушал/Покушала левую (правую) грудь {duration}».
+  /// Заголовок снэкбара при завершении кормления грудью: без длительности если < 1 мин, иначе «Покушал/Покушала … {duration}».
   String get finishedBreastFeedSnackbarTitle {
-    if (duration.inSeconds < 10) return addFeedTitle;
-    final durationStr = duration.strInHoursMinutesAndSeconds;
+    if (duration.inMinutes < 1) return addFeedTitle;
+    final durationStr = duration.strInHoursAndMinutes;
     return _baby.isBoy
         ? loc.how_much_fed_past_with_type_boy(whatToEatTitle, durationStr)
         : loc.how_much_fed_past_with_type_girl(whatToEatTitle, durationStr);
@@ -70,9 +70,9 @@ extension FeedPresenter on Feed {
 
   String get feedName => 'Кормление $type, $endDate, $count';
 
-  /// Длительность кормления грудью для истории (с секундами). Как у сна — для завершённого или текущего кормления.
+  /// Длительность кормления грудью для истории (часы и минуты). Для завершённого или текущего кормления.
   String get historyBreastFeedDuration => type.isBreast
-      ? (endDate == null ? durationFromStartToNow : duration).strInHoursMinutesAndSeconds
+      ? (endDate == null ? durationFromStartToNow : duration).strInHoursAndMinutes
       : '';
 
   String get stillFeedingTitle => Intl.message('history_feed_trailing_still_feeding');

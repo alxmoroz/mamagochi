@@ -73,7 +73,7 @@ Widget _timerDurationText({required String label, required String duration}) => 
   ],
 );
 
-Widget _timerPlainText(String text) => SmallText.medium(text, align: TextAlign.start, color: f2Color, maxLines: 2);
+Widget _timerPlainText(String text) => BaseText.medium(text, align: TextAlign.start, color: f2Color, maxLines: 2);
 
 mixin _PeriodicRefreshMixin<T extends StatefulWidget> on State<T> {
   Timer? _ticker;
