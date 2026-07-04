@@ -1,6 +1,7 @@
 import '../../../L1_domain/entities/feed.dart';
 import '../../../L1_domain/entities/sleep.dart';
 import '../../../L1_domain/utils/dates.dart';
+import '../../../L1_domain/utils/sleep_interval.dart';
 
 const _minStatDuration = Duration(minutes: 1);
 
@@ -34,11 +35,19 @@ class DaySummary {
   }) {
     final at = referenceTime ?? now;
     final (dayStart, dayEndExclusive) = _dayBounds(date);
+    final ongoingSleep = findOngoingSleep(sleepEntries, at);
 
     var sleepDuration = Duration.zero;
     var showSleepCard = false;
     for (final sleep in sleepEntries) {
-      final overlap = _sleepOverlapWithDay(sleep, dayStart, dayEndExclusive, at);
+      final overlap = _sleepOverlapWithDay(
+        sleep,
+        dayStart,
+        dayEndExclusive,
+        at,
+        sleepEntries: sleepEntries,
+        ongoingSleep: ongoingSleep,
+      );
       if (overlap == null) continue;
       showSleepCard = true;
       sleepDuration += _statOverlap(overlap);
@@ -82,17 +91,40 @@ Duration _statOverlap(Duration overlap) => overlap < _minStatDuration ? _minStat
   return (dayStart, dayStart.add(const Duration(days: 1)));
 }
 
-bool _sleepIntersectsDay(Sleep sleep, DateTime dayStart, DateTime dayEndExclusive, DateTime at) {
+bool _sleepIntersectsDay(
+  Sleep sleep,
+  DateTime dayStart,
+  DateTime dayEndExclusive,
+  DateTime at, {
+  required Iterable<Sleep> all,
+  Sleep? ongoingSleep,
+}) {
   final sleepStart = sleep.start;
-  final sleepEnd = sleep.isStillSleeping ? at : sleep.end;
+  final sleepEnd = effectiveSleepEnd(sleep, all, at, ongoingSleep: ongoingSleep);
   return !sleepEnd.isBefore(dayStart) && sleepStart.isBefore(dayEndExclusive);
 }
 
-Duration? _sleepOverlapWithDay(Sleep sleep, DateTime dayStart, DateTime dayEndExclusive, DateTime at) {
-  if (!_sleepIntersectsDay(sleep, dayStart, dayEndExclusive, at)) return null;
+Duration? _sleepOverlapWithDay(
+  Sleep sleep,
+  DateTime dayStart,
+  DateTime dayEndExclusive,
+  DateTime at, {
+  required Iterable<Sleep> sleepEntries,
+  Sleep? ongoingSleep,
+}) {
+  if (!_sleepIntersectsDay(
+    sleep,
+    dayStart,
+    dayEndExclusive,
+    at,
+    all: sleepEntries,
+    ongoingSleep: ongoingSleep,
+  )) {
+    return null;
+  }
 
   final sleepStart = sleep.start;
-  final sleepEnd = sleep.isStillSleeping ? at : sleep.end;
+  final sleepEnd = effectiveSleepEnd(sleep, sleepEntries, at, ongoingSleep: ongoingSleep);
 
   final overlapStart = sleepStart.isAfter(dayStart) ? sleepStart : dayStart;
   final overlapEnd = sleepEnd.isBefore(dayEndExclusive) ? sleepEnd : dayEndExclusive;

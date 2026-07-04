@@ -117,11 +117,11 @@ class _SleepTimerButtonState extends State<_SleepTimerButton> with _PeriodicRefr
 
   @override
   Widget build(BuildContext context) {
-    final sleepDuration = widget.hc.lastSleep?.durationFromStartToNow;
+    final sleepDuration = widget.hc.ongoingSleep?.durationFromStartToNow;
     final sleepDurationStr = sleepDuration?.strInHoursAndMinutes;
     final text = sleepDuration != null && sleepDuration.inMinutes > 1
         ? null
-        : widget.hc.lastSleep?.sleepJustNowTitle ?? '';
+        : widget.hc.ongoingSleep?.sleepJustNowTitle ?? '';
     return _timerButton(
       buttonSize: widget.buttonSize,
       trailing: text != null

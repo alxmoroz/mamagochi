@@ -13,6 +13,7 @@ import '../../../L1_domain/entities/feed.dart';
 import '../../../L1_domain/entities/sleep.dart';
 import '../../../L1_domain/utils/dates.dart';
 import '../../../L1_domain/utils/awake_periods.dart';
+import '../../../L1_domain/utils/sleep_interval.dart';
 import '../../components/colors.dart';
 import '../../components/snackbar_dialog.dart';
 import '../../components/text.dart';
@@ -34,6 +35,7 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
   Future reload() async {
     await load(() async {
       await _fetchSleepEntries();
+      await _migrateStaleSleepEntries();
       await _fetchFeedEntries();
       await _migrateSleepHintIfNeeded();
     });
@@ -48,15 +50,17 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
   }
 
   Future stopSleep(DateTime endDate) async {
+    final sleep = ongoingSleep;
+    if (sleep == null) return;
     await load(() async {
-      await _editSleep(lastSleep!, endDate: endDate);
+      await _editSleep(sleep, endDate: endDate);
     });
 
     showMTSnackbar(
-      lastSleep!.howMuchSleptTitle,
+      sleep.howMuchSleptTitle,
       titleAlign: TextAlign.start,
       trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
-      onTap: () => EditSleepDialog.show(lastSleep!),
+      onTap: () => EditSleepDialog.show(sleep),
     );
   }
 
@@ -67,7 +71,9 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
   }
 
   Future editLastSleep({DateTime? startDate, DateTime? endDate}) async {
-    await editSleep(lastSleep!, startDate: startDate, endDate: endDate);
+    final sleep = ongoingSleep ?? lastSleep;
+    if (sleep == null) return;
+    await editSleep(sleep, startDate: startDate, endDate: endDate);
   }
 
   /// кормление
@@ -78,7 +84,7 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     if (feedType == null) return;
 
     final duringSleep = babyIsSleeping;
-    final sleepCreated = duringSleep ? lastSleep!.created : null;
+    final sleepCreated = duringSleep ? ongoingSleep!.created : null;
 
     if (feedType.isBreast) {
       if (!duringSleep && babyIsEating) return;
@@ -172,6 +178,15 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     if (!hasCompletedSleepEntries) return;
     await localSettingsController.markSleepHintShown();
   }
+
+  /// Закрывает «зависшие» записи сна без endDate — иначе статистика считает их до «сейчас».
+  @action
+  Future _migrateStaleSleepEntries() async {
+    final stale = staleUnfinishedSleeps(_sleepEntries, now);
+    for (final sleep in stale) {
+      await _editSleep(sleep, endDate: closedEndDateForStaleSleep(sleep, _sleepEntries));
+    }
+  }
 }
 
 abstract class _Base with Store {
@@ -183,6 +198,12 @@ abstract class _Base with Store {
 
   @computed
   Sleep? get lastSleep => _sortedSleepEntries.lastOrNull;
+
+  @computed
+  Sleep? get ongoingSleep => findOngoingSleep(_sleepEntries, now);
+
+  @computed
+  bool get babyIsSleeping => ongoingSleep != null;
 
   /// Загружает записи сна из БД, не затирая актуальные данные в памяти.
   ///
@@ -225,10 +246,6 @@ abstract class _Base with Store {
     await sleepUC.edit(editedSleep);
   }
 
-  @computed
-  bool get babyIsSleeping => lastSleep != null && lastSleep!.isStillSleeping;
-
-  /// Есть хотя бы один завершённый сон (endDate != null).
   @computed
   bool get hasCompletedSleepEntries => _sleepEntries.any((s) => !s.isStillSleeping);
 

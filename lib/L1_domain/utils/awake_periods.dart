@@ -3,21 +3,30 @@
 import '../entities/awake_period.dart';
 import '../entities/sleep.dart';
 import 'dates.dart';
+import 'sleep_interval.dart';
 
 (DateTime dayStart, DateTime dayEndExclusive) dayBounds(DateTime date) {
   final dayStart = date.date;
   return (dayStart, dayStart.add(const Duration(days: 1)));
 }
 
-bool sleepIntersectsDay(Sleep sleep, DateTime dayStart, DateTime dayEndExclusive, DateTime at) {
+bool sleepIntersectsDay(
+  Sleep sleep,
+  DateTime dayStart,
+  DateTime dayEndExclusive,
+  DateTime at,
+  Iterable<Sleep> all, {
+  Sleep? ongoingSleep,
+}) {
   final sleepStart = sleep.start;
-  final sleepEnd = sleep.isStillSleeping ? at : sleep.end;
+  final sleepEnd = effectiveSleepEnd(sleep, all, at, ongoingSleep: ongoingSleep);
   return !sleepEnd.isBefore(dayStart) && sleepStart.isBefore(dayEndExclusive);
 }
 
 bool dayHasSleep(DateTime date, Iterable<Sleep> sleeps, DateTime at) {
   final (dayStart, dayEndExclusive) = dayBounds(date);
-  return sleeps.any((sleep) => sleepIntersectsDay(sleep, dayStart, dayEndExclusive, at));
+  final ongoingSleep = findOngoingSleep(sleeps, at);
+  return sleeps.any((sleep) => sleepIntersectsDay(sleep, dayStart, dayEndExclusive, at, sleeps, ongoingSleep: ongoingSleep));
 }
 
 List<(DateTime start, DateTime end)> _sleepIntervalsInDay(
@@ -26,12 +35,15 @@ List<(DateTime start, DateTime end)> _sleepIntervalsInDay(
   DateTime referenceTime,
 ) {
   final (dayStart, dayEndExclusive) = dayBounds(date);
+  final ongoingSleep = findOngoingSleep(sleeps, referenceTime);
   final intervals = <(DateTime, DateTime)>[];
 
   for (final sleep in sleeps) {
-    if (!sleepIntersectsDay(sleep, dayStart, dayEndExclusive, referenceTime)) continue;
+    if (!sleepIntersectsDay(sleep, dayStart, dayEndExclusive, referenceTime, sleeps, ongoingSleep: ongoingSleep)) {
+      continue;
+    }
 
-    final sleepEnd = sleep.isStillSleeping ? referenceTime : sleep.end;
+    final sleepEnd = effectiveSleepEnd(sleep, sleeps, referenceTime, ongoingSleep: ongoingSleep);
     final start = sleep.start.isAfter(dayStart) ? sleep.start : dayStart;
     final end = sleepEnd.isBefore(dayEndExclusive) ? sleepEnd : dayEndExclusive;
     if (start.isBefore(end)) intervals.add((start, end));
