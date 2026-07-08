@@ -60,8 +60,11 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await _editSleep(sleep, endDate: endDate);
     });
 
+    final sleptTitle = _baby.isBoy ? loc.how_much_slept_boy('') : loc.how_much_slept_girl('');
+    final subtitle = sleep.duration.inMinutes > 0 ? sleep.sleepDuration : null;
     showMTSnackbar(
-      sleep.howMuchSleptTitle,
+      sleptTitle.trim(),
+      subtitle: subtitle,
       titleAlign: TextAlign.start,
       trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
       onTap: () => EditSleepDialog.show(sleep),
@@ -99,8 +102,10 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
           addedFeed = await _addBreastFeedDuringSleep(feedType, sleepCreated!);
         });
         final feed = _feedAt(addedFeed!);
+        final feedSubtitle = feed.historyBreastFeedDuration.isNotEmpty ? '${feed.whatToEatTitle} ${feed.historyBreastFeedDuration}' : feed.whatToEatTitle;
         showMTSnackbar(
-          feed.addFeedTitle,
+          feed.actionAddFeedTitle,
+          subtitle: feedSubtitle,
           titleAlign: TextAlign.start,
           trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
           onTap: () => EditFeedDialog.show(feed),
@@ -116,8 +121,10 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await EditFeedDialog.show(addedFeed!);
       // После редактора — актуальная запись по created, не lastFeed (сортировка по end).
       final feed = _feedAt(addedFeed!);
+      final feedSubtitle = feed.shouldShowCount ? '${feed.whatToEatTitle} ${feed.feedCount}' : feed.whatToEatTitle;
       showMTSnackbar(
-        feed.addFeedTitle,
+        feed.actionAddFeedTitle,
+        subtitle: feedSubtitle,
         titleAlign: TextAlign.start,
         trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
         onTap: () => EditFeedDialog.show(feed),
@@ -139,8 +146,12 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await _editFeed(feed.copyWith(endDate: endDate));
     });
     final finishedFeed = _feedAt(feed);
+    final feedSubtitle = finishedFeed.historyBreastFeedDuration.isNotEmpty
+        ? '${finishedFeed.whatToEatTitle} ${finishedFeed.historyBreastFeedDuration}'
+        : finishedFeed.whatToEatTitle;
     showMTSnackbar(
-      finishedFeed.finishedBreastFeedSnackbarTitle,
+      finishedFeed.actionAddFeedTitle,
+      subtitle: feedSubtitle,
       titleAlign: TextAlign.start,
       trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
       onTap: () => EditFeedDialog.show(finishedFeed),
