@@ -10,7 +10,7 @@ String _assetPath(String name, BuildContext context) {
   return 'assets/images/$name.png'; // было: $name${dark ? '_dark' : ''}.png'
 }
 
-double _defaultImageHeight(BuildContext context) => min(200, max(120, MediaQuery.sizeOf(context).height / 3.5));
+double defaultImageHeight(BuildContext context) => min(200, max(120, MediaQuery.sizeOf(context).height / 3.5));
 
 class MTSvgImage extends StatelessWidget {
   const MTSvgImage(this.name, {this.width, this.height, super.key});
@@ -33,7 +33,7 @@ class MTImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final h = height ?? _defaultImageHeight(context);
+    final h = height ?? defaultImageHeight(context);
     final w = width ?? h;
 
     return SizedBox(

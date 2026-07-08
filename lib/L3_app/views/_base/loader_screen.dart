@@ -31,13 +31,16 @@ class LoaderScreen extends StatelessWidget {
     maxLines: 5,
   );
 
-  Widget get _image => MTSvgImage(_ls.imageName!);
+  Widget _image(BuildContext context) {
+    final size = defaultImageHeight(context);
+    return MTSvgImage(_ls.imageName!, height: size, width: size);
+  }
 
   Widget get _child => ListView(
     shrinkWrap: true,
     children: [
       const SizedBox(height: P6),
-      if (_ls.imageName != null) _image,
+      if (_ls.imageName != null) Builder(builder: (context) => _image(context)),
       if (_ls.titleText != null) _title,
       if (_ls.descriptionText != null) _description,
       if (_ls.actionWidget == null) ...[
