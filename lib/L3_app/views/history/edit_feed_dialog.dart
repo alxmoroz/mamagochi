@@ -73,7 +73,7 @@ class EditFeedDialog extends StatelessWidget {
         final buttonSize = Size.square(size);
 
         return MTDialog(
-          topBar: MTTopBar(middle: H1(_fec.feed.editFeedTitle)),
+          topBar: MTTopBar(middle: H2(_fec.feed.editFeedTitle, color: f2Color)),
           body: ListView(
             shrinkWrap: true,
             children: [
@@ -107,8 +107,8 @@ class EditFeedDialog extends StatelessWidget {
                   elevation: 0,
                   child: MTListTile(
                     leading: const MTSvgIcon('bottle_fill', size: 60),
-                    middle: BaseText(_fec.feed.editFeedStartDateTitle),
-                    subtitle: H2(_fec.feed.startDateTime),
+                    middle: SmallText.medium(_fec.feed.editFeedStartDateTitle),
+                    subtitle: H1(_fec.feed.startDateTime),
                     bottomDivider: false,
                     onTap: _editStart,
                   ),
@@ -122,8 +122,8 @@ class EditFeedDialog extends StatelessWidget {
                 elevation: 0,
                 child: MTListTile(
                   leading: MTSvgIcon(_fec.feed.type.isBreast ? 'bottle_empty' : 'clock', size: 60),
-                  middle: BaseText(_fec.feed.editFeedEndFieldTitle),
-                  subtitle: H2(_fec.feed.endDateTime),
+                  middle: SmallText.medium(_fec.feed.editFeedEndFieldTitle),
+                  subtitle: H1(_fec.feed.endDateTime),
                   bottomDivider: false,
                   onTap: _editEnd,
                 ),

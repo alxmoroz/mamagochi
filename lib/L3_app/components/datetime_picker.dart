@@ -9,6 +9,7 @@ import 'package:mamagochi/L3_app/components/text.dart';
 import '../../L1_domain/utils/dates.dart';
 import '../views/app/services.dart';
 import 'button.dart';
+import 'colors.dart';
 import 'dialog.dart';
 import 'toolbar.dart';
 
@@ -40,7 +41,7 @@ class _State extends State<MTDateTimePicker> {
     final datePickerHeight = min(380.0, screen.height * 0.6);
 
     return MTDialog(
-      topBar: MTTopBar(middle: H1(widget.title, maxLines: 1)),
+      topBar: MTTopBar(middle: H2(widget.title, maxLines: 1, color: f2Color)),
       body: ListView(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

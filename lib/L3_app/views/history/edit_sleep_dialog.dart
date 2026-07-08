@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 
 import '/../L3_app/components/card.dart';
+import '/../L3_app/components/colors.dart';
 import '/../L3_app/components/constants.dart';
 import '/../L3_app/components/datetime_picker.dart';
 import '/../L3_app/components/dialog.dart';
@@ -67,7 +68,7 @@ class EditSleepDialog extends StatelessWidget {
         return _hc.loading
             ? LoaderScreen(_hc)
             : MTDialog(
-                topBar: MTTopBar(middle: H1(_sc.sleep.howMuchSleptTitle)),
+                topBar: MTTopBar(middle: H2(_sc.sleep.howMuchSleptTitle, color: f2Color)),
                 body: ListView(
                   shrinkWrap: true,
                   children: [
@@ -77,8 +78,8 @@ class EditSleepDialog extends StatelessWidget {
                       elevation: 0,
                       child: MTListTile(
                         leading: const MTSvgIcon('eye_closed', size: 60),
-                        middle: BaseText(_sc.sleep.startSleepActionTitle),
-                        subtitle: H2(_sc.sleep.startDateTime),
+                        middle: SmallText.medium(_sc.sleep.startSleepActionTitle),
+                        subtitle: H1(_sc.sleep.startDateTime),
                         bottomDivider: false,
                         onTap: _editStart,
                       ),
@@ -89,8 +90,8 @@ class EditSleepDialog extends StatelessWidget {
                       elevation: 0,
                       child: MTListTile(
                         leading: const MTSvgIcon('eye_open', size: 60),
-                        middle: BaseText(_sc.sleep.stopSleepActionTitle),
-                        subtitle: H2(_sc.sleep.endDateTime),
+                        middle: SmallText.medium(_sc.sleep.stopSleepActionTitle),
+                        subtitle: H1(_sc.sleep.endDateTime),
                         bottomDivider: false,
                         onTap: _editEnd,
                       ),
