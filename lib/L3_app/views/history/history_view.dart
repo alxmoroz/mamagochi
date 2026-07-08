@@ -552,7 +552,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const MTImage('no_info', height: P10 * 5, width: P10 * 5),
+                    const MTSvgImage('no_info', height: P10 * 5, width: P10 * 5),
                     H1(loc.history_empty_title, align: TextAlign.center),
                   ],
                 ),

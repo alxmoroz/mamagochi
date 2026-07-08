@@ -14,7 +14,7 @@ extension BabyPresenter on Baby? {
 
   Widget face({double? size, BabyFaceMode mode = BabyFaceMode.awake}) {
     final baby = this;
-    if (baby == null) return MTImage('no_info', height: size, width: size);
+    if (baby == null) return MTSvgImage('no_info', height: size, width: size);
     return BabyFaceWidget(config: BabyFaceConfig.forBaby(baby, mode), size: size);
   }
 
@@ -25,7 +25,7 @@ extension BabyPresenter on Baby? {
 
   Widget faceForHistory(HistoryController hc, {double? size}) {
     final baby = this;
-    if (baby == null) return MTImage('no_info', height: size, width: size);
+    if (baby == null) return MTSvgImage('no_info', height: size, width: size);
 
     final mode = hc.babyIsSleeping
         ? BabyFaceMode.sleep

@@ -31,7 +31,7 @@ class LoaderScreen extends StatelessWidget {
     maxLines: 5,
   );
 
-  Widget get _image => MTImage(_ls.imageName!);
+  Widget get _image => MTSvgImage(_ls.imageName!);
 
   Widget get _child => ListView(
     shrinkWrap: true,

@@ -50,7 +50,7 @@ extension FeedPresenter on Feed {
 
   String get feedCount => shouldShowCount ? '$count\u00A0${loc.milliliters}' : '';
 
-  Widget feedImage({double? size}) => MTImage(feedImageName, height: size, width: size);
+  Widget feedImage({double? size}) => MTSvgImage(feedImageName, height: size, width: size);
 
   String get feedImageName => type.isRightBreast == true
       ? 'right_breast'

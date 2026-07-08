@@ -110,8 +110,8 @@ class _MainViewState extends State<_MainView> {
   Widget get backgroundImage {
     final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
     return isDark
-        ? const Positioned(top: 0, left: 0, right: 0, height: 194, child: MTImage('stars', height: 194, width: 390))
-        : const Positioned(right: 0, width: 218, height: 252, child: MTImage('sun', height: 252, width: 218));
+        ? const Positioned(top: 0, left: 0, right: 0, height: 194, child: MTSvgImage('stars', height: 194, width: 390))
+        : const Positioned(right: 0, width: 218, height: 252, child: MTSvgImage('sun', height: 252, width: 218));
   }
 
   Widget _page(BuildContext context) {
@@ -173,7 +173,7 @@ class _MainViewState extends State<_MainView> {
                     right: ongoingFeed.type.isLeftBreast ? null : -100,
                     top: 0,
                     bottom: 0,
-                    child: const Center(child: IgnorePointer(child: MTImage('breast', height: 200))),
+                    child: const Center(child: IgnorePointer(child: MTSvgImage('breast', height: 200))),
                   ),
 
                 /// Кнопки сна и кормления

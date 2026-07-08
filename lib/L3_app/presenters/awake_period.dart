@@ -9,7 +9,7 @@ import '../presenters/duration.dart';
 import '../views/app/services.dart';
 
 extension AwakePeriodPresenter on AwakePeriod {
-  Widget awakeImage({double? size}) => MTImage('sun_with_face', height: size, width: size);
+  Widget awakeImage({double? size}) => MTSvgImage('sun_with_face', height: size, width: size);
 
   String get historyTitle => loc.history_awake_title;
 

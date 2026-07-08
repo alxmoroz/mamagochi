@@ -79,7 +79,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
 
   static Widget _buttonStartSleep(HistoryController hc, Size buttonSize) => _menuButton(
         buttonSize: buttonSize,
-        image: const MTImage('bed', height: 90),
+        image: const MTSvgImage('bed', height: 90),
         subtitle: hc.hasSleepEntriesFor24Hours ? SmallText(hc.lastSleep!.end.strTimeAgo) : null,
         onTap: () => hc.babyIsEating ? hc.stopBreastFeedAndStartSleep(now) : hc.startSleep(now),
       );
@@ -93,7 +93,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
 
   static Widget _buttonAddFeed(HistoryController hc, Size buttonSize) => _menuButton(
         buttonSize: buttonSize,
-        image: MTImage(hc.hasFeedEntriesFor24Hours ? hc.lastFeed!.feedImageName : 'bottle_baby_formula', height: 90),
+        image: MTSvgImage(hc.hasFeedEntriesFor24Hours ? hc.lastFeed!.feedImageName : 'bottle_baby_formula', height: 90),
         subtitle: hc.hasFeedEntriesFor24Hours ? SmallText(hc.lastFeed!.end.strTimeAgo) : null,
         onTap: () => hc.addFeed(),
       );

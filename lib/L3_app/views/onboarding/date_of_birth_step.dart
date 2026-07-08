@@ -55,7 +55,7 @@ class _State extends State<DateOfBirthStep> {
                     align: TextAlign.center,
                     padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
                   ),
-                  Center(child: MTImage('cake', height: screenHeight * 0.3)),
+                  Center(child: MTSvgImage('cake', height: screenHeight * 0.3)),
                   SizedBox(
                     height: screenHeight * 0.45,
                     child: CupertinoDatePicker(

@@ -56,7 +56,7 @@ class FeedTypeDialog extends StatelessWidget {
                                   type: MTButtonType.main,
                                   middle: Column(
                                     children: [
-                                      const MTImage('bottle_baby_formula', height: 90),
+                                      const MTSvgImage('bottle_baby_formula', height: 90),
                                       BaseText(loc.feed_type_baby_formula, color: f2Color),
                                     ],
                                   ),
@@ -83,7 +83,7 @@ class FeedTypeDialog extends StatelessWidget {
                                   middle: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const MTImage('bottle_milk', height: 90),
+                                      const MTSvgImage('bottle_milk', height: 90),
                                       BaseText(loc.feed_type_milk, color: f2Color),
                                     ],
                                   ),
@@ -99,7 +99,7 @@ class FeedTypeDialog extends StatelessWidget {
                                 minSize: const Size.square(250),
                                 color: b3Color,
                                 type: MTButtonType.main,
-                                middle: const MTImage('breast', height: 200),
+                                middle: const MTSvgImage('breast', height: 200),
                                 onTap: () => _addFeed(FeedingType.left_breast, context),
                               ),
                             ),
@@ -112,7 +112,7 @@ class FeedTypeDialog extends StatelessWidget {
                                 constrained: false,
                                 color: b3Color,
                                 type: MTButtonType.main,
-                                middle: const MTImage('breast', height: 200),
+                                middle: const MTSvgImage('breast', height: 200),
                                 onTap: () => _addFeed(FeedingType.right_breast, context),
                               ),
                             ),
