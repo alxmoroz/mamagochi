@@ -35,7 +35,11 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
   Future reload() async {
     await load(() async {
       await _fetchSleepEntries();
-      await _migrateStaleSleepEntries();
+      // Миграция закомментирована — она закрывала старые «зависшие» записи сна
+      // неправильным временем (не now), что ломало длительность завершаемых вручную
+      // записей и оставляло endDate равным startDate/created.
+      // Все пользователи уже обновились, миграция нужна была только один раз.
+      // await _migrateStaleSleepEntries();
       await _fetchFeedEntries();
       await _migrateSleepHintIfNeeded();
     });
