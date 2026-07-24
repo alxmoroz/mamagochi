@@ -100,52 +100,61 @@ class _BottleAmountColumnState extends State<BottleAmountColumn> {
   Widget build(BuildContext context) {
     final liquid = bottleLiquidColor.resolve(context);
     final trackWidth = MediaQuery.sizeOf(context).shortestSide;
+    const borderWidth = 5.0;
+    const outerRadius = DEF_BORDER_RADIUS * 2;
+    // Скругление жидкости по внутреннему краю обводки, иначе «выпирает» из-за clip по внешнему радиусу.
+    final innerRadius = (outerRadius - borderWidth).clamp(0.0, outerRadius);
 
     return Container(
-      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: b3Color.resolve(context).withValues(alpha: 0.2),
-        border: Border.all(color: b3Color.resolve(context), width: 5),
-        borderRadius: BorderRadius.circular(DEF_BORDER_RADIUS * 2),
+        color: bottleColor.resolve(context),
+        border: Border.all(color: b3Color.resolve(context), width: borderWidth),
+        borderRadius: BorderRadius.circular(outerRadius),
       ),
-      child: MTSlider(
-        min: 0,
-        max: bottleColumnMaxMl.toDouble(),
-        step: MTSliderStep(step: bottleColumnStepMl.toDouble()),
-        rtl: true,
-        jump: true,
-        selectByTap: true,
-        tooltip: MTSliderTooltip(disabled: true),
-        handlerHeight: 0,
-        handler: MTSliderHandler(child: const SizedBox.shrink()),
-        trackBar: MTSliderTrackBar(
-          activeTrackBarHeight: trackWidth,
-          activeTrackBar: BoxDecoration(color: liquid),
-          inactiveTrackBar: const BoxDecoration(color: Colors.transparent),
-        ),
-        hatchMark: MTSliderHatchMark(
-          displayLines: true,
-          // 26 интервалов по 10 мл от 0 до 260 → 27 рисок (p = 0…26).
-          density: bottleColumnMaxMl / bottleColumnStepMl / 100,
-          smallLine: MTSliderSizedBox(
-            height: 5,
-            width: 1,
-            decoration: BoxDecoration(color: f3Color.resolve(context)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(innerRadius),
+        child: MTSlider(
+          min: 0,
+          max: bottleColumnMaxMl.toDouble(),
+          step: MTSliderStep(step: bottleColumnStepMl.toDouble()),
+          rtl: true,
+          jump: true,
+          selectByTap: true,
+          tooltip: MTSliderTooltip(disabled: true),
+          handlerHeight: 0,
+          handler: MTSliderHandler(child: const SizedBox.shrink()),
+          trackBar: MTSliderTrackBar(
+            activeTrackBarHeight: trackWidth,
+            activeTrackBar: BoxDecoration(
+              color: liquid,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(innerRadius)),
+            ),
+            inactiveTrackBar: const BoxDecoration(color: Colors.transparent),
           ),
-          bigLine: MTSliderSizedBox(
-            height: 9,
-            width: 2,
-            decoration: BoxDecoration(color: f2Color.resolve(context)),
+          hatchMark: MTSliderHatchMark(
+            displayLines: true,
+            // 26 интервалов по 10 мл от 0 до 260 → 27 рисок (p = 0…26).
+            density: bottleColumnMaxMl / bottleColumnStepMl / 100,
+            smallLine: MTSliderSizedBox(
+              height: 5,
+              width: 1,
+              decoration: BoxDecoration(color: f3Color.resolve(context)),
+            ),
+            bigLine: MTSliderSizedBox(
+              height: 9,
+              width: 2,
+              decoration: BoxDecoration(color: f2Color.resolve(context)),
+            ),
+            labels: _labels,
           ),
-          labels: _labels,
+          values: [_localMl.toDouble()],
+          axis: Axis.vertical,
+          onDragStarted: (handlerIndex, lowerValue, upperValue) {
+            _dragging = true;
+          },
+          onDragging: (handlerIndex, lowerValue, upperValue) => _onDragUpdate(lowerValue),
+          onDragCompleted: (handlerIndex, lowerValue, upperValue) => _onDragEnd(lowerValue),
         ),
-        values: [_localMl.toDouble()],
-        axis: Axis.vertical,
-        onDragStarted: (handlerIndex, lowerValue, upperValue) {
-          _dragging = true;
-        },
-        onDragging: (handlerIndex, lowerValue, upperValue) => _onDragUpdate(lowerValue),
-        onDragCompleted: (handlerIndex, lowerValue, upperValue) => _onDragEnd(lowerValue),
       ),
     );
   }

@@ -169,6 +169,12 @@ const bottleLiquidColor = CupertinoDynamicColor.withBrightness(
   darkColor: Color(0xFFF0DFCE),
 );
 
+/// Фон «бутылочки» / столбца количества (светлая / тёмная тема).
+const bottleColor = CupertinoDynamicColor.withBrightness(
+  color: Color(0xFFD2E8FD),
+  darkColor: Color(0xFF424968),
+);
+
 // цвет для текста и иконок, которые должны оставаться белыми в светлой и тёмной теме
 const whiteColor = CupertinoDynamicColor.withBrightness(
   color: Color.fromARGB(255, _b3R, _b3G, _b3B),

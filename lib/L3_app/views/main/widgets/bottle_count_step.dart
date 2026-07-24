@@ -91,9 +91,19 @@ class _BottleCountStepState extends State<BottleCountStep> {
 
   static const _iconEdgePadding = 24.0;
 
-  Widget _sideButton({required String icon, required bool isLeft, required double size, required VoidCallback? onTap}) {
-    final iconAlign = isLeft ? Alignment.centerRight : Alignment.centerLeft;
-    final iconPadding = EdgeInsets.only(left: isLeft ? 0 : _iconEdgePadding, right: isLeft ? _iconEdgePadding : 0);
+  Widget _sideButton({
+    required String icon,
+    required bool isLeft,
+    required double size,
+    required bool iconCentered,
+    required VoidCallback? onTap,
+  }) {
+    final iconAlign = iconCentered
+        ? Alignment.center
+        : (isLeft ? Alignment.centerRight : Alignment.centerLeft);
+    final iconPadding = iconCentered
+        ? EdgeInsets.zero
+        : EdgeInsets.only(left: isLeft ? 0 : _iconEdgePadding, right: isLeft ? _iconEdgePadding : 0);
 
     return MTButton(
       minSize: Size.square(size),
@@ -149,15 +159,26 @@ class _BottleCountStepState extends State<BottleCountStep> {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final columnLeft = (constraints.maxWidth - columnWidth) / 2;
+          final minusLeft = columnLeft - P3 - buttonSize;
+          final plusLeft = columnLeft + columnWidth + P3;
+          // Иконка по центру, если кнопка целиком на экране; иначе прижата к внутреннему краю.
+          final minusFits = minusLeft >= 0;
+          final plusFits = plusLeft + buttonSize <= constraints.maxWidth;
 
           return Stack(
             clipBehavior: Clip.none,
             children: [
               /// минус слева — круглая, уезжает за край
               Positioned(
-                left: columnLeft - P3 - buttonSize,
+                left: minusLeft,
                 top: 0,
-                child: _sideButton(icon: 'minus', isLeft: true, size: buttonSize, onTap: current > 0 ? _decrement : null),
+                child: _sideButton(
+                  icon: 'minus',
+                  isLeft: true,
+                  size: buttonSize,
+                  iconCentered: minusFits,
+                  onTap: current > 0 ? _decrement : null,
+                ),
               ),
 
               /// столбец по центру
@@ -171,9 +192,15 @@ class _BottleCountStepState extends State<BottleCountStep> {
 
               /// плюс справа — круглая, уезжает за край
               Positioned(
-                left: columnLeft + columnWidth + P3,
+                left: plusLeft,
                 top: 0,
-                child: _sideButton(icon: 'plus', isLeft: false, size: buttonSize, onTap: current < foodCountMax ? _increment : null),
+                child: _sideButton(
+                  icon: 'plus',
+                  isLeft: false,
+                  size: buttonSize,
+                  iconCentered: plusFits,
+                  onTap: current < foodCountMax ? _increment : null,
+                ),
               ),
             ],
           );
