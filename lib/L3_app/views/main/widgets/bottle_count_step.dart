@@ -323,42 +323,52 @@ class _BottleCountStepState extends State<BottleCountStep> {
     // Только по факту клавиатуры — не по фокусу, иначе первый тап сбрасывает фокус при rebuild.
     final hideColumn = isLandscape && keyboardOpen;
     final showInlineSteppers = hideColumn && !big;
-    final availableHeight = mq.size.height - mq.padding.vertical - keyboardInset;
+    final availableHeight = mq.size.height - mq.padding.vertical;
     final columnWidth = min(180.0, mq.size.width * 0.36);
-    final columnHeight = min(360.0, availableHeight * 0.48);
     final current = _controller.currentCountFromField;
-
-    // Не Observer + LoaderScreen: setCount → editFeed → load() иначе сносит дерево и закрывает клавиатуру.
-    final body = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (!hideColumn) ...[
-          _columnWithSideButtons(
-            context: context,
-            columnWidth: columnWidth,
-            columnHeight: columnHeight,
-            current: current,
-          ),
-          const SizedBox(height: P2),
-        ],
-        _countFieldRow(
-          context: context,
-          current: current,
-          showSteppers: showInlineSteppers,
-          fieldWidth: columnWidth,
-        ),
-      ],
-    );
+    // Один нижний inset: клавиатура или safe area, без суммирования.
+    final bottomInset = max(keyboardInset, mq.padding.bottom);
 
     return Padding(
-      padding: EdgeInsets.only(bottom: keyboardInset),
+      padding: EdgeInsets.only(bottom: bottomInset),
       child: SafeArea(
+        bottom: false,
         child: Column(
           children: [
             Expanded(
               // Фон ловит тапы по пустым местам; контент по shrinkWrap — только свою область.
               child: LayoutBuilder(
                 builder: (context, constraints) {
+                  // Портрет + клавиатура: высоту столбца (и круглых +/−) берём из Expanded,
+                  // чтобы столб + поле поместились без скролла за край.
+                  const fieldBlockApprox = 100.0;
+                  final columnHeight = hideColumn
+                      ? 0.0
+                      : keyboardOpen
+                      ? min(360.0, max(120.0, constraints.maxHeight - fieldBlockApprox - P2))
+                      : min(360.0, availableHeight * 0.48);
+
+                  final body = Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (!hideColumn) ...[
+                        _columnWithSideButtons(
+                          context: context,
+                          columnWidth: columnWidth,
+                          columnHeight: columnHeight,
+                          current: current,
+                        ),
+                        const SizedBox(height: P2),
+                      ],
+                      _countFieldRow(
+                        context: context,
+                        current: current,
+                        showSteppers: showInlineSteppers,
+                        fieldWidth: columnWidth,
+                      ),
+                    ],
+                  );
+
                   return Stack(
                     children: [
                       Positioned.fill(
@@ -373,7 +383,6 @@ class _BottleCountStepState extends State<BottleCountStep> {
                           constraints: BoxConstraints(maxHeight: constraints.maxHeight),
                           child: ListView(
                             shrinkWrap: true,
-                            reverse: keyboardOpen,
                             padding: EdgeInsets.zero,
                             children: [body],
                           ),
@@ -384,6 +393,8 @@ class _BottleCountStepState extends State<BottleCountStep> {
                 },
               ),
             ),
+            // При клавиатуре контент прижат к низу Expanded — нужен явный зазор до «Сохранить».
+            if (keyboardOpen) SizedBox(height: isLandscape ? P4 : P3),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: P3),
               child: MTButton.main(titleText: loc.action_save_title, onTap: _save),
