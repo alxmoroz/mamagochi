@@ -31,8 +31,7 @@ class BottleCountStep extends StatefulWidget {
 
   final EditFeedController _fec;
 
-  static Future<bool?> show(Feed feed) async =>
-      await showMTDialog(BottleCountStep._(EditFeedController(feed)), forceCenter: true);
+  static Future<bool?> show(Feed feed) async => await showMTDialog(BottleCountStep._(EditFeedController(feed)), forceCenter: true);
 
   @override
   State<BottleCountStep> createState() => _BottleCountStepState();
@@ -90,38 +89,105 @@ class _BottleCountStepState extends State<BottleCountStep> {
     Navigator.of(context).pop(true);
   }
 
-  Widget _sideButton({required String icon, required VoidCallback? onTap}) => MTButton(
-        type: MTButtonType.main,
-        color: b3Color,
-        uf: false,
-        constrained: false,
-        middle: MTSvgIcon(icon, size: 40),
-        onTap: onTap,
-      );
+  static const _iconEdgePadding = 24.0;
+
+  Widget _sideButton({required String icon, required bool isLeft, required double size, required VoidCallback? onTap}) {
+    final iconAlign = isLeft ? Alignment.centerRight : Alignment.centerLeft;
+    final iconPadding = EdgeInsets.only(left: isLeft ? 0 : _iconEdgePadding, right: isLeft ? _iconEdgePadding : 0);
+
+    return MTButton(
+      minSize: Size.square(size),
+      color: b3Color,
+      type: MTButtonType.main,
+      uf: false,
+      constrained: false,
+      middle: SizedBox(
+        width: size,
+        height: size,
+        child: Align(
+          alignment: iconAlign,
+          child: Padding(padding: iconPadding, child: MTSvgIcon(icon, size: 48)),
+        ),
+      ),
+      onTap: onTap,
+    );
+  }
 
   Widget _textField(BuildContext context) => MTCard(
-        margin: const EdgeInsets.symmetric(vertical: P),
-        radius: 40,
-        elevation: 0,
-        child: MTTextField(
-          controller: _controller.teController(0),
-          focusNode: _controller.focusNode(0),
-          keyboardType: TextInputType.number,
-          textAlign: TextAlign.center,
-          autofocus: false,
-          style: const H1('', color: f1Color).style(context),
-          margin: EdgeInsets.zero,
-          inputFormatters: foodCountInputFormatters,
-          onChanged: _controller.updateCountFromText,
-        ),
-      );
+    margin: const EdgeInsets.symmetric(vertical: P),
+    radius: 40,
+    elevation: 0,
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(0, P3, 0, 3),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          MTTextField(
+            controller: _controller.teController(0),
+            focusNode: _controller.focusNode(0),
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.center,
+            autofocus: false,
+            style: const H1('', color: f1Color).style(context),
+            margin: EdgeInsets.zero,
+            contentPadding: EdgeInsets.zero,
+            inputFormatters: foodCountInputFormatters,
+            onChanged: _controller.updateCountFromText,
+          ),
+          SmallText(loc.milliliters, align: TextAlign.center, color: f2Color),
+        ],
+      ),
+    ),
+  );
+
+  Widget _columnWithSideButtons({required double columnWidth, required double columnHeight, required int current}) {
+    final buttonSize = columnHeight;
+
+    return SizedBox(
+      height: columnHeight,
+      width: double.infinity,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final columnLeft = (constraints.maxWidth - columnWidth) / 2;
+
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              /// минус слева — круглая, уезжает за край
+              Positioned(
+                left: columnLeft - P3 - buttonSize,
+                top: 0,
+                child: _sideButton(icon: 'minus', isLeft: true, size: buttonSize, onTap: current > 0 ? _decrement : null),
+              ),
+
+              /// столбец по центру
+              Positioned(
+                left: columnLeft,
+                top: 0,
+                width: columnWidth,
+                height: columnHeight,
+                child: BottleAmountColumn(valueMl: current, onChanged: _onColumnChanged, onChangeEnd: _onColumnChangeEnd),
+              ),
+
+              /// плюс справа — круглая, уезжает за край
+              Positioned(
+                left: columnLeft + columnWidth + P3,
+                top: 0,
+                child: _sideButton(icon: 'plus', isLeft: false, size: buttonSize, onTap: current < foodCountMax ? _increment : null),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final hc = mainController.selectedBabyController!.historyController;
     final screen = MediaQuery.sizeOf(context);
-    final columnWidth = min(140.0, screen.width * 0.36);
-    final columnHeight = min(420.0, screen.height * 0.48);
+    final columnWidth = min(180.0, screen.width * 0.36);
+    final columnHeight = min(360.0, screen.height * 0.48);
     final current = _controller.currentCountFromField;
 
     return Observer(
@@ -132,64 +198,29 @@ class _BottleCountStepState extends State<BottleCountStep> {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => Navigator.of(context).pop(false),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: P3, vertical: P3),
-              child: GestureDetector(
-                onTap: () {}, // не закрывать по тапу внутри содержимого
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(
-                              height: columnHeight,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  SizedBox(
-                                    width: 72,
-                                    child: _sideButton(
-                                      icon: 'minus',
-                                      onTap: current > 0 ? _decrement : null,
-                                    ),
-                                  ),
-                                  const SizedBox(width: P2),
-                                  SizedBox(
-                                    width: columnWidth,
-                                    child: BottleAmountColumn(
-                                      valueMl: current,
-                                      onChanged: _onColumnChanged,
-                                      onChangeEnd: _onColumnChangeEnd,
-                                    ),
-                                  ),
-                                  const SizedBox(width: P2),
-                                  SizedBox(
-                                    width: 72,
-                                    child: _sideButton(
-                                      icon: 'plus',
-                                      onTap: current < foodCountMax ? _increment : null,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: P2),
-                            SizedBox(width: columnWidth, child: _textField(context)),
-                          ],
-                        ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {}, // не закрывать по тапу внутри содержимого
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _columnWithSideButtons(columnWidth: columnWidth, columnHeight: columnHeight, current: current),
+                          const SizedBox(height: P2),
+                          SizedBox(width: columnWidth, child: _textField(context)),
+                        ],
                       ),
                     ),
-                    MTButton.main(
-                      titleText: loc.action_save_title,
-                      onTap: _save,
-                    ),
-                    const SizedBox(height: P2),
-                  ],
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: P3),
+                  child: MTButton.main(titleText: loc.action_save_title, onTap: _save),
+                ),
+                const SizedBox(height: P2),
+              ],
             ),
           ),
         );

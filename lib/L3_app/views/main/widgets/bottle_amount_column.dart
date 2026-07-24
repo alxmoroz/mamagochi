@@ -104,7 +104,8 @@ class _BottleAmountColumnState extends State<BottleAmountColumn> {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: b2Color.resolve(context),
+        color: b3Color.resolve(context).withValues(alpha: 0.2),
+        border: Border.all(color: b3Color.resolve(context), width: 5),
         borderRadius: BorderRadius.circular(DEF_BORDER_RADIUS * 2),
       ),
       child: MTSlider(
