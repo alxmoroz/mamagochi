@@ -60,14 +60,16 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await _editSleep(sleep, endDate: endDate);
     });
 
+    // Актуальная запись после сохранения (со endDate), не старый ongoing-объект.
+    final finishedSleep = _sleepAt(sleep);
     final sleptTitle = _baby.isBoy ? loc.how_much_slept_boy('') : loc.how_much_slept_girl('');
-    final subtitle = sleep.duration.inMinutes > 0 ? sleep.sleepDuration : null;
+    final subtitle = finishedSleep.duration.inMinutes > 0 ? finishedSleep.sleepDuration : null;
     showMTSnackbar(
       sleptTitle.trim(),
       subtitle: subtitle,
       titleAlign: TextAlign.start,
       trailing: BaseText.medium(loc.action_edit_title, color: mainColor),
-      onTap: () => EditSleepDialog.show(sleep),
+      onTap: () => EditSleepDialog.show(finishedSleep),
     );
   }
 
@@ -333,6 +335,9 @@ abstract class _Base with Store {
   Feed _feedAt(Feed feed) =>
       // created не меняется при редактировании — стабильный ключ записи.
       _feedEntries.firstWhere((f) => f.created.isAtSameMomentAs(feed.created));
+
+  Sleep _sleepAt(Sleep sleep) =>
+      _sleepEntries.firstWhere((s) => s.created.isAtSameMomentAs(sleep.created));
 
   @computed
   bool get hasFeedEntriesFor24Hours => lastFeed != null && now.difference(lastFeed!.end).inHours < 24;
