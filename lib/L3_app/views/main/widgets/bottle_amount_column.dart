@@ -88,13 +88,22 @@ class _BottleAmountColumnState extends State<BottleAmountColumn> {
     widget.onChangeEnd(ml);
   }
 
-  List<MTSliderHatchMarkLabel> get _labels => [
-        for (final ml in bottleColumnLabelMls)
-          MTSliderHatchMarkLabel(
-            percent: ((ml / bottleColumnMaxMl) * 100).round().clamp(0, 100),
-            label: SmallText('—  $ml  —', color: f2Color),
+  List<MTSliderHatchMarkLabel> _labels(BuildContext context) {
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    // В тёмной теме жидкость светлая — цифры в заполненной зоне как F2 светлой темы.
+    final filledLabelColor = f2Color.color;
+
+    return [
+      for (final ml in bottleColumnLabelMls)
+        MTSliderHatchMarkLabel(
+          percent: ((ml / bottleColumnMaxMl) * 100).round().clamp(0, 100),
+          label: SmallText(
+            '—  $ml  —',
+            color: isDark && _localMl >= ml ? filledLabelColor : f2Color,
           ),
-      ];
+        ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +154,7 @@ class _BottleAmountColumnState extends State<BottleAmountColumn> {
               width: 2,
               decoration: BoxDecoration(color: f2Color.resolve(context)),
             ),
-            labels: _labels,
+            labels: _labels(context),
           ),
           values: [_localMl.toDouble()],
           axis: Axis.vertical,
