@@ -1637,14 +1637,13 @@ class _MTSliderState extends State<MTSlider> with TickerProviderStateMixin {
   }
 
   void _renderBoxInitialization() {
-    if (_containerLeft <= 0 || (MediaQuery.of(context).size.width - _constraintMaxWidth) <= _containerLeft) {
-      final RenderBox containerRenderBox = containerKey.currentContext!.findRenderObject() as RenderBox;
-      _containerLeft = containerRenderBox.localToGlobal(Offset.zero).dx;
-    }
-    if (_containerTop <= 0 || (MediaQuery.of(context).size.height - _constraintMaxHeight) <= _containerTop) {
-      final RenderBox containerRenderBox = containerKey.currentContext!.findRenderObject() as RenderBox;
-      _containerTop = containerRenderBox.localToGlobal(Offset.zero).dy;
-    }
+    // Всегда обновляем: иначе после сдвига (клавиатура, скролл) тап/свайп
+    // считаются со старым offset — значение «выше», чем точка касания.
+    if (containerKey.currentContext == null) return;
+    final RenderBox containerRenderBox = containerKey.currentContext!.findRenderObject() as RenderBox;
+    final origin = containerRenderBox.localToGlobal(Offset.zero);
+    _containerLeft = origin.dx;
+    _containerTop = origin.dy;
   }
 
   bool _rightHandlerIgnoreSteps(double? tS) {

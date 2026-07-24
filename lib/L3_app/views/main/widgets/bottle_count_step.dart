@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../../../L1_domain/entities/feed.dart';
 import '../../../components/adaptive.dart';
@@ -20,7 +19,6 @@ import '../../../components/images.dart';
 import '../../../components/text.dart';
 import '../../../components/text_field.dart';
 import '../../_base/edit_controller.dart';
-import '../../_base/loader_screen.dart';
 import '../../app/services.dart';
 import '../../history/edit_feed_controller.dart';
 import '../../history/food_count_editor.dart';
@@ -41,6 +39,9 @@ class BottleCountStep extends StatefulWidget {
 
 class _BottleCountStepState extends State<BottleCountStep> {
   late final _BottleCountStepController _controller;
+
+  /// Сохраняет Element поля при смене раскладки (ландшафт + клавиатура), чтобы не терять фокус.
+  final GlobalKey _mlFieldKey = GlobalKey();
 
   EditFeedController get _fec => widget._fec;
 
@@ -91,6 +92,17 @@ class _BottleCountStepState extends State<BottleCountStep> {
     Navigator.of(context).pop(true);
   }
 
+  /// Свободная область: сначала закрыть клавиатуру, иначе закрыть шаг без снэкбара.
+  void _onBackgroundTap() {
+    final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
+    final hasFocus = FocusManager.instance.primaryFocus?.hasFocus ?? false;
+    if (keyboardOpen || hasFocus) {
+      unfocusAll();
+      return;
+    }
+    Navigator.of(context).pop(false);
+  }
+
   static const _iconEdgePadding = 24.0;
 
   Widget _sideButton({
@@ -107,25 +119,29 @@ class _BottleCountStepState extends State<BottleCountStep> {
         ? EdgeInsets.zero
         : EdgeInsets.only(left: isLeft ? 0 : _iconEdgePadding, right: isLeft ? _iconEdgePadding : 0);
 
-    return MTButton(
-      minSize: Size.square(size),
-      color: b3Color,
-      type: MTButtonType.main,
-      uf: false,
-      constrained: false,
-      middle: SizedBox(
-        width: size,
-        height: size,
-        child: Align(
-          alignment: iconAlign,
-          child: Padding(padding: iconPadding, child: MTSvgIcon(icon, size: 48)),
+    // ExcludeFocus: OutlinedButton иначе забирает фокус у поля и закрывает клавиатуру.
+    return ExcludeFocus(
+      child: MTButton(
+        minSize: Size.square(size),
+        color: b3Color,
+        type: MTButtonType.main,
+        uf: false,
+        constrained: false,
+        middle: SizedBox(
+          width: size,
+          height: size,
+          child: Align(
+            alignment: iconAlign,
+            child: Padding(padding: iconPadding, child: MTSvgIcon(icon, size: 48)),
+          ),
         ),
+        onTap: onTap,
       ),
-      onTap: onTap,
     );
   }
 
   Widget _textField(BuildContext context) => MTCard(
+    key: _mlFieldKey,
     margin: const EdgeInsets.symmetric(vertical: P),
     radius: 40,
     elevation: 0,
@@ -152,14 +168,15 @@ class _BottleCountStepState extends State<BottleCountStep> {
     ),
   );
 
-  /// Соска над столбцом: только портрет или большой экран. SVG 156×121.
+  /// Соска над столбцом: только портрет или большой экран; скрыта при клавиатуре. SVG 156×121.
   static const _pacifierAspect = 121 / 156;
 
   String get _pacifierAssetName =>
       _fec.feed.type.isMilkBottle ? 'bottle_pacifier_milk' : 'bottle_pacifier_baby_formula';
 
   bool _shouldShowPacifier(BuildContext context) =>
-      isBigScreen(context) || MediaQuery.orientationOf(context) == Orientation.portrait;
+      MediaQuery.viewInsetsOf(context).bottom == 0 &&
+      (isBigScreen(context) || MediaQuery.orientationOf(context) == Orientation.portrait);
 
   Widget _columnWithSideButtons({
     required BuildContext context,
@@ -242,54 +259,134 @@ class _BottleCountStepState extends State<BottleCountStep> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final hc = mainController.selectedBabyController!.historyController;
-    final screen = MediaQuery.sizeOf(context);
-    final columnWidth = min(180.0, screen.width * 0.36);
-    final columnHeight = min(360.0, screen.height * 0.48);
-    final current = _controller.currentCountFromField;
+  /// Поле мл; при [showSteppers] — − и + по бокам (ландшафт + клавиатура + не big screen).
+  /// Слот поля в дереве фиксирован (Expanded всегда в центре Row) — иначе теряется фокус.
+  Widget _countFieldRow({
+    required BuildContext context,
+    required int current,
+    required bool showSteppers,
+    required double fieldWidth,
+  }) {
+    const buttonSize = 56.0;
 
-    return Observer(
-      builder: (_) {
-        if (hc.loading) return LoaderScreen(hc);
+    Widget? sideButton({required String icon, required bool isLeft, required VoidCallback? onTap}) {
+      if (!showSteppers) return null;
+      return _sideButton(
+        icon: icon,
+        isLeft: isLeft,
+        size: buttonSize,
+        iconCentered: true,
+        onTap: onTap,
+      );
+    }
 
-        return SafeArea(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => Navigator.of(context).pop(false),
-            child: Column(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {}, // не закрывать по тапу внутри содержимого
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _columnWithSideButtons(
-                            context: context,
-                            columnWidth: columnWidth,
-                            columnHeight: columnHeight,
-                            current: current,
-                          ),
-                          const SizedBox(height: P2),
-                          SizedBox(width: columnWidth, child: _textField(context)),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: P3),
-                  child: MTButton.main(titleText: loc.action_save_title, onTap: _save),
-                ),
-                const SizedBox(height: P2),
-              ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: showSteppers ? P3 : 0),
+      child: Row(
+        children: [
+          SizedBox(
+            width: showSteppers ? buttonSize : 0,
+            height: showSteppers ? buttonSize : 0,
+            child: sideButton(icon: 'minus', isLeft: true, onTap: current > 0 ? _decrement : null),
+          ),
+          SizedBox(width: showSteppers ? P2 : 0),
+          Expanded(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: showSteppers ? double.infinity : fieldWidth),
+                child: _textField(context),
+              ),
             ),
           ),
-        );
-      },
+          SizedBox(width: showSteppers ? P2 : 0),
+          SizedBox(
+            width: showSteppers ? buttonSize : 0,
+            height: showSteppers ? buttonSize : 0,
+            child: sideButton(
+              icon: 'plus',
+              isLeft: false,
+              onTap: current < foodCountMax ? _increment : null,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    final keyboardInset = mq.viewInsets.bottom;
+    final keyboardOpen = keyboardInset > 0;
+    final isLandscape = mq.orientation == Orientation.landscape;
+    final big = isBigScreen(context);
+    // Только по факту клавиатуры — не по фокусу, иначе первый тап сбрасывает фокус при rebuild.
+    final hideColumn = isLandscape && keyboardOpen;
+    final showInlineSteppers = hideColumn && !big;
+    final availableHeight = mq.size.height - mq.padding.vertical - keyboardInset;
+    final columnWidth = min(180.0, mq.size.width * 0.36);
+    final columnHeight = min(360.0, availableHeight * 0.48);
+    final current = _controller.currentCountFromField;
+
+    // Не Observer + LoaderScreen: setCount → editFeed → load() иначе сносит дерево и закрывает клавиатуру.
+    return Padding(
+      padding: EdgeInsets.only(bottom: keyboardInset),
+      child: SafeArea(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _onBackgroundTap,
+          child: Column(
+            children: [
+              Expanded(
+                // Контент перехватывает тап без unfocus (клавиатура остаётся).
+                // Пустое место вокруг (deferToChild) уходит во внешний _onBackgroundTap.
+                child: GestureDetector(
+                  // Не снимать фокус с поля: иначе +/− и столб закрывают клавиатуру.
+                  // Пустая область снаружи по-прежнему обрабатывается _onBackgroundTap.
+                  onTap: () {},
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        reverse: keyboardOpen,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (!hideColumn) ...[
+                                  _columnWithSideButtons(
+                                    context: context,
+                                    columnWidth: columnWidth,
+                                    columnHeight: columnHeight,
+                                    current: current,
+                                  ),
+                                  const SizedBox(height: P2),
+                                ],
+                                _countFieldRow(
+                                  context: context,
+                                  current: current,
+                                  showSteppers: showInlineSteppers,
+                                  fieldWidth: columnWidth,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: P3),
+                child: MTButton.main(titleText: loc.action_save_title, onTap: _save),
+              ),
+              const SizedBox(height: P2),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
