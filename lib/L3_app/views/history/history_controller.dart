@@ -50,7 +50,10 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     await load(() async {
       await _startSleep(startDate);
     });
-    showMTSnackbar(lastSleep!.startSleepActionTitle);
+    // Снэкбар на старте сна пока убираем: экран и так меняется (лицо, кнопка, таймер),
+    // а «Уснул(а)» без длительности и «Изменить» почти ничего не даёт.
+    // Снэкбары оставляем на завершении (итог + правка), как у кормления грудью.
+    // showMTSnackbar(lastSleep!.startSleepActionTitle);
   }
 
   Future stopSleep(DateTime endDate) async {
