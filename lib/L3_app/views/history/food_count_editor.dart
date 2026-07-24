@@ -12,6 +12,7 @@ import '../../components/icons.dart';
 import '../../components/text.dart';
 import '../../components/text_field.dart';
 import '../_base/edit_controller.dart';
+import '../app/services.dart';
 import 'edit_feed_controller.dart';
 
 const int foodCountStep = 10;
@@ -149,15 +150,25 @@ class _FoodCountEditorState extends State<FoodCountEditor> {
       margin: const EdgeInsets.symmetric(vertical: P),
       radius: 40,
       elevation: 0,
-      child: MTTextField(
-        controller: _controller.teController(0),
-        focusNode: _controller.focusNode(0),
-        keyboardType: TextInputType.number,
-        textAlign: TextAlign.center,
-        style: const H1('', color: f1Color).style(context),
-        margin: EdgeInsets.zero,
-        inputFormatters: foodCountInputFormatters,
-        onChanged: _controller.updateCount,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, P3, 0, 3),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MTTextField(
+              controller: _controller.teController(0),
+              focusNode: _controller.focusNode(0),
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              style: const H1('', color: f1Color).style(context),
+              margin: EdgeInsets.zero,
+              contentPadding: EdgeInsets.zero,
+              inputFormatters: foodCountInputFormatters,
+              onChanged: _controller.updateCount,
+            ),
+            SmallText(loc.milliliters, align: TextAlign.center, color: f2Color),
+          ],
+        ),
       ),
     ),
   );
