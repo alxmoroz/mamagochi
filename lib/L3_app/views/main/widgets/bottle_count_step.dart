@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../../../L1_domain/entities/feed.dart';
+import '../../../components/adaptive.dart';
 import '../../../components/button.dart';
 import '../../../components/card.dart';
 import '../../../components/colors.dart';
@@ -15,6 +16,7 @@ import '../../../components/dialog.dart';
 import '../../../components/field_data.dart';
 import '../../../components/gesture.dart';
 import '../../../components/icons.dart';
+import '../../../components/images.dart';
 import '../../../components/text.dart';
 import '../../../components/text_field.dart';
 import '../../_base/edit_controller.dart';
@@ -150,11 +152,28 @@ class _BottleCountStepState extends State<BottleCountStep> {
     ),
   );
 
-  Widget _columnWithSideButtons({required double columnWidth, required double columnHeight, required int current}) {
+  /// Соска над столбцом: только портрет или большой экран. SVG 156×121.
+  static const _pacifierAspect = 121 / 156;
+
+  String get _pacifierAssetName =>
+      _fec.feed.type.isMilkBottle ? 'bottle_pacifier_milk' : 'bottle_pacifier_baby_formula';
+
+  bool _shouldShowPacifier(BuildContext context) =>
+      isBigScreen(context) || MediaQuery.orientationOf(context) == Orientation.portrait;
+
+  Widget _columnWithSideButtons({
+    required BuildContext context,
+    required double columnWidth,
+    required double columnHeight,
+    required int current,
+  }) {
     final buttonSize = columnHeight;
+    final showPacifier = _shouldShowPacifier(context);
+    final pacifierHeight = showPacifier ? columnWidth * _pacifierAspect : 0.0;
+    final totalHeight = columnHeight + pacifierHeight;
 
     return SizedBox(
-      height: columnHeight,
+      height: totalHeight,
       width: double.infinity,
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -168,10 +187,10 @@ class _BottleCountStepState extends State<BottleCountStep> {
           return Stack(
             clipBehavior: Clip.none,
             children: [
-              /// минус слева — круглая, уезжает за край
+              /// минус слева — круглая, уезжает за край (на уровне столбца, не соски)
               Positioned(
                 left: minusLeft,
-                top: 0,
+                top: pacifierHeight,
                 child: _sideButton(
                   icon: 'minus',
                   isLeft: true,
@@ -181,19 +200,33 @@ class _BottleCountStepState extends State<BottleCountStep> {
                 ),
               ),
 
-              /// столбец по центру
+              /// соска + столбец по центру, вплотную
               Positioned(
                 left: columnLeft,
                 top: 0,
                 width: columnWidth,
-                height: columnHeight,
-                child: BottleAmountColumn(valueMl: current, onChanged: _onColumnChanged, onChangeEnd: _onColumnChangeEnd),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (showPacifier)
+                      MTSvgImage(_pacifierAssetName, width: columnWidth, height: pacifierHeight),
+                    SizedBox(
+                      width: columnWidth,
+                      height: columnHeight,
+                      child: BottleAmountColumn(
+                        valueMl: current,
+                        onChanged: _onColumnChanged,
+                        onChangeEnd: _onColumnChangeEnd,
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               /// плюс справа — круглая, уезжает за край
               Positioned(
                 left: plusLeft,
-                top: 0,
+                top: pacifierHeight,
                 child: _sideButton(
                   icon: 'plus',
                   isLeft: false,
@@ -234,7 +267,12 @@ class _BottleCountStepState extends State<BottleCountStep> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          _columnWithSideButtons(columnWidth: columnWidth, columnHeight: columnHeight, current: current),
+                          _columnWithSideButtons(
+                            context: context,
+                            columnWidth: columnWidth,
+                            columnHeight: columnHeight,
+                            current: current,
+                          ),
                           const SizedBox(height: P2),
                           SizedBox(width: columnWidth, child: _textField(context)),
                         ],
