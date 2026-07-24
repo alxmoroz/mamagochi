@@ -25,7 +25,8 @@ import '../../history/food_count_editor.dart';
 import 'bottle_amount_column.dart';
 
 /// Полноэкранный шаг выбора количества для бутылочки.
-/// Возвращает `true`, если нажали «Сохранить»; иначе запись остаётся без снэкбара.
+/// Возвращает `true` при «Сохранить» или тапе по свободной области (снэкбар);
+/// `null`/`false` — шаг закрыт иначе (без снэкбара).
 class BottleCountStep extends StatefulWidget {
   const BottleCountStep._(this._fec);
 
@@ -92,15 +93,14 @@ class _BottleCountStepState extends State<BottleCountStep> {
     Navigator.of(context).pop(true);
   }
 
-  /// Свободная область: сначала закрыть клавиатуру, иначе закрыть шаг без снэкбара.
+  /// Свободная область: при открытой клавиатуре — только закрыть её;
+  /// иначе — как «Сохранить» (снэкбар).
   void _onBackgroundTap() {
-    final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
-    final hasFocus = FocusManager.instance.primaryFocus?.hasFocus ?? false;
-    if (keyboardOpen || hasFocus) {
+    if (MediaQuery.viewInsetsOf(context).bottom > 0) {
       unfocusAll();
       return;
     }
-    Navigator.of(context).pop(false);
+    _save();
   }
 
   static const _iconEdgePadding = 24.0;
@@ -329,62 +329,67 @@ class _BottleCountStepState extends State<BottleCountStep> {
     final current = _controller.currentCountFromField;
 
     // Не Observer + LoaderScreen: setCount → editFeed → load() иначе сносит дерево и закрывает клавиатуру.
+    final body = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (!hideColumn) ...[
+          _columnWithSideButtons(
+            context: context,
+            columnWidth: columnWidth,
+            columnHeight: columnHeight,
+            current: current,
+          ),
+          const SizedBox(height: P2),
+        ],
+        _countFieldRow(
+          context: context,
+          current: current,
+          showSteppers: showInlineSteppers,
+          fieldWidth: columnWidth,
+        ),
+      ],
+    );
+
     return Padding(
       padding: EdgeInsets.only(bottom: keyboardInset),
       child: SafeArea(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: _onBackgroundTap,
-          child: Column(
-            children: [
-              Expanded(
-                // Контент перехватывает тап без unfocus (клавиатура остаётся).
-                // Пустое место вокруг (deferToChild) уходит во внешний _onBackgroundTap.
-                child: GestureDetector(
-                  // Не снимать фокус с поля: иначе +/− и столб закрывают клавиатуру.
-                  // Пустая область снаружи по-прежнему обрабатывается _onBackgroundTap.
-                  onTap: () {},
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SingleChildScrollView(
-                        reverse: keyboardOpen,
+        child: Column(
+          children: [
+            Expanded(
+              // Фон ловит тапы по пустым местам; контент по shrinkWrap — только свою область.
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Stack(
+                    children: [
+                      Positioned.fill(
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: _onBackgroundTap,
+                        ),
+                      ),
+                      Align(
+                        alignment: keyboardOpen ? Alignment.bottomCenter : Alignment.center,
                         child: ConstrainedBox(
-                          constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (!hideColumn) ...[
-                                  _columnWithSideButtons(
-                                    context: context,
-                                    columnWidth: columnWidth,
-                                    columnHeight: columnHeight,
-                                    current: current,
-                                  ),
-                                  const SizedBox(height: P2),
-                                ],
-                                _countFieldRow(
-                                  context: context,
-                                  current: current,
-                                  showSteppers: showInlineSteppers,
-                                  fieldWidth: columnWidth,
-                                ),
-                              ],
-                            ),
+                          constraints: BoxConstraints(maxHeight: constraints.maxHeight),
+                          child: ListView(
+                            shrinkWrap: true,
+                            reverse: keyboardOpen,
+                            padding: EdgeInsets.zero,
+                            children: [body],
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+                    ],
+                  );
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: P3),
-                child: MTButton.main(titleText: loc.action_save_title, onTap: _save),
-              ),
-              const SizedBox(height: P2),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: P3),
+              child: MTButton.main(titleText: loc.action_save_title, onTap: _save),
+            ),
+            const SizedBox(height: P2),
+          ],
         ),
       ),
     );
