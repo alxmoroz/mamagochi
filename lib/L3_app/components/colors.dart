@@ -163,6 +163,12 @@ const dangerColor = CupertinoDynamicColor.withBrightness(color: Color.fromARGB(2
 
 const warningColor = CupertinoDynamicColor.withBrightness(color: Color.fromARGB(255, 255, 192, 8), darkColor: Color.fromARGB(255, 255, 200, 20));
 
+/// Цвет жидкости в столбце количества бутылочки (молоко и смесь одинаковые).
+const bottleLiquidColor = CupertinoDynamicColor.withBrightness(
+  color: Color(0xFFFFF7EE),
+  darkColor: Color(0xFFF0DFCE),
+);
+
 // цвет для текста и иконок, которые должны оставаться белыми в светлой и тёмной теме
 const whiteColor = CupertinoDynamicColor.withBrightness(
   color: Color.fromARGB(255, _b3R, _b3G, _b3B),

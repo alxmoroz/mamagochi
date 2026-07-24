@@ -19,6 +19,7 @@ import '../../components/snackbar_dialog.dart';
 import '../../components/text.dart';
 import '../_base/loadable.dart';
 import '../app/services.dart';
+import '../main/widgets/bottle_count_step.dart';
 import '../main/widgets/feed_type_dialog.dart';
 import 'edit_feed_dialog.dart';
 import 'edit_sleep_dialog.dart';
@@ -123,8 +124,10 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
       await load(() async {
         addedFeed = await _addFeed(feedType, sleepCreated: sleepCreated);
       });
-      await EditFeedDialog.show(addedFeed!);
-      // После редактора — актуальная запись по created, не lastFeed (сортировка по end).
+      final saved = await BottleCountStep.show(addedFeed!);
+      if (saved != true) return;
+
+      // После шага количества — актуальная запись по created, не lastFeed (сортировка по end).
       final feed = _feedAt(addedFeed!);
       final feedSubtitle = feed.shouldShowCount ? '${feed.whatToEatTitle} ${feed.feedCount}' : feed.whatToEatTitle;
       showMTSnackbar(
@@ -304,7 +307,13 @@ abstract class _Base with Store {
 
   @action
   Future<Feed> _addFeed(FeedingType type, {DateTime? sleepCreated}) async {
-    final feed = Feed(created: now, babyCreatedTime: _baby.created, type: type, sleepCreated: sleepCreated);
+    final feed = Feed(
+      created: now,
+      babyCreatedTime: _baby.created,
+      type: type,
+      sleepCreated: sleepCreated,
+      count: lastBottleFeedCount,
+    );
     _feedEntries.add(feed);
     await feedUC.edit(feed);
     return feed;
@@ -348,6 +357,11 @@ abstract class _Base with Store {
   /// Последняя запись по времени окончания; для снэкбара после добавления не подходит.
   @computed
   Feed? get lastFeed => _sortedFeedEntries.lastOrNull;
+
+  /// Количество из последней записи бутылочки (молоко/смесь); если нет — 0.
+  @computed
+  int get lastBottleFeedCount =>
+      _sortedFeedEntries.where((f) => f.type.isBottle).lastOrNull?.count ?? 0;
 
   @computed
   Iterable<Feed> get _sortedFeedEntries => _feedEntries.sortedBy<DateTime>((e) => e.end);

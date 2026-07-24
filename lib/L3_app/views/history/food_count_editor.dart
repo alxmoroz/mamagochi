@@ -14,15 +14,24 @@ import '../../components/text_field.dart';
 import '../_base/edit_controller.dart';
 import 'edit_feed_controller.dart';
 
-const int _countStep = 10;
-const int _maxCount = 9999;
+const int foodCountStep = 10;
+const int foodCountMax = 9999;
 
-int _roundUpToTen(int value) => ((value + 9) ~/ 10) * 10;
-int _roundDownToTen(int value) => (value ~/ 10) * 10;
-int _clampCount(int value) => value.clamp(0, _maxCount);
+int roundFoodCountUpToTen(int value) => ((value + 9) ~/ 10) * 10;
+int roundFoodCountDownToTen(int value) => (value ~/ 10) * 10;
+int clampFoodCount(int value) => value.clamp(0, foodCountMax);
 
-// Удаление ведущих нулей из поля ввода
-class _LeadingZerosFormatter extends TextInputFormatter {
+/// Шаг +/- с «умным» округлением до 10 (как в редакторе количества).
+int nextFoodCount(int currentCount, {required bool increment}) {
+  final rounded = increment ? roundFoodCountUpToTen(currentCount) : roundFoodCountDownToTen(currentCount);
+  if (currentCount == rounded) {
+    return currentCount + (increment ? foodCountStep : -foodCountStep);
+  }
+  return rounded;
+}
+
+/// Удаление ведущих нулей из поля ввода мл.
+class FoodCountLeadingZerosFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     final text = newValue.text;
@@ -40,6 +49,12 @@ class _LeadingZerosFormatter extends TextInputFormatter {
     );
   }
 }
+
+final foodCountInputFormatters = <TextInputFormatter>[
+  FilteringTextInputFormatter.digitsOnly,
+  FoodCountLeadingZerosFormatter(),
+  LengthLimitingTextInputFormatter(4),
+];
 
 class _FoodCountEditorController extends EditController {
   /// [fec] — единый источник записи; нельзя сохранять [Feed] на момент открытия диалога.
@@ -59,27 +74,17 @@ class _FoodCountEditorController extends EditController {
   void _saveCount(String value) {
     final countText = value.trim();
     final count = countText.isEmpty ? 0 : (int.tryParse(countText) ?? 0);
-    _fec.setCount(_clampCount(count));
+    _fec.setCount(clampFoodCount(count));
   }
 
   void incrementCount() {
     final currentCount = currentCountFromField;
-    if (currentCount < _maxCount) _updateCount(_clampCount(_calculateNewCount(currentCount, true)));
+    if (currentCount < foodCountMax) _updateCount(clampFoodCount(nextFoodCount(currentCount, increment: true)));
   }
 
   void decrementCount() {
     final currentCount = currentCountFromField;
-    if (currentCount > 0) _updateCount(_clampCount(_calculateNewCount(currentCount, false)));
-  }
-
-  // Вычисляет новое значение с учетом умного округления
-  int _calculateNewCount(int currentCount, bool isIncrement) {
-    final rounded = isIncrement ? _roundUpToTen(currentCount) : _roundDownToTen(currentCount);
-    if (currentCount == rounded) {
-      return currentCount + (isIncrement ? _countStep : -_countStep);
-    } else {
-      return rounded;
-    }
+    if (currentCount > 0) _updateCount(clampFoodCount(nextFoodCount(currentCount, increment: false)));
   }
 
   int get currentCountFromField {
@@ -87,7 +92,7 @@ class _FoodCountEditorController extends EditController {
     if (text.isEmpty) {
       return 0;
     } else {
-      return _clampCount(int.tryParse(text) ?? 0);
+      return clampFoodCount(int.tryParse(text) ?? 0);
     }
   }
 
@@ -151,7 +156,7 @@ class _FoodCountEditorState extends State<FoodCountEditor> {
         textAlign: TextAlign.center,
         style: const H1('', color: f1Color).style(context),
         margin: EdgeInsets.zero,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly, _LeadingZerosFormatter(), LengthLimitingTextInputFormatter(4)],
+        inputFormatters: foodCountInputFormatters,
         onChanged: _controller.updateCount,
       ),
     ),
@@ -169,7 +174,7 @@ class _FoodCountEditorState extends State<FoodCountEditor> {
           const SizedBox(width: P2),
           _buildTextField(context),
           const SizedBox(width: P2),
-          _buildButton('plus', currentCount < _maxCount ? _controller.incrementCount : null),
+          _buildButton('plus', currentCount < foodCountMax ? _controller.incrementCount : null),
         ],
       ),
     );
