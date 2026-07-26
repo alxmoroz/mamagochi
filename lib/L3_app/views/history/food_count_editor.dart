@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../components/adaptive.dart';
 import '../../components/button.dart';
 import '../../components/card.dart';
 import '../../components/colors.dart';
@@ -145,40 +146,52 @@ class _FoodCountEditorState extends State<FoodCountEditor> {
   Widget _buildButton(String icon, VoidCallback? onTap) =>
       MTButton(type: MTButtonType.main, color: b3Color, middle: MTSvgIcon(icon, size: 30), minSize: const Size.square(60), uf: false, onTap: onTap);
 
-  Widget _buildTextField(BuildContext context) => Expanded(
-    child: MTCard(
-      margin: const EdgeInsets.symmetric(vertical: P),
-      radius: 40,
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, P3, 0, 3),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            MTTextField(
-              controller: _controller.teController(0),
-              focusNode: _controller.focusNode(0),
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              style: const H1('', color: f1Color).style(context),
-              margin: EdgeInsets.zero,
-              contentPadding: EdgeInsets.zero,
-              inputFormatters: foodCountInputFormatters,
-              onChanged: _controller.updateCount,
-            ),
-            SmallText(loc.milliliters, align: TextAlign.center, color: f2Color),
-          ],
+  Widget _buildTextField(BuildContext context) {
+    final showMlLabel = _controller.currentCountFromField > 0;
+
+    return Expanded(
+      child: MTCard(
+        margin: const EdgeInsets.symmetric(vertical: P),
+        radius: 40,
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, P3, 0, 3),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MTTextField(
+                controller: _controller.teController(0),
+                focusNode: _controller.focusNode(0),
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                style: const H1('', color: f1Color).style(context),
+                hint: loc.food_count_hint,
+                hintStyle: const SmallText('', color: f3Color).style(context),
+                margin: EdgeInsets.zero,
+                contentPadding: EdgeInsets.zero,
+                inputFormatters: foodCountInputFormatters,
+                onChanged: _controller.updateCount,
+              ),
+              Visibility(
+                visible: showMlLabel,
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                child: SmallText(loc.milliliters, align: TextAlign.center, color: f2Color),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final currentCount = _controller.currentCountFromField;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: P3),
+    // Та же колонка, что у MTButton.main: min(SCR_XXS_WIDTH, ширина экрана).
+    return MTAdaptive.xxs(
       child: Row(
         children: [
           _buildButton('minus', currentCount > 0 ? _controller.decrementCount : null),

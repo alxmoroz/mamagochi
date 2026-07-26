@@ -101,31 +101,35 @@ class EditFeedDialog extends StatelessWidget {
 
               /// время начала (только для грудного кормления)
               if (_fec.feed.type.isBreast)
-                MTCard(
-                  margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
-                  radius: 40,
-                  elevation: 0,
-                  child: MTListTile(
-                    leading: const MTSvgIcon('bottle_fill', size: 60),
-                    middle: SmallText.medium(_fec.feed.editFeedStartDateTitle),
-                    subtitle: H1(_fec.feed.startDateTime),
-                    bottomDivider: false,
-                    onTap: _editStart,
+                MTAdaptive.xxs(
+                  child: MTCard(
+                    margin: const EdgeInsets.symmetric(vertical: P),
+                    radius: 40,
+                    elevation: 0,
+                    child: MTListTile(
+                      leading: const MTSvgIcon('bottle_fill', size: 60),
+                      middle: SmallText.medium(_fec.feed.editFeedStartDateTitle),
+                      subtitle: H1(_fec.feed.startDateTime),
+                      bottomDivider: false,
+                      onTap: _editStart,
+                    ),
                   ),
                 ),
               if (_fec.feed.type.isBreast) const SizedBox(height: P2),
 
               /// редактор времени окончания
-              MTCard(
-                margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
-                radius: 40,
-                elevation: 0,
-                child: MTListTile(
-                  leading: MTSvgIcon(_fec.feed.type.isBreast ? 'bottle_empty' : 'clock', size: 60),
-                  middle: SmallText.medium(_fec.feed.editFeedEndFieldTitle),
-                  subtitle: H1(_fec.feed.endDateTime),
-                  bottomDivider: false,
-                  onTap: _editEnd,
+              MTAdaptive.xxs(
+                child: MTCard(
+                  margin: const EdgeInsets.symmetric(vertical: P),
+                  radius: 40,
+                  elevation: 0,
+                  child: MTListTile(
+                    leading: MTSvgIcon(_fec.feed.type.isBreast ? 'bottle_empty' : 'clock', size: 60),
+                    middle: SmallText.medium(_fec.feed.editFeedEndFieldTitle),
+                    subtitle: H1(_fec.feed.endDateTime),
+                    bottomDivider: false,
+                    onTap: _editEnd,
+                  ),
                 ),
               ),
             ],

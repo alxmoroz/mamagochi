@@ -99,6 +99,7 @@
   "loader_saving_title": "Saving...",
 
   "milliliters": "ml",
+  "food_count_hint": "How many ml",
 
   "months_count": "{count, plural, one{{count} month} other{{count} months}}",
 

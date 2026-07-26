@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 
+import '/../L3_app/components/adaptive.dart';
 import '/../L3_app/components/card.dart';
 import '/../L3_app/components/colors.dart';
 import '/../L3_app/components/constants.dart';
@@ -72,28 +73,32 @@ class EditSleepDialog extends StatelessWidget {
                 body: ListView(
                   shrinkWrap: true,
                   children: [
-                    MTCard(
-                      margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
-                      radius: 40,
-                      elevation: 0,
-                      child: MTListTile(
-                        leading: const MTSvgIcon('eye_closed', size: 60),
-                        middle: SmallText.medium(_sc.sleep.startSleepActionTitle),
-                        subtitle: H1(_sc.sleep.startDateTime),
-                        bottomDivider: false,
-                        onTap: _editStart,
+                    MTAdaptive.xxs(
+                      child: MTCard(
+                        margin: const EdgeInsets.symmetric(vertical: P),
+                        radius: 40,
+                        elevation: 0,
+                        child: MTListTile(
+                          leading: const MTSvgIcon('eye_closed', size: 60),
+                          middle: SmallText.medium(_sc.sleep.startSleepActionTitle),
+                          subtitle: H1(_sc.sleep.startDateTime),
+                          bottomDivider: false,
+                          onTap: _editStart,
+                        ),
                       ),
                     ),
-                    MTCard(
-                      margin: const EdgeInsets.symmetric(vertical: P, horizontal: P3),
-                      radius: 40,
-                      elevation: 0,
-                      child: MTListTile(
-                        leading: const MTSvgIcon('eye_open', size: 60),
-                        middle: SmallText.medium(_sc.sleep.stopSleepActionTitle),
-                        subtitle: H1(_sc.sleep.endDateTime),
-                        bottomDivider: false,
-                        onTap: _editEnd,
+                    MTAdaptive.xxs(
+                      child: MTCard(
+                        margin: const EdgeInsets.symmetric(vertical: P),
+                        radius: 40,
+                        elevation: 0,
+                        child: MTListTile(
+                          leading: const MTSvgIcon('eye_open', size: 60),
+                          middle: SmallText.medium(_sc.sleep.stopSleepActionTitle),
+                          subtitle: H1(_sc.sleep.endDateTime),
+                          bottomDivider: false,
+                          onTap: _editEnd,
+                        ),
                       ),
                     ),
                   ],

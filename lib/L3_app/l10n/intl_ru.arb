@@ -100,6 +100,7 @@
   "loader_saving_title": "Сохраняем...",
 
   "milliliters": "мл",
+  "food_count_hint": "Сколько мл",
 
   "months_count": "{count, plural, one{{count} месяц} few{{count} месяца} other{{count} месяцев}}",
 

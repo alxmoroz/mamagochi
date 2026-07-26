@@ -140,33 +140,45 @@ class _BottleCountStepState extends State<BottleCountStep> {
     );
   }
 
-  Widget _textField(BuildContext context) => MTCard(
-    key: _mlFieldKey,
-    margin: const EdgeInsets.symmetric(vertical: P),
-    radius: 40,
-    elevation: 0,
-    child: Padding(
-      padding: const EdgeInsets.fromLTRB(0, P3, 0, 3),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          MTTextField(
-            controller: _controller.teController(0),
-            focusNode: _controller.focusNode(0),
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.center,
-            autofocus: false,
-            style: const H1('', color: f1Color).style(context),
-            margin: EdgeInsets.zero,
-            contentPadding: EdgeInsets.zero,
-            inputFormatters: foodCountInputFormatters,
-            onChanged: _controller.updateCountFromText,
-          ),
-          SmallText(loc.milliliters, align: TextAlign.center, color: f2Color),
-        ],
+  Widget _textField(BuildContext context) {
+    final showMlLabel = _controller.currentCountFromField > 0;
+
+    return MTCard(
+      key: _mlFieldKey,
+      margin: const EdgeInsets.symmetric(vertical: P),
+      radius: 40,
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, P3, 0, 3),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MTTextField(
+              controller: _controller.teController(0),
+              focusNode: _controller.focusNode(0),
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              autofocus: false,
+              style: const H1('', color: f1Color).style(context),
+              hint: loc.food_count_hint,
+              hintStyle: const SmallText('', color: f3Color).style(context),
+              margin: EdgeInsets.zero,
+              contentPadding: EdgeInsets.zero,
+              inputFormatters: foodCountInputFormatters,
+              onChanged: _controller.updateCountFromText,
+            ),
+            Visibility(
+              visible: showMlLabel,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: SmallText(loc.milliliters, align: TextAlign.center, color: f2Color),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   /// Соска над столбцом: только портрет или большой экран; скрыта при клавиатуре. SVG 156×121.
   static const _pacifierAspect = 121 / 156;
@@ -261,6 +273,7 @@ class _BottleCountStepState extends State<BottleCountStep> {
 
   /// Поле мл; при [showSteppers] — − и + по бокам (ландшафт + клавиатура + не big screen).
   /// Слот поля в дереве фиксирован (Expanded всегда в центре Row) — иначе теряется фокус.
+  /// Ширина строки — как у MTButton.main: MTAdaptive.xxs.
   Widget _countFieldRow({
     required BuildContext context,
     required int current,
@@ -280,37 +293,38 @@ class _BottleCountStepState extends State<BottleCountStep> {
       );
     }
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: showSteppers ? P3 : 0),
-      child: Row(
-        children: [
-          SizedBox(
-            width: showSteppers ? buttonSize : 0,
-            height: showSteppers ? buttonSize : 0,
-            child: sideButton(icon: 'minus', isLeft: true, onTap: current > 0 ? _decrement : null),
-          ),
-          SizedBox(width: showSteppers ? P2 : 0),
-          Expanded(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: showSteppers ? double.infinity : fieldWidth),
-                child: _textField(context),
-              ),
+    final row = Row(
+      children: [
+        SizedBox(
+          width: showSteppers ? buttonSize : 0,
+          height: showSteppers ? buttonSize : 0,
+          child: sideButton(icon: 'minus', isLeft: true, onTap: current > 0 ? _decrement : null),
+        ),
+        SizedBox(width: showSteppers ? P2 : 0),
+        Expanded(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: showSteppers ? double.infinity : fieldWidth),
+              child: _textField(context),
             ),
           ),
-          SizedBox(width: showSteppers ? P2 : 0),
-          SizedBox(
-            width: showSteppers ? buttonSize : 0,
-            height: showSteppers ? buttonSize : 0,
-            child: sideButton(
-              icon: 'plus',
-              isLeft: false,
-              onTap: current < foodCountMax ? _increment : null,
-            ),
+        ),
+        SizedBox(width: showSteppers ? P2 : 0),
+        SizedBox(
+          width: showSteppers ? buttonSize : 0,
+          height: showSteppers ? buttonSize : 0,
+          child: sideButton(
+            icon: 'plus',
+            isLeft: false,
+            onTap: current < foodCountMax ? _increment : null,
           ),
-        ],
-      ),
+        ),
+      ],
     );
+
+    // Со степперами — общая колонка xxs; без них поле остаётся ширины столбца.
+    if (showSteppers) return MTAdaptive.xxs(child: row);
+    return row;
   }
 
   @override
