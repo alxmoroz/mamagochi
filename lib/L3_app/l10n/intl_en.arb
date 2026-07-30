@@ -12,12 +12,12 @@
   "action_stop_feed_title_girl": "Finish feeding",
   "action_stop_sleep_title_boy": "Woke up",
   "action_stop_sleep_title_girl": "Woke up",
-  "action_ate_and_fell_asleep_title_boy": "Ate and fell asleep",
-  "action_ate_and_fell_asleep_title_girl": "Ate and fell asleep",
+  "action_ate_and_fell_asleep_title_boy": "Fed and fell asleep",
+  "action_ate_and_fell_asleep_title_girl": "Fed and fell asleep",
 
   "action_apply_title": "Apply",
   "action_back_title": "Back",
-  "action_edit_title": "Change",
+  "action_edit_title": "Edit",
   "action_email_support_title": "Report a problem",
   "action_email_us_title": "Email us",
   "action_save_title": "Save",
@@ -39,30 +39,30 @@
 
   "days_count": "{count, plural, one{{count} day} other{{count} days}}",
 
-  "edit_sleep_start_date_title_boy": "What time did he fall asleep",
-  "edit_sleep_start_date_title_girl": "What time did she fall asleep",
-  "edit_sleep_end_date_title_boy": "What time did he wake up",
-  "edit_sleep_end_date_title_girl": "What time did she wake up",
+  "edit_sleep_start_date_title_boy": "Fell asleep at",
+  "edit_sleep_start_date_title_girl": "Fell asleep at",
+  "edit_sleep_end_date_title_boy": "Woke up at",
+  "edit_sleep_end_date_title_girl": "Woke up at",
 
-  "edit_feed_start_date_title_boy": "What time did he start feeding",
-  "edit_feed_start_date_title_girl": "What time did she start feeding",
-  "edit_feed_end_date_title_boy": "What time did he fed",
-  "edit_feed_end_date_title_girl": "What time did she fed",
-  "edit_feed_time_title_boy": "What time did he eat",
-  "edit_feed_time_title_girl": "What time did she eat",
+  "edit_feed_start_date_title_boy": "Feeding started at",
+  "edit_feed_start_date_title_girl": "Feeding started at",
+  "edit_feed_end_date_title_boy": "Feeding ended at",
+  "edit_feed_end_date_title_girl": "Feeding ended at",
+  "edit_feed_time_title_boy": "Fed at",
+  "edit_feed_time_title_girl": "Fed at",
 
   "edit_feed_breast_title": "Breastfeeding",
   "edit_feed_milk_bottle_title": "Milk feeding",
-  "edit_feed_baby_formula_title": "Baby formula feeding",
+  "edit_feed_baby_formula_title": "Formula feeding",
 
   "feed_type_right_breast": "Right",
   "feed_type_left_breast": "Left",
-  "feed_type_baby_formula": "Baby formula",
+  "feed_type_baby_formula": "Formula",
   "feed_type_milk": "Milk",
   "breast_feed_hint_title": "This is the feeding timer",
-  "breast_feed_hint_body": "Tap the button below when baby finishes eating",
+  "breast_feed_hint_body": "Tap below when feeding is done",
   "sleep_hint_title": "This is the sleep timer",
-  "sleep_hint_body": "Tap the button below when baby wakes up",
+  "sleep_hint_body": "Tap below when baby wakes up",
 
   "history_title": "History",
   "history_empty_title": "There are no events yet",
@@ -80,18 +80,18 @@
     }
   },
 
-  "how_much_feeding": "Feeding for\n{duration}",
-  "how_much_sleep": "Sleeps for\n{duration}",
+  "how_much_feeding": "Feeding\n{duration}",
+  "how_much_sleep": "Sleeping\n{duration}",
   "timer_feeding_label": "Feeding",
-  "timer_sleep_label": "Sleeps",
-  "how_much_fed_boy": "Fed for {duration}",
-  "how_much_fed_girl": "Fed for {duration}",
-  "how_much_fed_past_boy": "Fed for {duration}",
-  "how_much_fed_past_girl": "Fed for {duration}",
-  "how_much_fed_past_with_type_boy": "Fed {breastType} for {duration}",
-  "how_much_fed_past_with_type_girl": "Fed {breastType} for {duration}",
-  "how_much_slept_boy": "Slept for {duration}",
-  "how_much_slept_girl": "Slept for {duration}",
+  "timer_sleep_label": "Sleeping",
+  "how_much_fed_boy": "Fed: {duration}",
+  "how_much_fed_girl": "Fed: {duration}",
+  "how_much_fed_past_boy": "Fed: {duration}",
+  "how_much_fed_past_girl": "Fed: {duration}",
+  "how_much_fed_past_with_type_boy": "Fed {breastType}: {duration}",
+  "how_much_fed_past_with_type_girl": "Fed {breastType}: {duration}",
+  "how_much_slept_boy": "Slept: {duration}",
+  "how_much_slept_girl": "Slept: {duration}",
 
   "lets_go_action_title": "Let's get started",
 
@@ -99,7 +99,7 @@
   "loader_saving_title": "Saving...",
 
   "milliliters": "ml",
-  "food_count_hint": "How many ml",
+  "food_count_hint": "Amount (ml)",
 
   "months_count": "{count, plural, one{{count} month} other{{count} months}}",
 
@@ -149,7 +149,7 @@
 
   "what_to_eat_right_breast": "right breast",
   "what_to_eat_left_breast": "left breast",
-  "what_to_eat_baby_formula_bottle": "baby formula",
+  "what_to_eat_baby_formula_bottle": "formula",
   "what_to_eat_milk_bottle": "breast milk",
 
   "years_count": "{count, plural, one{{count} year} other{{count} years}}",
