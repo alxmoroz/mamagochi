@@ -88,21 +88,48 @@ class _BottleAmountColumnState extends State<BottleAmountColumn> {
     widget.onChangeEnd(ml);
   }
 
-  List<MTSliderHatchMarkLabel> _labels(BuildContext context) {
+  Color _labelColor(BuildContext context, int ml, {required bool numbered}) {
     final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
-    // В тёмной теме жидкость светлая — цифры в заполненной зоне как F2 светлой темы.
-    final filledLabelColor = f2Color.color;
+    // В тёмной теме жидкость светлая — подписи в заполненной зоне как F2/F3 светлой темы.
+    if (isDark && _localMl >= ml) {
+      return numbered ? f2Color.color : f3Color.color;
+    }
+    return numbered ? f2Color : f3Color;
+  }
 
-    return [
-      for (final ml in bottleColumnLabelMls)
+  int _percentForMl(int ml) => ((ml / bottleColumnMaxMl) * 100).round().clamp(0, 100);
+
+  List<MTSliderHatchMarkLabel> _labels(BuildContext context) {
+    final labels = <MTSliderHatchMarkLabel>[];
+
+    // Промежуточные чёрточки каждые 10 мл (без цифр). Числовые — поверх, чтобы не перекрывались.
+    for (var ml = bottleColumnStepMl; ml < bottleColumnMaxMl; ml += bottleColumnStepMl) {
+      if (bottleColumnLabelMls.contains(ml)) continue;
+      labels.add(
         MTSliderHatchMarkLabel(
-          percent: ((ml / bottleColumnMaxMl) * 100).round().clamp(0, 100),
+          percent: _percentForMl(ml),
           label: SmallText(
-            '—  $ml  —',
-            color: isDark && _localMl >= ml ? filledLabelColor : f2Color,
+            '—',
+            color: _labelColor(context, ml, numbered: false),
+            align: TextAlign.center,
           ),
         ),
-    ];
+      );
+    }
+
+    for (final ml in bottleColumnLabelMls) {
+      labels.add(
+        MTSliderHatchMarkLabel(
+          percent: _percentForMl(ml),
+          label: SmallText(
+            '—  $ml  —',
+            color: _labelColor(context, ml, numbered: true),
+          ),
+        ),
+      );
+    }
+
+    return labels;
   }
 
   @override
@@ -141,19 +168,10 @@ class _BottleAmountColumnState extends State<BottleAmountColumn> {
             inactiveTrackBar: const BoxDecoration(color: Colors.transparent),
           ),
           hatchMark: MTSliderHatchMark(
-            displayLines: true,
-            // 26 интервалов по 10 мл от 0 до 260 → 27 рисок (p = 0…26).
-            density: bottleColumnMaxMl / bottleColumnStepMl / 100,
-            smallLine: MTSliderSizedBox(
-              height: 5,
-              width: 1,
-              decoration: BoxDecoration(color: f3Color.resolve(context)),
-            ),
-            bigLine: MTSliderSizedBox(
-              height: 9,
-              width: 2,
-              decoration: BoxDecoration(color: f2Color.resolve(context)),
-            ),
+            // Риски через labels: displayLines уезжают за клип при полной ширине трека.
+            displayLines: false,
+            // Компактный бокс, чтобы чёрточки каждые 10 мл не разъезжались по вертикали.
+            labelBox: const MTSliderSizedBox(height: 18, width: 50),
             labels: _labels(context),
           ),
           values: [_localMl.toDouble()],
