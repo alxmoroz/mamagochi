@@ -72,7 +72,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
 
   static Widget _buttonStopSleep(HistoryController hc, dynamic baby, Size buttonSize) => _menuButton(
         buttonSize: buttonSize,
-        image: BabyPresenter(baby).face(size: 90),
+        image: BabyPresenter(baby).face(size: 90, enableBlink: false),
         subtitle: SmallText(baby.isBoy ? loc.action_stop_sleep_title_boy : loc.action_stop_sleep_title_girl),
         onTap: () => hc.stopSleep(now),
       );
@@ -86,7 +86,7 @@ class BottomMenu extends StatelessWidget implements PreferredSizeWidget {
 
   static Widget _buttonStopFeed(HistoryController hc, dynamic baby, Size buttonSize) => _menuButton(
         buttonSize: buttonSize,
-        image: BabyPresenter(baby).face(size: 90),
+        image: BabyPresenter(baby).face(size: 90, enableBlink: false),
         subtitle: SmallText(baby.isBoy ? loc.action_stop_feed_title_boy : loc.action_stop_feed_title_girl),
         onTap: () => hc.stopBreastFeed(now),
       );

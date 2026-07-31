@@ -12,10 +12,10 @@ import '../views/history/history_controller.dart';
 extension BabyPresenter on Baby? {
   String get sex => this?.isBoy == true ? 'boy' : 'girl';
 
-  Widget face({double? size, BabyFaceMode mode = BabyFaceMode.awake}) {
+  Widget face({double? size, BabyFaceMode mode = BabyFaceMode.awake, bool enableBlink = true}) {
     final baby = this;
     if (baby == null) return MTSvgImage('no_info', height: size, width: size);
-    return BabyFaceWidget(config: BabyFaceConfig.forBaby(baby, mode), size: size);
+    return BabyFaceWidget(config: BabyFaceConfig.forBaby(baby, mode), size: size, enableBlink: enableBlink);
   }
 
   Widget faceSleep({double? size}) => face(size: size, mode: BabyFaceMode.sleep);
@@ -33,7 +33,7 @@ extension BabyPresenter on Baby? {
         ? (hc.lastOngoingBreastFeed!.type.isLeftBreast ? BabyFaceMode.feedingLeft : BabyFaceMode.feedingRight)
         : BabyFaceMode.awake;
 
-    return BabyFaceWidget(config: BabyFaceConfig.forBaby(baby, mode), size: size);
+    return BabyFaceWidget(config: BabyFaceConfig.forBaby(baby, mode), size: size, enableBlink: true);
   }
 
   String? get formattedDateOfBirth => this?.dateOfBirth != null ? DateFormat.yMMMMd().format(this!.dateOfBirth!) : null;
