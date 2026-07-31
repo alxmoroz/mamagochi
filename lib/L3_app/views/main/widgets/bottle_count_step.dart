@@ -350,7 +350,8 @@ class _BottleCountStepState extends State<BottleCountStep> {
         child: Column(
           children: [
             Expanded(
-              // Фон ловит тапы по пустым местам; контент по shrinkWrap — только свою область.
+              // Фон ловит тапы по пустым местам; контент без ListView — иначе Scrollable
+              // перехватывает всю полосу ширины и «пустые» тапы не доходят до фона.
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   // Портрет + клавиатура: высоту столбца (и круглых +/−) берём из Expanded,
@@ -395,11 +396,7 @@ class _BottleCountStepState extends State<BottleCountStep> {
                         alignment: keyboardOpen ? Alignment.bottomCenter : Alignment.center,
                         child: ConstrainedBox(
                           constraints: BoxConstraints(maxHeight: constraints.maxHeight),
-                          child: ListView(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            children: [body],
-                          ),
+                          child: body,
                         ),
                       ),
                     ],
@@ -408,7 +405,13 @@ class _BottleCountStepState extends State<BottleCountStep> {
               ),
             ),
             // При клавиатуре контент прижат к низу Expanded — нужен явный зазор до «Сохранить».
-            if (keyboardOpen) SizedBox(height: isLandscape ? P4 : P3),
+            // Тап здесь тоже через фон, иначе уходит в barrier диалога без сохранения.
+            if (keyboardOpen)
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: _onBackgroundTap,
+                child: SizedBox(height: isLandscape ? P4 : P3),
+              ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: P3),
               child: MTButton.main(titleText: loc.action_save_title, onTap: _save),
