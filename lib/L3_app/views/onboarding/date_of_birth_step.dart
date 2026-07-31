@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../../L1_domain/utils/dates.dart';
-import '../../components/adaptive.dart';
 import '../../components/button.dart';
 import '../../components/constants.dart';
 import '../../components/images.dart';
@@ -39,35 +38,47 @@ class _State extends State<DateOfBirthStep> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) {
-        final screen = screenSize(context);
-        final screenHeight = min(SCR_M_HEIGHT, screen.height);
+        final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
         return Stack(
           alignment: Alignment.center,
           children: [
-            Center(
-              child: ListView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  H1(
-                    loc.onboarding_baby_date_of_birth_step_title,
-                    align: TextAlign.center,
-                    padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
-                  ),
-                  Center(child: MTSvgImage('cake', height: screenHeight * 0.3)),
-                  SizedBox(
-                    height: screenHeight * 0.45,
-                    child: CupertinoDatePicker(
-                      maximumDate: now.add(const Duration(days: 365)),
-                      initialDateTime: _date,
-                      mode: CupertinoDatePickerMode.date,
-                      onDateTimeChanged: (DateTime value) => _date = value,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final titlePad = isLandscape
+                    ? const EdgeInsets.symmetric(horizontal: P3, vertical: P)
+                    : const EdgeInsets.all(P6).copyWith(bottom: P3);
+                // Заголовок + кнопка + зазоры — picker забирает остаток, чтобы кнопка не обрезалась.
+                final reserved = isLandscape ? 44.0 + MIN_BTN_HEIGHT + P : 88.0 + MIN_BTN_HEIGHT + P3;
+                final cakeMax = isLandscape ? 0.0 : constraints.maxHeight * 0.28;
+                final pickerMax = max(120.0, constraints.maxHeight - reserved - cakeMax);
+
+                return Column(
+                  children: [
+                    H1(
+                      loc.onboarding_baby_date_of_birth_step_title,
+                      align: TextAlign.center,
+                      padding: titlePad,
                     ),
-                  ),
-                  MTButton.main(titleText: loc.next_action_title, onTap: _tap),
-                ],
-              ),
+                    if (!isLandscape && cakeMax > 0)
+                      Center(child: MTSvgImage('cake', height: min(cakeMax, constraints.maxHeight * 0.3))),
+                    Expanded(
+                      child: Center(
+                        child: SizedBox(
+                          height: pickerMax,
+                          child: CupertinoDatePicker(
+                            maximumDate: now.add(const Duration(days: 365)),
+                            initialDateTime: _date,
+                            mode: CupertinoDatePickerMode.date,
+                            onDateTimeChanged: (DateTime value) => _date = value,
+                          ),
+                        ),
+                      ),
+                    ),
+                    MTButton.main(titleText: loc.next_action_title, onTap: _tap),
+                  ],
+                );
+              },
             ),
             if (_bc.loading) const MTLoader(),
           ],

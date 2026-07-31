@@ -24,18 +24,27 @@ class BabyNameStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
+    final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    // В портрете всегда показываем лицо; в landscape скрываем при открытой клавиатуре.
+    final showFace = !isLandscape || !keyboardOpen;
+
     return Observer(
       builder: (_) => Center(
         child: ListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
+            // Visibility вместо if — иначе TextField с autofocus пересоздаётся и снова открывает клавиатуру.
             H1(
               loc.onboarding_baby_name_step_title,
               align: TextAlign.center,
               padding: const EdgeInsets.all(P6).copyWith(bottom: P3),
             ),
-            Center(child: _bc.baby.face()),
+            Visibility(
+              visible: showFace,
+              child: Center(child: _bc.baby.face()),
+            ),
             MTAdaptive.s(
               child: MTTextField(
                 maxLines: 1,
@@ -50,8 +59,16 @@ class BabyNameStep extends StatelessWidget {
                 onSubmitted: (_) => _bc.validated ? _setName() : null,
               ),
             ),
-            const SizedBox(height: P3),
-            if (MediaQuery.viewInsetsOf(context).bottom == 0) MTButton.main(titleText: loc.next_action_title, onTap: _bc.validated ? _setName : null),
+            Visibility(
+              visible: !keyboardOpen,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: P3),
+                  MTButton.main(titleText: loc.next_action_title, onTap: _bc.validated ? _setName : null),
+                ],
+              ),
+            ),
           ],
         ),
       ),

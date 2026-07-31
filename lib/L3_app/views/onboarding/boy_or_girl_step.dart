@@ -23,61 +23,62 @@ class BoyOrGirlStep extends StatelessWidget {
     _bc.setStep(OnboardingStep.baby_name);
   }
 
+  Widget _genderButton({required bool isBoy, required double faceSize, required Size minSize}) {
+    return MTButton(
+      minSize: minSize,
+      constrained: false,
+      color: b3Color,
+      type: MTButtonType.main,
+      middle: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          BabyFaceWidget(
+            config: BabyFaceConfig.forBaby(Baby(created: now, isBoy: isBoy), BabyFaceMode.awake),
+            size: faceSize,
+            enableBlink: false,
+          ),
+          SmallText.medium(isBoy ? loc.sex_man : loc.sex_woman),
+        ],
+      ),
+      onTap: () => _setBoyOrGirl(isBoy: isBoy),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    const faceSize = 180.0;
+    const minSize = Size(240, 240);
+
+    final buttons = [
+      _genderButton(isBoy: true, faceSize: faceSize, minSize: minSize),
+      _genderButton(isBoy: false, faceSize: faceSize, minSize: minSize),
+    ];
+
     return Center(
-      child: ListView(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           H1(
             loc.onboarding_boy_or_girl_step_title,
             align: TextAlign.center,
-            padding: const EdgeInsets.all(P6).copyWith(bottom: P5),
+            padding: EdgeInsets.all(isLandscape ? P3 : P6).copyWith(bottom: isLandscape ? P3 : P5),
           ),
-          Center(
-            child: Wrap(
-              direction: Axis.vertical,
-              spacing: P3,
-              runSpacing: P5,
-              children: [
-                MTButton(
-                  minSize: const Size(240, 240),
-                  constrained: false,
-                  color: b3Color,
-                  type: MTButtonType.main,
-                  middle: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      BabyFaceWidget(
-                        config: BabyFaceConfig.forBaby(Baby(created: now, isBoy: true), BabyFaceMode.awake),
-                        size: 180,
-                      ),
-                      SmallText.medium(loc.sex_man),
-                    ],
-                  ),
-                  onTap: () => _setBoyOrGirl(isBoy: true),
+          isLandscape
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    buttons[0],
+                    const SizedBox(width: P5),
+                    buttons[1],
+                  ],
+                )
+              : Wrap(
+                  direction: Axis.vertical,
+                  spacing: P3,
+                  runSpacing: P5,
+                  children: buttons,
                 ),
-                MTButton(
-                  minSize: const Size(240, 240),
-                  constrained: false,
-                  color: b3Color,
-                  type: MTButtonType.main,
-                  middle: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      BabyFaceWidget(
-                        config: BabyFaceConfig.forBaby(Baby(created: now, isBoy: false), BabyFaceMode.awake),
-                        size: 180,
-                      ),
-                      SmallText.medium(loc.sex_woman),
-                    ],
-                  ),
-                  onTap: () => _setBoyOrGirl(isBoy: false),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
