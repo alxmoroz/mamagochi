@@ -21,7 +21,7 @@ class BabyFaceWidget extends StatefulWidget {
   State<BabyFaceWidget> createState() => _BabyFaceWidgetState();
 }
 
-class _BabyFaceWidgetState extends State<BabyFaceWidget> with SingleTickerProviderStateMixin {
+class _BabyFaceWidgetState extends State<BabyFaceWidget> with TickerProviderStateMixin {
   /// 0 = глаза открыты, 1 = закрыты. И для моргания, и для сна/пробуждения.
   static const _blinkInterval = Duration(seconds: 10);
   static const _blinkCloseDuration = Duration(milliseconds: 110);
@@ -32,6 +32,13 @@ class _BabyFaceWidgetState extends State<BabyFaceWidget> with SingleTickerProvid
   static const _fallAsleepDuration = Duration(milliseconds: 1400);
   static const _wakeUpDuration = Duration(milliseconds: 1100);
 
+  /// Zzz во сне: дыхание прозрачности + лёгкое увеличение/уменьшение.
+  static const _zzzPeriod = Duration(milliseconds: 2200);
+  static const _zzzMinOpacity = 0.5;
+  static const _zzzMaxOpacity = 1.0;
+  static const _zzzMinScale = 0.92;
+  static const _zzzMaxScale = 1.06;
+
   static const _openEyes = {
     BabyFaceAssets.eyesBlueOpen,
     BabyFaceAssets.eyesBlueOpenLeft,
@@ -39,6 +46,7 @@ class _BabyFaceWidgetState extends State<BabyFaceWidget> with SingleTickerProvid
   };
 
   late final AnimationController _lidController;
+  late final AnimationController _zzzController;
   Timer? _blinkTimer;
 
   /// Последние открытые глаза — нужны, пока в конфиге уже sleep (только closed).
@@ -54,8 +62,10 @@ class _BabyFaceWidgetState extends State<BabyFaceWidget> with SingleTickerProvid
   void initState() {
     super.initState();
     _lidController = AnimationController(vsync: this);
+    _zzzController = AnimationController(vsync: this, duration: _zzzPeriod);
     if (widget.config.isSleep) {
       _lidController.value = 1;
+      _startZzzLoop();
     }
     _rememberOpenEyes(widget.config);
     _scheduleBlink();
@@ -87,6 +97,7 @@ class _BabyFaceWidgetState extends State<BabyFaceWidget> with SingleTickerProvid
   void dispose() {
     _blinkTimer?.cancel();
     _lidController.dispose();
+    _zzzController.dispose();
     super.dispose();
   }
 
@@ -104,6 +115,17 @@ class _BabyFaceWidgetState extends State<BabyFaceWidget> with SingleTickerProvid
     _blinkTimer = null;
     if (!widget.enableBlink || widget.config.isSleep) return;
     _blinkTimer = Timer.periodic(_blinkInterval, (_) => _blink());
+  }
+
+  void _startZzzLoop() {
+    if (!_zzzController.isAnimating) {
+      _zzzController.repeat(reverse: true);
+    }
+  }
+
+  void _stopZzzLoop({bool reset = false}) {
+    _zzzController.stop();
+    if (reset) _zzzController.value = 0;
   }
 
   Future<void> _blink() async {
@@ -126,18 +148,25 @@ class _BabyFaceWidgetState extends State<BabyFaceWidget> with SingleTickerProvid
     _blinkTimer?.cancel();
     _blinkTimer = null;
     _lingeringZzz = false;
+    _stopZzzLoop(reset: true);
 
     _lidController.duration = _fallAsleepDuration;
     await _lidController.animateTo(1, curve: Curves.easeIn);
+    if (!mounted || !widget.config.isSleep) return;
+
+    _startZzzLoop();
   }
 
   Future<void> _wakeUp() async {
+    // Замираем текущую фазу zzz и гасим вместе с веками — без скачка позиции.
+    _stopZzzLoop();
     _lingeringZzz = true;
     _lidController.duration = _wakeUpDuration;
     await _lidController.animateTo(0, curve: Curves.easeOut);
     if (!mounted) return;
 
     setState(() => _lingeringZzz = false);
+    _stopZzzLoop(reset: true);
     _scheduleBlink();
   }
 
@@ -154,13 +183,12 @@ class _BabyFaceWidgetState extends State<BabyFaceWidget> with SingleTickerProvid
           width: BabyFaceWidget.viewBoxSize,
           height: BabyFaceWidget.viewBoxSize,
           child: AnimatedBuilder(
-            animation: _lidController,
+            animation: Listenable.merge([_lidController, _zzzController]),
             builder: (context, _) => Stack(
               alignment: Alignment.center,
               children: [
                 for (final layer in widget.config.layers) _buildLayer(layer),
-                if (_lingeringZzz && !widget.config.layers.contains(BabyFaceAssets.sleepZzz))
-                  Opacity(opacity: _lidController.value, child: _svg(BabyFaceAssets.sleepZzz)),
+                if (_lingeringZzz && !widget.config.layers.contains(BabyFaceAssets.sleepZzz)) _buildZzz(),
               ],
             ),
           ),
@@ -174,9 +202,27 @@ class _BabyFaceWidgetState extends State<BabyFaceWidget> with SingleTickerProvid
       return _buildEyes(name);
     }
     if (name == BabyFaceAssets.sleepZzz) {
-      return Opacity(opacity: _lidController.value, child: _svg(name));
+      return _buildZzz();
     }
     return _svg(name);
+  }
+
+  Widget _buildZzz() {
+    final lid = _lidController.value;
+    if (lid <= 0) return const SizedBox.shrink();
+
+    final t = Curves.easeInOut.transform(_zzzController.value);
+    final opacity = lid * (_zzzMinOpacity + (_zzzMaxOpacity - _zzzMinOpacity) * t);
+    final scale = _zzzMinScale + (_zzzMaxScale - _zzzMinScale) * t;
+
+    return Transform.scale(
+      scale: scale,
+      alignment: const Alignment(0.55, -0.55),
+      child: Opacity(
+        opacity: opacity.clamp(0.0, 1.0),
+        child: _svg(BabyFaceAssets.sleepZzz),
+      ),
+    );
   }
 
   Widget _buildEyes(String eyesLayer) {
