@@ -3,12 +3,16 @@ import 'baby_face_assets.dart';
 import 'baby_face_mode.dart';
 
 class BabyFaceConfig {
-  const BabyFaceConfig({required this.layers});
+  const BabyFaceConfig({required this.mode, required this.layers});
 
+  final BabyFaceMode mode;
   final List<String> layers;
+
+  bool get isSleep => mode == BabyFaceMode.sleep;
 
   factory BabyFaceConfig.forBaby(Baby baby, BabyFaceMode mode) {
     return BabyFaceConfig(
+      mode: mode,
       layers: [
         BabyFaceAssets.base,
         _eyes(mode),
