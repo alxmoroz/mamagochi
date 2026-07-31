@@ -27,6 +27,8 @@ class EditFeedDialog extends StatelessWidget {
 
   static Future show(Feed feed) async => await showMTDialog(EditFeedDialog._(EditFeedController(feed)));
 
+  static const _breastSizeLandscape = 100.0;
+
   Future _editStart() async {
     final start = await MTDateTimePicker.show(_fec.feed.editFeedStartDateTitle, initialDate: _fec.feed.startDate ?? _fec.feed.created);
     if (start != null) await _fec.setStart(start);
@@ -37,21 +39,35 @@ class EditFeedDialog extends StatelessWidget {
     if (end != null) _fec.setEnd(end);
   }
 
-  Widget _breastTypeButton(BuildContext context, {required bool isLeft, required double size, required Size buttonSize}) {
+  Widget _breastTypeButton(
+    BuildContext context, {
+    required bool isLeft,
+    required double size,
+    required Size buttonSize,
+    required bool hangOffEdge,
+    double? left,
+    double? right,
+  }) {
     final label = isLeft ? loc.feed_type_left_breast : loc.feed_type_right_breast;
     final feedType = isLeft ? FeedingType.left_breast : FeedingType.right_breast;
     final isSelected = isLeft ? _fec.feed.type.isLeftBreast : _fec.feed.type.isRightBreast;
-    // Подписи сильнее сдвинуты к центру (size / 2 вместо size / 3)
-    final labelPadding = EdgeInsets.only(left: isLeft ? size / 2 : 0, right: isLeft ? 0 : size / 2);
-    final labelAlignment = isLeft ? Alignment.centerRight : Alignment.centerLeft;
+
+    // Портрет (выезд за край): подпись к центру экрана. Landscape: по центру кнопки.
+    final labelPadding = hangOffEdge
+        ? EdgeInsets.only(left: isLeft ? size / 2 : 0, right: isLeft ? 0 : size / 2)
+        : EdgeInsets.zero;
+    final labelAlignment = hangOffEdge
+        ? (isLeft ? Alignment.centerRight : Alignment.centerLeft)
+        : Alignment.center;
     final labelWidget = isSelected ? BaseText(label, sizeScale: 20 / 18, weight: FontWeight.w600, color: mainColor) : BaseText(label);
 
     return Positioned(
-      left: isLeft ? -size / 2 : null,
-      right: isLeft ? null : -size / 2,
+      left: hangOffEdge ? (isLeft ? -size / 2 : null) : left,
+      right: hangOffEdge ? (isLeft ? null : -size / 2) : right,
       top: 0,
       child: MTButton(
         minSize: buttonSize,
+        constrained: false,
         color: b3Color,
         type: isSelected ? MTButtonType.secondary : MTButtonType.main,
         borderSide: isSelected ? BorderSide(color: mainColor.resolve(context), width: 3) : null,
@@ -64,13 +80,65 @@ class EditFeedDialog extends StatelessWidget {
     );
   }
 
+  Widget _breastButtons(BuildContext context, {required double size, required bool isLandscape}) {
+    final buttonSize = Size.square(size);
+
+    if (!isLandscape) {
+      // Портрет — как было: выезд за края на половину размера.
+      return SizedBox(
+        height: size + P2,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _breastTypeButton(context, isLeft: true, size: size, buttonSize: buttonSize, hangOffEdge: true),
+            _breastTypeButton(context, isLeft: false, size: size, buttonSize: buttonSize, hangOffEdge: true),
+          ],
+        ),
+      );
+    }
+
+    // Landscape: 150, целиком на экране, подпись по центру (как FeedTypeDialog / BottleCountStep).
+    return SizedBox(
+      height: size + P2,
+      width: double.infinity,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final leftBreastLeft = (constraints.maxWidth - P3) / 2 - size;
+          final rightBreastLeft = (constraints.maxWidth + P3) / 2;
+
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              _breastTypeButton(
+                context,
+                isLeft: true,
+                size: size,
+                buttonSize: buttonSize,
+                hangOffEdge: false,
+                left: leftBreastLeft,
+              ),
+              _breastTypeButton(
+                context,
+                isLeft: false,
+                size: size,
+                buttonSize: buttonSize,
+                hangOffEdge: false,
+                left: rightBreastLeft,
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) {
         final screen = screenSize(context);
-        final size = min(320.0, min(screen.width, screen.height) - P3);
-        final buttonSize = Size.square(size);
+        final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+        final size = isLandscape ? _breastSizeLandscape : min(320.0, min(screen.width, screen.height) - P3);
 
         return MTDialog(
           topBar: MTTopBar(middle: H2(_fec.feed.editFeedTitle, color: f2Color)),
@@ -81,16 +149,7 @@ class EditFeedDialog extends StatelessWidget {
                   ? Column(
                       children: [
                         const SizedBox(height: P2),
-                        SizedBox(
-                          height: size + P2,
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              _breastTypeButton(context, isLeft: true, size: size, buttonSize: buttonSize),
-                              _breastTypeButton(context, isLeft: false, size: size, buttonSize: buttonSize),
-                            ],
-                          ),
-                        ),
+                        _breastButtons(context, size: size, isLandscape: isLandscape),
                       ],
                     )
                   : const SizedBox(),

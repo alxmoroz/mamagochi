@@ -548,14 +548,20 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
                   return _dayEntries(date, context, isFirst: index == 0);
                 },
               )
-            : Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const MTSvgImage('no_info', height: P10 * 5, width: P10 * 5),
-                    H1(loc.history_empty_title, align: TextAlign.center),
-                  ],
-                ),
+            : Builder(
+                builder: (context) {
+                  final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+                  final imageSize = isLandscape ? P10 * 3 : P10 * 5;
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        MTSvgImage('no_info', height: imageSize, width: imageSize),
+                        H1(loc.history_empty_title, align: TextAlign.center),
+                      ],
+                    ),
+                  );
+                },
               ),
       ),
     );
