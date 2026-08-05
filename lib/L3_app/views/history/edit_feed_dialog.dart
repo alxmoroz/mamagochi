@@ -160,7 +160,7 @@ class EditFeedDialog extends StatelessWidget {
 
               /// время начала (только для грудного кормления)
               if (_fec.feed.type.isBreast)
-                MTAdaptive.xxs(
+                MTAdaptive.xs(
                   child: MTCard(
                     margin: const EdgeInsets.symmetric(vertical: P),
                     radius: 40,
@@ -177,7 +177,7 @@ class EditFeedDialog extends StatelessWidget {
               if (_fec.feed.type.isBreast) const SizedBox(height: P2),
 
               /// редактор времени окончания
-              MTAdaptive.xxs(
+              MTAdaptive.xs(
                 child: MTCard(
                   margin: const EdgeInsets.symmetric(vertical: P),
                   radius: 40,

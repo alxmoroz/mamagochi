@@ -46,7 +46,7 @@ const double HINT_BUBBLE_APPROX_HEIGHT = 160.0;
 const DEF_TAPPABLE_ICON_SIZE = kIsWeb ? P5 : P6;
 
 const double SCR_XXS_WIDTH = 290;
-const double SCR_XS_WIDTH = 364;
+const double SCR_XS_WIDTH = 330;
 const double SCR_XS_HEIGHT = 480;
 
 const double SCR_S_WIDTH = 480;

@@ -73,7 +73,7 @@ class EditSleepDialog extends StatelessWidget {
                 body: ListView(
                   shrinkWrap: true,
                   children: [
-                    MTAdaptive.xxs(
+                    MTAdaptive.xs(
                       child: MTCard(
                         margin: const EdgeInsets.symmetric(vertical: P),
                         radius: 40,
@@ -87,7 +87,7 @@ class EditSleepDialog extends StatelessWidget {
                         ),
                       ),
                     ),
-                    MTAdaptive.xxs(
+                    MTAdaptive.xs(
                       child: MTCard(
                         margin: const EdgeInsets.symmetric(vertical: P),
                         radius: 40,
