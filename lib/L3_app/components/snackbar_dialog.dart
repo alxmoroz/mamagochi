@@ -36,28 +36,46 @@ class _MTSnackbarDialog extends StatefulWidget {
 }
 
 class _MTSnackbarState extends State<_MTSnackbarDialog> {
-  late Timer _closingTimer;
+  Timer? _closingTimer;
+  bool _closing = false;
 
   @override
   void initState() {
-    _closingTimer = Timer(const Duration(milliseconds: 3000), () {
-      if (context.mounted) Navigator.of(context).pop();
-    });
     super.initState();
+    _closingTimer = Timer(const Duration(milliseconds: 3000), _close);
   }
 
   @override
   void dispose() {
-    _closingTimer.cancel();
+    _closingTimer?.cancel();
     super.dispose();
   }
 
-  Future _onTap() async {
-    _closingTimer.cancel();
-    if (context.mounted) Navigator.of(context).pop();
-    if (widget.onTap != null) {
-      widget.onTap!();
+  /// Закрывает только свой роут. Обычный `Navigator.pop` снимает верхний роут —
+  /// если сверху уже пикер/диалог, это даёт чёрный экран (пустой стек go_router).
+  void _close() {
+    if (_closing || !mounted) return;
+    _closing = true;
+    _closingTimer?.cancel();
+
+    final route = ModalRoute.of(context);
+    if (route == null || !route.isActive) return;
+
+    // Уже закрывается (тап по барьеру / свайп) — второй pop не нужен.
+    final animation = route.animation;
+    if (animation != null && animation.status == AnimationStatus.reverse) return;
+
+    final navigator = Navigator.of(context);
+    if (route.isCurrent) {
+      navigator.pop();
+    } else {
+      navigator.removeRoute(route);
     }
+  }
+
+  Future _onTap() async {
+    _close();
+    widget.onTap?.call();
   }
 
   @override

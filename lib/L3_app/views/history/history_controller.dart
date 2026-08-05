@@ -418,16 +418,20 @@ abstract class _Base with Store {
     referenceTime: now,
   );
 
+  /// Кормления, привязанные ко сну (`sleepCreated`).
+  Iterable<Feed> feedsDuringSleep(Sleep sleep) =>
+      _feedEntries.where((f) => f.sleepCreated?.isAtSameMomentAs(sleep.created) ?? false);
+
+  // int feedsDuringSleepCount(Sleep sleep) => feedsDuringSleep(sleep).length;
+
   @action
   Future _deleteEntry(AbstractEntry entry) async {
     if (entry is Feed) {
       _feedEntries.remove(entry);
       await feedUC.delete(entry);
     } else if (entry is Sleep) {
-      final sleepCreated = entry.created;
-
       /// Если есть кормления внутри сна, то удаляем привязку ко сну, записи кормлений остаются
-      final feedsToUnlink = _feedEntries.where((f) => f.sleepCreated == sleepCreated).toList();
+      final feedsToUnlink = feedsDuringSleep(entry).toList();
       for (final feed in feedsToUnlink) {
         await _editFeed(feed.withSleepCreated(null));
       }

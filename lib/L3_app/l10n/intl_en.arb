@@ -38,6 +38,7 @@
   "contact_us_mail_subject": "Mamagochi - feedback",
 
   "days_count": "{count, plural, one{{count} day} other{{count} days}}",
+  "feeds_count": "{count, plural, one{{count} feeding} other{{count} feedings}}",
 
   "edit_sleep_start_date_title_boy": "Fell asleep at",
   "edit_sleep_start_date_title_girl": "Fell asleep at",

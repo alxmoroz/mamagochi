@@ -487,6 +487,7 @@ class _HistoryViewState extends State<_HistoryView> with TickerProviderStateMixi
                   leading: entry.sleepImage(size: P10),
                   titleText: entry.isMoreMinute ? loc.history_sleep_title : '',
                   subtitle: SmallText(entry.isMoreMinute ? entry.sleepDuration : ''),
+                  // subtitle: SmallText(entry.historySleepSubtitle(_hc.feedsDuringSleepCount(entry))),
                   trailing: _entryTimeTrailing(isStillSleep ? entry.historyStillSleepTimeTitle : entry.historyStartEndTimeTitle),
                   bottomDivider: false,
                   onTap: () => EditSleepDialog.show(entry),

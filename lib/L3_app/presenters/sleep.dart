@@ -24,6 +24,13 @@ extension SleepPresenter on Sleep {
   String get sleepDuration => isStillSleeping ? durationFromStartToNow.strInHoursAndMinutes : duration.strInHoursAndMinutes;
   String get sleepDurationTitle => isMoreMinute ? sleepDuration : '';
 
+  // /// Подзаголовок сна в истории: длительность, и при наличии — число кормлений внутри сна.
+  // String historySleepSubtitle(int feedsDuringSleepCount) {
+  //   if (!isMoreMinute) return '';
+  //   if (feedsDuringSleepCount <= 0) return sleepDuration;
+  //   return '$sleepDuration • ${loc.feeds_count(feedsDuringSleepCount)}';
+  // }
+
   String get startSleepActionTitle => Intl.message('action_start_sleep_title_${_baby.sex}');
   String get stopSleepActionTitle => Intl.message('action_stop_sleep_title_${_baby.sex}');
   String get ateAndFellAsleepTitle => Intl.message('action_ate_and_fell_asleep_title_${_baby.sex}');

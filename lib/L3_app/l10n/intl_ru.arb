@@ -38,6 +38,7 @@
   "contact_us_mail_subject": "Мамагочи - обратная связь",
 
   "days_count": "{count, plural, one{{count} день} few{{count} дня} other{{count} дней}}",
+  "feeds_count": "{count, plural, one{{count} кормление} few{{count} кормления} other{{count} кормлений}}",
 
   "edit_sleep_start_date_title_boy": "Во сколько уснул",
   "edit_sleep_start_date_title_girl": "Во сколько уснула",
