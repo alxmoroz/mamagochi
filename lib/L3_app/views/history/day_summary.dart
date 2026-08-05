@@ -1,6 +1,7 @@
 import '../../../L1_domain/entities/feed.dart';
 import '../../../L1_domain/entities/sleep.dart';
 import '../../../L1_domain/utils/dates.dart';
+import '../../../L1_domain/utils/feed_interval.dart';
 import '../../../L1_domain/utils/sleep_interval.dart';
 
 const _minStatDuration = Duration(minutes: 1);
@@ -36,6 +37,7 @@ class DaySummary {
     final at = referenceTime ?? now;
     final (dayStart, dayEndExclusive) = _dayBounds(date);
     final ongoingSleep = findOngoingSleep(sleepEntries, at);
+    final ongoingFeed = findOngoingBreastFeed(feedEntries, at);
 
     var sleepDuration = Duration.zero;
     var showSleepCard = false;
@@ -57,9 +59,11 @@ class DaySummary {
     final awake = dayElapsed - sleepDuration;
     final awakeDuration = awake.isNegative ? Duration.zero : awake;
 
-    final showBreastRow = feedEntries.any((feed) => _breastFeedIntersectsDay(feed, dayStart, dayEndExclusive, at));
+    final showBreastRow = feedEntries.any(
+      (feed) => _breastFeedIntersectsDay(feed, dayStart, dayEndExclusive, at, feedEntries, ongoingFeed: ongoingFeed),
+    );
     final breastDuration = feedEntries.where((f) => f.type.isBreast).fold(Duration.zero, (total, feed) {
-      final overlap = _breastFeedOverlapWithDay(feed, dayStart, dayEndExclusive, at);
+      final overlap = _breastFeedOverlapWithDay(feed, dayStart, dayEndExclusive, at, feedEntries, ongoingFeed: ongoingFeed);
       return overlap == null ? total : total + _statOverlap(overlap);
     });
 
@@ -136,19 +140,35 @@ Duration? _sleepOverlapWithDay(
 /// Бутылочка — точечная запись, день определяется по [Feed.end].
 bool _bottleFeedBelongsToDay(Feed feed, DateTime date) => feed.type.isBottle && feed.end.date == date.date;
 
-bool _breastFeedIntersectsDay(Feed feed, DateTime dayStart, DateTime dayEndExclusive, DateTime at) {
+bool _breastFeedIntersectsDay(
+  Feed feed,
+  DateTime dayStart,
+  DateTime dayEndExclusive,
+  DateTime at,
+  Iterable<Feed> all, {
+  Feed? ongoingFeed,
+}) {
   if (!feed.type.isBreast) return false;
 
   final feedStart = feed.start;
-  final feedEnd = feed.isStillFeeding ? at : feed.end;
+  final feedEnd = effectiveFeedEnd(feed, all, at, ongoingFeed: ongoingFeed);
   return !feedEnd.isBefore(dayStart) && feedStart.isBefore(dayEndExclusive);
 }
 
-Duration? _breastFeedOverlapWithDay(Feed feed, DateTime dayStart, DateTime dayEndExclusive, DateTime at) {
-  if (!_breastFeedIntersectsDay(feed, dayStart, dayEndExclusive, at)) return null;
+Duration? _breastFeedOverlapWithDay(
+  Feed feed,
+  DateTime dayStart,
+  DateTime dayEndExclusive,
+  DateTime at,
+  Iterable<Feed> all, {
+  Feed? ongoingFeed,
+}) {
+  if (!_breastFeedIntersectsDay(feed, dayStart, dayEndExclusive, at, all, ongoingFeed: ongoingFeed)) {
+    return null;
+  }
 
   final feedStart = feed.start;
-  final feedEnd = feed.isStillFeeding ? at : feed.end;
+  final feedEnd = effectiveFeedEnd(feed, all, at, ongoingFeed: ongoingFeed);
 
   final overlapStart = feedStart.isAfter(dayStart) ? feedStart : dayStart;
   final overlapEnd = feedEnd.isBefore(dayEndExclusive) ? feedEnd : dayEndExclusive;

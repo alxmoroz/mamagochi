@@ -29,7 +29,7 @@ void main() {
     ];
 
     expect(findOngoingSleep(sleeps, at), isNull);
-    expect(staleUnfinishedSleeps(sleeps, at).length, 1);
+    expect(sleepsToAutoCloseOnReload(sleeps, at).length, 1);
   });
 
   test('day summary does not count stale sleep until now', () {
@@ -67,7 +67,7 @@ void main() {
     expect(effectiveSleepEnd(sleeps.single, sleeps, at), at);
   });
 
-  test('inferred end uses next sleep start', () {
+  test('stale sleep effective end equals start', () {
     final stale = sleep(
       created: DateTime(2026, 7, 1, 10),
       startDate: DateTime(2026, 7, 1, 10),
@@ -78,6 +78,33 @@ void main() {
       endDate: DateTime(2026, 7, 1, 15),
     );
 
-    expect(inferredStaleSleepEnd(stale, [stale, next]), DateTime(2026, 7, 1, 14));
+    expect(effectiveSleepEnd(stale, [stale, next], at), DateTime(2026, 7, 1, 10));
+    expect(closedEndDateForStaleSleep(stale), DateTime(2026, 7, 1, 10));
+  });
+
+  test('reload closes older unfinished under 24h, keeps newest', () {
+    final older = sleep(
+      created: DateTime(2026, 7, 4, 10),
+      startDate: DateTime(2026, 7, 4, 10),
+    );
+    final newer = sleep(
+      created: DateTime(2026, 7, 4, 12),
+      startDate: DateTime(2026, 7, 4, 12),
+    );
+
+    final toClose = sleepsToAutoCloseOnReload([older, newer], at);
+    expect(toClose, [older]);
+    expect(findOngoingSleep([older, newer], at), newer);
+  });
+
+  test('overnight unfinished under 24h stays ongoing', () {
+    final overnight = sleep(
+      created: DateTime(2026, 7, 3, 22),
+      startDate: DateTime(2026, 7, 3, 22),
+    );
+
+    expect(findOngoingSleep([overnight], at), overnight);
+    expect(sleepsToAutoCloseOnReload([overnight], at), isEmpty);
+    expect(effectiveSleepEnd(overnight, [overnight], at), at);
   });
 }

@@ -13,6 +13,7 @@ import '../../../L1_domain/entities/feed.dart';
 import '../../../L1_domain/entities/sleep.dart';
 import '../../../L1_domain/utils/dates.dart';
 import '../../../L1_domain/utils/awake_periods.dart';
+import '../../../L1_domain/utils/feed_interval.dart';
 import '../../../L1_domain/utils/sleep_interval.dart';
 import '../../components/colors.dart';
 import '../../components/snackbar_dialog.dart';
@@ -36,12 +37,8 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
   Future reload() async {
     await load(() async {
       await _fetchSleepEntries();
-      // Миграция закомментирована — она закрывала старые «зависшие» записи сна
-      // неправильным временем (не now), что ломало длительность завершаемых вручную
-      // записей и оставляло endDate равным startDate/created.
-      // Все пользователи уже обновились, миграция нужна была только один раз.
-      // await _migrateStaleSleepEntries();
       await _fetchFeedEntries();
+      await _closeStaleUnfinishedEntries();
       await _migrateSleepHintIfNeeded();
     });
   }
@@ -202,12 +199,18 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
     await localSettingsController.markSleepHintShown();
   }
 
-  /// Закрывает «зависшие» записи сна без endDate — иначе статистика считает их до «сейчас».
+  /// Закрывает забытые незакрытые сны и груди: старше 24ч и дубли кроме текущего newest.
+  /// Конец = start (длительность неизвестна, не угадываем).
   @action
-  Future _migrateStaleSleepEntries() async {
-    final stale = staleUnfinishedSleeps(_sleepEntries, now);
-    for (final sleep in stale) {
-      await _editSleep(sleep, endDate: closedEndDateForStaleSleep(sleep, _sleepEntries));
+  Future _closeStaleUnfinishedEntries() async {
+    final staleSleeps = sleepsToAutoCloseOnReload(_sleepEntries, now);
+    for (final sleep in staleSleeps) {
+      await _editSleep(sleep, endDate: closedEndDateForStaleSleep(sleep));
+    }
+
+    final staleFeeds = feedsToAutoCloseOnReload(_feedEntries, now);
+    for (final feed in staleFeeds) {
+      await _editFeed(feed.copyWith(endDate: closedEndDateForStaleFeed(feed)));
     }
   }
 }
@@ -256,6 +259,11 @@ abstract class _Base with Store {
 
   @action
   Future _startSleep(DateTime startDate) async {
+    final unfinished = _sleepEntries.where((s) => s.isStillSleeping).toList();
+    for (final sleep in unfinished) {
+      await _editSleep(sleep, endDate: closedEndDateForStaleSleep(sleep));
+    }
+
     final sleep = Sleep(created: now, startDate: startDate, babyCreatedTime: _baby.created);
     _sleepEntries.add(sleep);
     await sleepUC.edit(sleep);
@@ -330,7 +338,10 @@ abstract class _Base with Store {
 
   @action
   Future _startBreastFeed(FeedingType type) async {
-    if (lastOngoingBreastFeed != null) return;
+    final unfinished = _feedEntries.where((f) => f.isStillFeeding).toList();
+    for (final feed in unfinished) {
+      await _editFeed(feed.copyWith(endDate: closedEndDateForStaleFeed(feed)));
+    }
 
     final feed = Feed(created: now, startDate: now, endDate: null, babyCreatedTime: _baby.created, type: type);
     _feedEntries.add(feed);
@@ -366,10 +377,9 @@ abstract class _Base with Store {
   @computed
   Iterable<Feed> get _sortedFeedEntries => _feedEntries.sortedBy<DateTime>((e) => e.end);
 
-  /// Текущее грудное кормление: только записи с явным startDate (новый режим). Старые записи без startDate не считаются текущими.
+  /// Текущее грудное кормление (правдоподобное, не старше 24ч).
   @computed
-  Feed? get lastOngoingBreastFeed =>
-      _feedEntries.where((f) => f.isStillFeeding).sortedBy<DateTime>((e) => e.created).lastOrNull;
+  Feed? get lastOngoingBreastFeed => findOngoingBreastFeed(_feedEntries, now);
 
   @computed
   bool get babyIsEating => lastOngoingBreastFeed != null;
