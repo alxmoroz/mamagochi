@@ -23,7 +23,7 @@ class BabyFaceWidget extends StatefulWidget {
 
 class _BabyFaceWidgetState extends State<BabyFaceWidget> with TickerProviderStateMixin {
   /// 0 = глаза открыты, 1 = закрыты. И для моргания, и для сна/пробуждения.
-  static const _blinkInterval = Duration(seconds: 10);
+  static const _blinkInterval = Duration(seconds: 6);
   static const _blinkCloseDuration = Duration(milliseconds: 110);
   static const _blinkHoldDuration = Duration(milliseconds: 40);
   static const _blinkOpenDuration = Duration(milliseconds: 140);

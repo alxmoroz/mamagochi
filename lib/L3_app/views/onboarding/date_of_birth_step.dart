@@ -8,11 +8,11 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../L1_domain/utils/dates.dart';
 import '../../components/button.dart';
 import '../../components/constants.dart';
+import '../../components/images.dart';
 import '../../components/loader.dart';
 import '../../components/text.dart';
 import '../app/services.dart';
 import '../baby/baby_controller.dart';
-import '../birthday/animated_birthday_cake.dart';
 
 final DateTime _initialDate = today;
 
@@ -61,7 +61,7 @@ class _State extends State<DateOfBirthStep> {
                       padding: titlePad,
                     ),
                     if (!isLandscape && cakeMax > 0)
-                      Center(child: AnimatedBirthdayCake(size: min(cakeMax, constraints.maxHeight * 0.3))),
+                      Center(child: MTSvgImage('cake', height: min(cakeMax, constraints.maxHeight * 0.3))),
                     Expanded(
                       child: Center(
                         child: SizedBox(

@@ -58,9 +58,13 @@ class _BirthdayCongratsDialogState extends State<BirthdayCongratsDialog> {
 
   bool get _isBirthDay => _age.isBirthDay;
 
-  String get _title => _isBirthDay
-      ? loc.birthday_congrats_birth_title
-      : loc.birthday_congrats_anniversary_title(_age.formatAnniversaryAge());
+  String get _title {
+    if (_isBirthDay) return loc.birthday_congrats_birth_title;
+    final age = _age.formatAnniversaryAge();
+    return _baby.isBoy
+        ? loc.birthday_congrats_anniversary_title_boy(age)
+        : loc.birthday_congrats_anniversary_title_girl(age);
+  }
 
   String get _body => _isBirthDay ? loc.birthday_congrats_birth_body : loc.birthday_congrats_anniversary_body;
 

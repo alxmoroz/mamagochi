@@ -38,7 +38,8 @@
   "birthday_congrats_tap_me": "нажми на меня",
   "birthday_congrats_birth_title": "С рождением малыша!",
   "birthday_congrats_birth_body": "Спасибо за жизнь и любовь!\nТы рядом – это счастье",
-  "birthday_congrats_anniversary_title": "Малышу уже {age}",
+  "birthday_congrats_anniversary_title_boy": "Малышу уже {age}",
+  "birthday_congrats_anniversary_title_girl": "Малышке уже {age}",
   "birthday_congrats_anniversary_body": "Спасибо, что ты рядом!\nТвоя забота – лучший подарок",
   "birthday_congrats_thanks_action": "Ура!",
 
