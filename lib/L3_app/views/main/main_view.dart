@@ -108,6 +108,11 @@ class _MainViewState extends State<_MainView> {
   }
 
   Widget get backgroundImage {
+    final baby = mainController.selectedBabyController?.baby;
+    if (baby?.isMonthlyAnniversaryToday == true) {
+      return const Positioned(top: 0, left: 0, right: 0, height: 194, child: MTSvgImage('gifts', height: 194, width: 390));
+    }
+
     final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
     return isDark
         ? const Positioned(top: 0, left: 0, right: 0, height: 194, child: MTSvgImage('stars', height: 194, width: 390))

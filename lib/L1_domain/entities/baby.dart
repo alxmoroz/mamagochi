@@ -19,6 +19,11 @@ class Baby extends LocalPersistable {
 
   bool get isOlderNineMonths => hasDateOfBirth && Jiffy.parseFromDateTime(dateOfBirth!).add(months: 9).isBefore(Jiffy.now());
 
+  bool get isMonthlyAnniversaryToday {
+    final age = fullAge;
+    return age != null && age.daysUntilBirth == null && age.days == 0;
+  }
+
   bool get defined => named && hasDateOfBirth;
   bool get named => name?.isNotEmpty == true;
   bool get hasDateOfBirth => dateOfBirth != null;
