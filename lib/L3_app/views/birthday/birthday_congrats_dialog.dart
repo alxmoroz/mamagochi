@@ -13,6 +13,7 @@ import '../../components/images.dart';
 import '../../components/text.dart';
 import '../../presenters/baby.dart';
 import '../app/services.dart';
+import 'animated_birthday_cake.dart';
 
 class BirthdayCongratsDialog extends StatefulWidget {
   const BirthdayCongratsDialog._();
@@ -135,7 +136,7 @@ class _BirthdayCongratsDialogState extends State<BirthdayCongratsDialog> {
                                     ),
                             ),
                             SizedBox(height: spacing),
-                            const MTSvgImage('cake', height: _cakeSize, width: _cakeSize),
+                            const AnimatedBirthdayCake(size: _cakeSize),
                             SizedBox(height: spacingLarge),
                             AnimatedOpacity(
                               opacity: _celebrating ? 1 : 0,

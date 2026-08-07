@@ -50,6 +50,7 @@ flutter:
     - assets/fonts/
     - assets/images/
     - assets/images/baby_face/
+    - assets/images/birthday_cake/
     - assets/icons/
   fonts:
     - family: MontserratMamagochi
