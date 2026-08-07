@@ -11,6 +11,7 @@ import '../../../navigation/router.dart';
 import '../../../views/_base/loadable.dart';
 import '../../app/services.dart';
 import '../../baby/baby_controller.dart';
+import '../../birthday/birthday_congrats_dialog.dart';
 
 part 'main_controller.g.dart';
 
@@ -26,17 +27,23 @@ class MainController extends _Base with _$MainController {
   Future startup() async {
     await appController.startup();
 
-    // обновление данных
-    await reload();
+    // Держим loader, пока не решим, показывать ли поздравление —
+    // чтобы после онбординга/старта не мелькал главный экран.
+    startLoading();
+    setLoaderScreenLoading();
+    await _fetchBabies();
 
-    // Онбординг
     if (babiesControllers.isEmpty) {
       _addBaby();
       await router.pushOnboarding(selectedBabyController!);
+      await BirthdayCongratsDialog.showIfNeeded();
       await selectedBabyController!.historyController.reload();
     } else {
       await selectBaby(babiesControllers.first);
+      await BirthdayCongratsDialog.showIfNeeded();
     }
+
+    stopLoading();
 
     // обновляем историю записей по выбранному сейчас ребенку
     _refreshTimer ??= Timer.periodic(_updatePeriod, (_) => selectedBabyController?.historyController.reload());

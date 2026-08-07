@@ -10,6 +10,7 @@ publish_to: none
 
 dependencies:
   collection: any
+  confetti: ^0.8.0
   cupertino_icons: any
   device_info_plus: any
   flutter:

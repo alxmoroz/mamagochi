@@ -35,6 +35,13 @@
   "baby_profile_birthday_today": "Happy birthday!",
   "baby_profile_awaiting_birth": "Waiting for birth in {days}",
 
+  "birthday_congrats_tap_me": "tap me",
+  "birthday_congrats_birth_title": "Welcome, little one!",
+  "birthday_congrats_birth_body": "Thank you for life and love! You being here is my happiness",
+  "birthday_congrats_anniversary_title": "Baby is already {age}",
+  "birthday_congrats_anniversary_body": "Thank you for being here! Your care is the best gift",
+  "birthday_congrats_thanks_action": "Thank you!",
+
   "contact_us_mail_subject": "Mamagochi - feedback",
 
   "days_count": "{count, plural, one{{count} day} other{{count} days}}",

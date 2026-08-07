@@ -42,6 +42,7 @@ extension BabyPresenter on Baby? {
 extension BabyAgePresenter on BabyAge {
   bool get _isNotBornYet => daysUntilBirth != null;
   bool get _isBirthdayToday => years == 0 && months == 0 && days == 0 && !_isNotBornYet;
+  bool get isBirthDay => _isBirthdayToday;
 
   String format() {
     /// Если ещё не родился
@@ -60,6 +61,14 @@ extension BabyAgePresenter on BabyAge {
     if (months > 0) parts.add(loc.months_count(months));
     if (days > 0) parts.add(loc.days_count(days));
 
+    return parts.join(', ');
+  }
+
+  /// Возраст для заголовка юбилея (без дней и без «С днём рождения!»).
+  String formatAnniversaryAge() {
+    final parts = <String>[];
+    if (years > 0) parts.add(loc.years_count(years));
+    if (months > 0) parts.add(loc.months_count(months));
     return parts.join(', ');
   }
 }

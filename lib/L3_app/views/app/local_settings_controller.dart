@@ -81,6 +81,15 @@ abstract class _LocalSettingsControllerBase with Store {
   Future markSleepHintShown() async =>
       settings = await localSettingsUC.setString(ALSStringCode.SLEEP_HINT_DISMISSED, 'true');
 
+  bool wasBirthdayCongratsShownToday(DateTime babyCreated) {
+    final shown = settings.getDate(ALSDateCode.birthdayCongratsShown(babyCreated));
+    return shown?.date == today;
+  }
+
+  @action
+  Future markBirthdayCongratsShown(DateTime babyCreated) async =>
+      settings = await localSettingsUC.setDate(ALSDateCode.birthdayCongratsShown(babyCreated), today);
+
   /// Токен регистрации
   // @computed
   // String? get registrationToken => settings.getString(ALSStringCode.REGISTRATION_TOKEN);

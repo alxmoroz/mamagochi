@@ -4,6 +4,9 @@ import '../entities/base_entity.dart';
 
 class ALSDateCode {
   static const APP_UPGRADE_PROPOSAL = 'APP_UPGRADE_PROPOSAL';
+
+  static String birthdayCongratsShown(DateTime babyCreated) =>
+      'BIRTHDAY_CONGRATS_SHOWN_${babyCreated.millisecondsSinceEpoch}';
 }
 
 class ALSStringCode {

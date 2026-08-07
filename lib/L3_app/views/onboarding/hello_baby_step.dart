@@ -11,16 +11,22 @@ import '../../components/constants.dart';
 import '../../components/text.dart';
 import '../app/services.dart';
 import '../baby/baby_controller.dart';
+import '../birthday/birthday_congrats_dialog.dart';
 
 class HelloBabyStep extends StatelessWidget {
   const HelloBabyStep(this._bc, {super.key});
   final BabyController _bc;
 
+  Future<void> _finish() async {
+    await BirthdayCongratsDialog.showIfNeeded();
+    router.pop();
+  }
+
   Widget get _button => MTButton.main(
     titleText: _bc.baby.wasBorn
         ? loc.onboarding_hello_step_text_born(_bc.baby.daysSinceBirth ?? '')
         : loc.onboarding_hello_step_text_not_born,
-    onTap: router.pop,
+    onTap: _finish,
   );
 
   Widget _title({required EdgeInsets padding}) => H1(
