@@ -33,7 +33,12 @@ extension BabyPresenter on Baby? {
         ? (hc.lastOngoingBreastFeed!.type.isLeftBreast ? BabyFaceMode.feedingLeft : BabyFaceMode.feedingRight)
         : BabyFaceMode.awake;
 
-    return BabyFaceWidget(config: BabyFaceConfig.forBaby(baby, mode), size: size, enableBlink: true);
+    return BabyFaceWidget(
+      config: BabyFaceConfig.forBaby(baby, mode),
+      size: size,
+      enableBlink: true,
+      sleepLidAnimationEpoch: hc.sleepLidAnimationEpoch,
+    );
   }
 
   String? get formattedDateOfBirth => this?.dateOfBirth != null ? DateFormat.yMMMMd().format(this!.dateOfBirth!) : null;

@@ -23,8 +23,24 @@ class MainController extends _Base with _$MainController {
 
   static const _updatePeriod = Duration(seconds: 15);
   Timer? _refreshTimer;
+  Future<void>? _startupInFlight;
 
   Future startup() async {
+    // iOS при запуске/возврате из фона может дать несколько resumed подряд —
+    // параллельные startup сбрасывали историю и мигали «засыпанием».
+    final inFlight = _startupInFlight;
+    if (inFlight != null) return inFlight;
+
+    final done = _startupBody();
+    _startupInFlight = done;
+    try {
+      await done;
+    } finally {
+      if (_startupInFlight == done) _startupInFlight = null;
+    }
+  }
+
+  Future<void> _startupBody() async {
     await appController.startup();
 
     // Держим loader, пока не решим, показывать ли поздравление —

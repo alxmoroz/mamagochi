@@ -218,6 +218,10 @@ class HistoryController extends _Base with Loadable, _$HistoryController {
 abstract class _Base with Store {
   late final Baby _baby;
 
+  /// Счётчик «пользователь только что нажал Сон» — для анимации век на главной.
+  /// Не observable: меняется в том же тике, что и появление ongoing sleep.
+  int sleepLidAnimationEpoch = 0;
+
   /// записи о сне
   @observable
   ObservableList<Sleep> _sleepEntries = ObservableList();
@@ -265,6 +269,8 @@ abstract class _Base with Store {
     }
 
     final sleep = Sleep(created: now, startDate: startDate, babyCreatedTime: _baby.created);
+    // Сигнал лицу: анимировать закрытие век (в отличие от сна, уже идущего после рестарта).
+    sleepLidAnimationEpoch++;
     _sleepEntries.add(sleep);
     await sleepUC.edit(sleep);
   }

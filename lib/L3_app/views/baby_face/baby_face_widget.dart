@@ -8,7 +8,13 @@ import 'baby_face_assets.dart';
 import 'baby_face_config.dart';
 
 class BabyFaceWidget extends StatefulWidget {
-  const BabyFaceWidget({required this.config, this.size, this.enableBlink = true, super.key});
+  const BabyFaceWidget({
+    required this.config,
+    this.size,
+    this.enableBlink = true,
+    this.sleepLidAnimationEpoch = 0,
+    super.key,
+  });
 
   /// Размер холста SVG (viewBox). Совпадает с бывшими PNG малыша.
   static const viewBoxSize = 200.0;
@@ -16,6 +22,10 @@ class BabyFaceWidget extends StatefulWidget {
   final BabyFaceConfig config;
   final double? size;
   final bool enableBlink;
+
+  /// Увеличивается только когда пользователь только что начал сон.
+  /// Если режим sleep пришёл без смены epoch (рестарт / reload) — веки сразу закрыты, без анимации засыпания.
+  final int sleepLidAnimationEpoch;
 
   @override
   State<BabyFaceWidget> createState() => _BabyFaceWidgetState();
@@ -83,7 +93,13 @@ class _BabyFaceWidgetState extends State<BabyFaceWidget> with TickerProviderStat
     _rememberOpenEyes(widget.config);
 
     if (!wasSleep && isSleep) {
-      _fallAsleep();
+      final userStartedSleep = widget.sleepLidAnimationEpoch != oldWidget.sleepLidAnimationEpoch;
+      if (userStartedSleep) {
+        _fallAsleep();
+      } else {
+        // Уже спал (после рестарта / подгрузки истории) — не изображаем «только что уснул».
+        _snapAsleep();
+      }
     } else if (wasSleep && !isSleep) {
       _wakeUp();
     }
@@ -142,6 +158,14 @@ class _BabyFaceWidgetState extends State<BabyFaceWidget> with TickerProviderStat
 
     _lidController.duration = _blinkOpenDuration;
     await _lidController.reverse();
+  }
+
+  void _snapAsleep() {
+    _blinkTimer?.cancel();
+    _blinkTimer = null;
+    _lingeringZzz = false;
+    _lidController.value = 1;
+    _startZzzLoop();
   }
 
   Future<void> _fallAsleep() async {
